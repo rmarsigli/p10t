@@ -1,7 +1,9 @@
 # Whole-book literary reports land here.
 #
-# Produced by review-book (roadmap) or written manually
+# Produced by review-book, or written manually
 # using .project/templates/book-review.md
+#
+# check-arc also writes here when its report is extensive.
 #
 # Suggested naming: YYYY-MM-DD-review-{scope}.md
 # e.g. 2026-05-23-review-act-01.md

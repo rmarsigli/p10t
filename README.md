@@ -59,6 +59,8 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 
 ## Structure
 
+> This diagram is the canonical one. `CLAUDE.md` and `.project/CLAUDE.md` point here rather than repeating it.
+
 ```text
 {your-book}/
 ├── CLAUDE.md                    Project guide (read first)
@@ -66,14 +68,16 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │   ├── Act 01/
 │   ├── Act 02/
 │   └── ...
+├── examples/                    Worked samples of the system's outputs
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
 │       ├── init-project/        analyze-chapter/     scan-recurrences/
 │       ├── review-revision/     define-persona/      define-references/
 │       ├── build-worldbuilding/ create-character/    outline-chapter/
 │       ├── draft-scene/         revise-passage/      expand-beat/
-│       ├── review-book/         check-consistency/   check-arc/
-│       └── update-preserve-list/  consolidate-style/
+│       ├── restructure-chapter/ review-book/         check-consistency/
+│       ├── check-arc/           update-preserve-list/
+│       └── consolidate-style/
 └── .project/
     ├── CLAUDE.md                Knowledge hub guide
     │
@@ -138,11 +142,13 @@ Plus an open category (**15 - other tics**) capturing whatever is specific to ea
 
 **None of this is an error.** These are legitimate figures. The problem is always density - and density only becomes visible when you count.
 
+**The unit is occurrences per 1,000 words.** One figure, used everywhere: the per-chapter analysis, the before/after of each revision, the budget a generation pass drafts against, the trajectory in the whole-book report. Each category carries a default ceiling; your project overrides them in `style-guide.md`, and anything you have declared a personal signature has no ceiling at all. Counting rules are in `templates/framework.md` - they matter, because a density figure counted two different ways compares nothing.
+
 ---
 
 ## The skills
 
-Sixteen skills across five layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
+Eighteen skills: `init-project` for bootstrap, and seventeen across six working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
 
 ### Analysis layer
 
@@ -174,6 +180,8 @@ Sixteen skills across five layers. Each is a `SKILL.md` the agent reads and foll
 
 **`expand-beat`** - From a one-line beat to drafted prose. The beat is your plot decision; expansion adds texture, never events.
 
+**`restructure-chapter`** - For chapters whose problem is scene design, not sentences. Rebuilds the chapter's obligations backwards from what is on the page, then proposes what to move, merge, compress, cut, or add - naming, for every cut, which surviving scene carries its load. Delivers a plan against the current structure, never a rewrite, and reports the blast radius: restructuring is the one operation that routinely breaks *other* chapters.
+
 ### Literary analysis layer
 
 **`review-book`** - The whole-book report: literary, commercial, and AI-use analysis, every claim with evidence. Run at the end of each Act, not just at the end.
@@ -202,18 +210,24 @@ Sixteen skills across five layers. Each is a `SKILL.md` the agent reads and foll
 [2] you read and annotate R: on each item         │
    │  accepted / changed / kept / removed         │
    ▼                                              │
-[3] you rewrite the chapter                       │
-   │                                              │
+[3] git commit the chapter, then rewrite it       │
+   │  the commit is what review-revision diffs    │
    ▼                                              │
 [4] review-revision                               │
    │  evaluates, flags errors, answers questions  │
+   │  writes the entry in revision-log.md         │
    ▼                                              │
 [5] learnings feed back into                      │
    │  persona.md  +  preserve-list.md             │
    └──────────────────────────────────────────────┘
 
-   End of each Act: scan-recurrences
+   End of each Act: scan-recurrences, check-consistency,
+                    check-arc, review-book
 ```
+
+**Commit before you rewrite.** One `git commit` between step 2 and step 3 gives `review-revision` an exact diff of what changed instead of a reconstruction from quotes. It is the cheapest habit in the system.
+
+**The revision log is not optional.** Step 4 always writes an entry to `reports/revision-log.md` - `consolidate-style`, `update-preserve-list`, and `define-persona`'s update mode all read it as their source. A skipped entry is a set of decisions that never reaches your persona, and the loop stops compounding without telling you.
 
 **The `R:` annotation is the heart of the system.** It is where human curation happens and where the system learns. A real example (author writing in Portuguese):
 
@@ -264,31 +278,15 @@ Chapter-by-chapter analysis is blind to this. Only a global sweep sees it.
 
 ## Roadmap
 
-The system currently **analyzes**. The intent is for it to also **know** and **write**.
+All eighteen skills described above are implemented. What is not yet built:
 
-**Knowledge layer:**
+**Language coverage.** Detection signals are calibrated for `[pt-BR]` and `[en]`. Other languages inherit the definitions, ceilings, and treatments, but their signals need adapting - `[es]` and `[fr]` sections are the next addition.
 
-- `build-worldbuilding` - co-creation and formalization of the world
-- `create-character` - character development through dialogue
-- `define-references` - voice reference sheets
+**Field testing.** The revision cycle - `analyze-chapter` → `R:` → rewrite → `review-revision` - has run on a real manuscript. The generation and knowledge layers have not been exercised at book length. Expect the ceilings in `framework.md` to move once they are.
 
-**Literary analysis layer:**
+**A validation script.** Frontmatter names against directory names, unfilled `{placeholders}` after init, dangling cross-references between skills. Cheap insurance for a system made entirely of markdown.
 
-- `review-book` - whole-book report: literary, commercial, technical
-- `check-consistency` - chapter against worldbuilding, timeline, character sheets
-- `check-arc` - character, thematic, and tension arcs
-
-**Generation layer:**
-
-- `outline-chapter` - structure before prose
-- `draft-scene` - **the critical piece.** Generates while carrying persona + references + style guide + worldbuilding + relevant characters + preserve-list + recurrences + all 14 categories. Context-expensive by design: prose is born inside the voice instead of needing to be cleaned afterwards.
-- `revise-passage` - passage rewrite applying the full checklist
-- `expand-beat` - from a one-line beat to a full scene
-
-**Learning layer:**
-
-- `update-preserve-list` - migrates confirmed phrases automatically
-- `consolidate-style` - refines `persona.md` from decision history
+**Export.** Manuscript to submission format. Deliberately last: nothing about it is interesting until the prose is done.
 
 ---
 

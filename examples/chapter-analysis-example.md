@@ -1,13 +1,17 @@
 # Example — `analyze-chapter` output, annotated by the author
 
 > **Condensed sample.** A real analysis covers all 14 categories; this shows four, plus the verdict — enough to see the form. The manuscript is in Brazilian Portuguese, so the analysis is too (output-language convention). The `**R:**` lines are the author's — added *after* the analysis was generated. That annotation layer is the heart of the system.
+>
+> **On the numbers.** The quotes, the annotations, and the outcome are from the real session. The **density figures are illustrative**: that session predated the per-1k unit and recorded densities on the old qualitative scale, and the chapter has not been re-counted since. Treat them as showing the *shape* of a density report, not as measurements. Every figure in a live analysis comes from an actual count.
 
 ---
 
 # Análise — Capítulo 01.01: A Estrada Termina Aqui
 
-**Densidade de IA:** Alta. Capítulo de abertura — estabelece a voz, e por isso carrega muitos dos tiques que vão se repetir.
+**Extensão:** 3.240 palavras
+**Densidade do capítulo:** 14,2/1k — teto 8,0/1k. Capítulo de abertura: estabelece a voz, e por isso carrega muitos dos tiques que vão se repetir.
 **Prioridade:** Crítica. É a primeira página que o leitor lê.
+**Acima do teto:** cat. 1 (3,4/1k), cat. 3 (2,8/1k), cat. 4 (1,9/1k), cat. 11 (4,0/1k)
 
 ---
 
@@ -25,7 +29,7 @@
 4. **"Era verdade e era vago"** — Paralelismo curto. Aceitável.
    **R:** eu gostei desse, mantive tbm
 
-**Total: ~11. Meta: 5–6.**
+**Ocorrências: 11 | Densidade: 3,4/1k | Teto: 2,0/1k | Meta: cortar 5**
 **Resultado do autor: mantive 3.**
 
 ---
@@ -92,7 +96,7 @@
 
 ## Outcome (recorded in `revision-log.md`)
 
-**Density:** ~70% → ~30% after one revision pass.
+**Density:** 14,2/1k → 5,8/1k after one revision pass (ceiling 8,0/1k). One category still over: em-dashes, 2,4/1k against a 2,0/1k ceiling.
 **Decisions:** most accepted; 6 rejected — 4 of which became permanent persona signatures.
 **Review notes:** author's rewrites frequently *beat* the suggestions (e.g. the beer line: *"amarga e de péssima qualidade, o que é um elogio para um lugar como esse"* — entirely his, better than anything proposed). 4 introduced errors caught (agreement, wrong word, typo). One inverted problem flagged.
 

@@ -6,9 +6,40 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versioning foll
 ## [Unreleased]
 
 ### Planned
-- Field-testing the full cycle on a real manuscript
-- `[en]` and `[es]` detection-signal sections in `framework.md`
+- `[es]` and `[fr]` detection-signal sections in `framework.md`
+- Field-testing the generation and knowledge layers at book length (the revision cycle has been tested; see 0.3.0)
+- A validation script: frontmatter names vs. directory names, unfilled `{placeholders}`, dangling cross-references
+- An export skill: manuscript to submission format
 - Per-skill worked examples in `examples/`
+
+## [0.3.0] — 2026-07-28
+
+End-to-end audit of the project. Two functional defects fixed, one skill added, documentation reconciled with what the system actually does.
+
+### Changed
+
+- **Density is now defined.** The system's central metric had been used in three incompatible scales — qualitative labels, whole-chapter percentages, and per-category percentages — with no definition of what the percentage measured. It is now **occurrences per 1,000 words**, with explicit counting rules in `framework.md`: what counts as one occurrence, one category per instance, PRESERVE and persona signatures excluded from the count, RECURRENCE included. Categories 8, 9, and 13 carry their own units (per-word per-1k, exchanges per chapter, % of chapters) rather than being forced into a figure that would mean nothing. Propagated to `analyze-chapter`, `review-revision`, `draft-scene`, `consolidate-style`, `review-book`, all affected templates, `project.yaml`, and `style-guide.md`.
+- **Default ceilings per category**, marked calibratable, with an explicit precedence chain: `persona.md` signature (no ceiling) > `style-guide.md` project override > framework default. Total chapter ceiling of 8,0/1k in `project.yaml`.
+- **`book-review.md` §3.5 no longer asks for "% human / % AI" per layer.** Those percentages are not measurable from prose, and the skill contradicted itself by banning false precision one step earlier. Replaced with a classification — authorial / assisted / generated-and-curated — where every row carries citable evidence and a layer with no record says `no record`. Rationale: this section can end up backing a public declaration of AI use, where an invented figure is a reputational liability for the author, not a reporting flaw. New §3.6 charts the revision trajectory, which is counted rather than asserted.
+- **The `revision-log.md` entry is now mandatory** in `review-revision`, not optional. `consolidate-style`, `update-preserve-list`, and `define-persona`'s update mode all read it as their primary source — an optional entry meant the learning layer could stop compounding silently.
+- **`framework.md` gained `[en]` detection signals** for every applicable category, making the "generic" claim true for English rather than aspirational. Category 7 was reframed as *anglicized vocabulary / LLM literary register*: in English there is no calque, so the equivalent marker is the over-used literary register, and the phrasings table (`a testament to`, `a quiet kind of`, `something shifted`) is the stronger signal. Category 11 now states its counting rule per language, since English marks dialogue with quotation marks and has no national dash convention to lean on.
+- **Single source of truth for two conventions that had two.** Analysis file location is `project.yaml → paths.analyses` (`analyze-chapter` had pointed at the root `CLAUDE.md`). The directory tree lives only in the README; `CLAUDE.md` and `.project/CLAUDE.md` link to it — they had drifted already, disagreeing on the skill count.
+- **The revision workflow now says to commit before rewriting.** `review-revision` offered `git diff` as its comparison method while nothing established the commit boundary it needs.
+- `init-project` flags degraded framework coverage when the output language is neither `pt-BR` nor `en`, and offers to remove the template's own artifacts (`examples/`, `manuscript/README.md`, `CHANGELOG.md`) from a new book.
+- `README.md`: corrected the skill count (said sixteen across five layers; it was seventeen across six), added `examples/` to the tree, documented the density unit, and **replaced the Roadmap section**, which listed fourteen already-implemented skills as future work and contradicted the section immediately above it.
+- `examples/`: density figures relabelled as illustrative. That session predated the per-1k unit and the chapter has not been re-counted — the quotes, annotations, and outcome are real, the numbers show shape only.
+- `.gitignore`: removed two no-op negation patterns (nothing above ignored the paths they exempted), leaving a note for whoever adds a broader rule later.
+
+### Added
+
+- **`restructure-chapter`** — the eighteenth skill, closing the gap between structural diagnosis and action. `check-arc` and `review-book` found scene-level faults but could not act on them; `revise-passage` explicitly refused them ("if more than ~60% needs replacing, the problem is upstream"); `outline-chapter` only builds chapters that do not yet exist. The path ended at "have a conversation". This skill rebuilds a chapter's obligations backwards from the page, then proposes move / merge / compress / cut / new per scene — naming, for every cut, which surviving scene inherits its load-bearing content, and reporting the blast radius on downstream chapters. Delivers a plan; never rewrites the manuscript.
+- `style-guide.md`: a **Density ceilings** section for project overrides, and a **Language adaptation** note for manuscripts outside the calibrated languages.
+
+### Fixed
+
+- The `(roadmap)` markers left in `config/persona.md`, `knowledge/characters/_README.md`, `reports/preserve-list.md`, `reports/revision-log.md`, `reports/literary/.gitkeep`, and `templates/book-review.md`, all describing shipped skills as unbuilt.
+- The unfilled `{user}` placeholder in the root `CLAUDE.md` repository URL.
+- The contradiction between this file and `examples/README.md` over whether the system had been field-tested. It has, **partially**: the revision cycle ran on a real manuscript; the generation and knowledge layers have not been exercised at book length. Both files now say so.
 
 ## [0.2.0] — 2026-05-23
 

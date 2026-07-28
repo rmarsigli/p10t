@@ -16,7 +16,8 @@ It is the foundation of the system.
 
 - **`analyze-chapter`** reads the "Personal signatures" section so it does **not** flag your style as a tic.
 - **`review-revision`** feeds this file with what it learns from your decisions.
-- **`draft-scene`** (roadmap) uses it as primary context. Without a solid persona, output is generic.
+- **`draft-scene`** uses it as primary context. Without a solid persona, output is generic.
+- **`consolidate-style`** proposes evidence-backed updates to it from your accumulated decisions.
 
 ---
 

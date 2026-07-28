@@ -80,4 +80,4 @@ When the author annotates **R: this is my thesis** or **R: preserve — narrativ
 
 When a listed phrase is later cut or replaced during revision, remove it (leave a dated comment).
 
-The `update-preserve-list` skill (roadmap) will automate this migration.
+The `update-preserve-list` skill automates this migration — it sweeps the annotated analyses, presents the candidates in one batch, and applies only what you approve. It also retires entries whose phrases no longer exist in the manuscript.

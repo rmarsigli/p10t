@@ -1,6 +1,6 @@
 # `.project/` — Book knowledge hub
 
-This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the seventeen skills, which read from and write to the files here.
+This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the eighteen skills, which read from and write to the files here.
 
 Portable (copy into another book and repopulate), git-versionable, plain markdown throughout.
 
@@ -10,37 +10,20 @@ Templates here are in **English** for LLM reliability. **All content written int
 
 ## Structure
 
-```
-.project/
-├── CLAUDE.md            this file
-│
-├── config/              ── WHO YOU ARE ──
-│   ├── persona.md       author voice (fill via define-persona)
-│   ├── references.md    reference authors and works
-│   ├── style-guide.md   hard rules for this project
-│   └── project.yaml     metadata, including output language
-│
-├── knowledge/           ── WHAT EXISTS IN THE BOOK ──
-│   ├── worldbuilding.md
-│   ├── timeline.md
-│   ├── glossary.md
-│   └── characters/      one sheet per character
-│
-├── reports/             ── WHAT HAS BEEN FOUND ──
-│   ├── technical/       per-chapter analyses (if centralized)
-│   ├── literary/        whole-book reports
-│   ├── preserve-list.md untouchable phrases
-│   ├── recurrences.md   duplication map
-│   └── revision-log.md  decision history
-│
-└── templates/           ── REUSABLE SKELETONS ──
-    ├── framework.md     the 14 tic categories
-    ├── chapter-analysis.md
-    ├── chapter-outline.md
-    ├── persona-template.md
-    ├── book-review.md
-    └── character.md
-```
+Four directories, each with one job:
+
+| Directory | Holds | Filled by |
+|---|---|---|
+| `config/` | ── **WHO YOU ARE** ── voice, references, hard rules, metadata | `define-persona`, `define-references`, by hand |
+| `knowledge/` | ── **WHAT EXISTS IN THE BOOK** ── world, timeline, glossary, characters | `build-worldbuilding`, `create-character`, by hand |
+| `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, preserve list, recurrence map, decision history | `analyze-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
+| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, output shapes | never — these are the machinery |
+
+The canonical file-by-file tree lives in the p10t [README](https://github.com/rmarsigli/p10t#structure), kept in one place so it cannot drift out of sync with this file.
+
+## Density
+
+Occurrences per 1,000 words, one decimal. Counting rules and default ceilings: `templates/framework.md`. Project overrides: `config/style-guide.md`. Chapter total: `config/project.yaml`.
 
 ## Generic vs. project-specific
 

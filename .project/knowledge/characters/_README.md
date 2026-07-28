@@ -2,7 +2,7 @@
 
 One file per character: `{name}.md`.
 
-Use the skeleton in `.project/templates/character.md`, or run the `create-character` skill (roadmap) to build one through dialogue.
+Run the `create-character` skill to build one through dialogue (create mode) or pull it from the manuscript (extract mode). The skeleton it follows is `.project/templates/character.md`, if you prefer to fill one in by hand.
 
 > **Write character sheets in the project's output language.**
 
