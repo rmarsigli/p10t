@@ -1,6 +1,6 @@
 # Template — Whole-Book Literary Report
 
-Skeleton for the complete report, produced by the `review-book` skill (roadmap) or manually at the end of each Act.
+Skeleton for the complete report, produced by the `review-book` skill at the end of each Act.
 
 Unlike the technical analysis — which is per-chapter and purely mechanical — this one looks at the **whole book**: plot, character, theme, pacing, and viability.
 
@@ -82,20 +82,27 @@ _Estimated length: {N}k words_
 ## 3. Technical analysis of AI use
 
 ### 3.1 Conclusion
-{Honest density estimate, with confidence level.}
+{Current density across the scope, in /1k, against the total ceiling. Aggregated from the per-chapter analyses — not re-estimated here.}
 
 ### 3.2 Markers present
-{Reference the 14-category framework. Which dominate in this book.}
+{Reference the 14-category framework. Which categories dominate in this book, with their aggregate /1k figures.}
 
 ### 3.3 Where AI shows most
-{Highest-density chapters.}
+{Highest-density chapters, named, with figures.}
 
 ### 3.4 Where it reads human
-{Chapters and decisions that betray real authorship.}
+{Chapters and decisions that betray real authorship. Lowest-density chapters, plus the qualitative markers: rewrites that beat the suggestion, rejected corrections that became signatures.}
 
-### 3.5 Layer breakdown
+### 3.5 Nature of the collaboration by layer
 
-| Layer | % human | % AI |
+**Not a percentage table.** Percentages of "how much is AI" are not measurable from prose and would be invented — which defeats the purpose of a section whose whole job is to be defensible. Each layer is classified, and each classification carries its evidence.
+
+**Classification:**
+- **Authorial** — the decision was the author's, and the text is theirs or was rewritten by them
+- **Assisted** — the author wrote or decided; generation contributed revision, expansion, or alternatives
+- **Generated-and-curated** — generation produced the first version; the author curated item by item
+
+| Layer | Nature | Evidence |
 |---|---|---|
 | Concept / premise | | |
 | Macro structure | | |
@@ -106,11 +113,17 @@ _Estimated length: {N}k words_
 | Aphorisms | | |
 | Final revision | | |
 
-### 3.6 Ethical and commercial position
-{Where this project sits on the declared-use spectrum. Recommendation.}
+**Evidence must be citable** — a revision-log figure, a decision count, a density trajectory, an outline validated before drafting. A layer with no record says so: `no record` is an honest cell, an invented classification is not.
 
-### 3.7 Reduction plan
-{Reference the revision passes. Effort estimate.}
+### 3.6 Trajectory
+
+{Density before → after, per Act, from `revision-log.md`. Number of decisions logged. This is the strongest evidence the project has, because it is counted rather than asserted.}
+
+### 3.7 Ethical and commercial position
+{Where this project sits on the declared-use spectrum. Recommended wording for the declaration, written so the author could paste it into a submission letter.}
+
+### 3.8 Reduction plan
+{Which framework categories are still over ceiling, and which revision passes address them. Effort estimate.}
 
 ---
 
@@ -133,6 +146,8 @@ _Estimated length: {N}k words_
 
 **Real comparables.** Do not invent titles or force flattering comparisons. A good comparable is one an editor would recognize instantly.
 
-**Section 3 is the most delicate.** AI-use estimates must come with explicit reasoning — which markers, at what density, in which chapters. Numbers without evidence are worthless.
+**Section 3 is the most delicate.** Every claim must come with explicit reasoning — which markers, at what density, in which chapters. Numbers without evidence are worthless, and invented numbers are worse than none: this section may end up backing a public declaration of AI use, where a fabricated figure is a reputational liability for the author rather than a reporting flaw.
+
+**Aggregate, never re-estimate.** Section 3's figures come from the per-chapter `_analysis.md` files and from `revision-log.md`. If a chapter was never analyzed, its data is missing — say so and exclude it, rather than eyeballing a density.
 
 **Run at the end of each Act**, not only at the end of the book. Structural problems caught early cost far less to fix.

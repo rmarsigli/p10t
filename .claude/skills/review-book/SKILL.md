@@ -62,10 +62,10 @@ Work through architecture, premise, characters, prose, themes. Discipline points
 
 ### Step 4 — Technical AI-use analysis
 
-- Aggregate the per-chapter density data into the layer table (concept / structure / dialogue / description / etc.).
-- **Every estimate carries its reasoning:** which markers, what density, which chapters. Numbers without evidence are worthless.
-- Chart the trajectory if revisions exist: density before → after, per Act. This is the evidence base for the declaration.
-- Position the project on the declared-use spectrum and recommend the declaration language.
+- **Aggregate, never re-estimate.** All figures come from the per-chapter `_analysis.md` files and `revision-log.md`. Chapters never analyzed have no data — exclude them and say so. Densities are in occurrences per 1,000 words.
+- **Classify each layer by the nature of the collaboration** — authorial / assisted / generated-and-curated — with citable evidence per row. **Do not produce percentages of "how much is AI".** They are not measurable from prose, and this section may end up backing a public declaration, where an invented figure is a reputational liability for the author rather than a reporting flaw. A layer with no record gets `no record`.
+- Chart the trajectory: density before → after, per Act, plus decisions logged. Counted rather than asserted, this is the strongest evidence the project has.
+- Position the project on the declared-use spectrum and draft the declaration wording the author could paste into a submission letter.
 
 ### Step 5 — Recommendations
 
@@ -83,7 +83,9 @@ Save to `reports/literary/`. Summarize in chat: verdict in three lines, top thre
 
 **Praise inflation and hedge inflation.** "Promising", "interesting", "could be stronger" — banned without a concrete follow-up.
 
-**Inventing market facts.** Comparable sales figures, submission odds, editor preferences — if not known, not stated.
+**Inventing market facts.** Comparable sales figures, submission odds, editor preferences — if not known, not stated. Comparable titles are the highest hallucination risk in this skill: a plausible-sounding title that does not exist discredits the whole report in front of an editor. Verify with a search tool where one is available; where none is, restrict comparables to titles you are certain of and say the list is partial.
+
+**Fabricated precision in section 3.** The one failure that can damage the author outside the manuscript. Every figure aggregated from a real count, or absent.
 
 **Reviewing the book it isn't.** Judge the book against its own thesis and genre contract, not against a different book the reviewer might prefer.
 
@@ -101,4 +103,6 @@ Run at the end of each Act, not only at the end of the manuscript. Structural pr
 |---|---|
 | `analyze-chapter` | Supplies the per-chapter density data this aggregates |
 | `check-consistency` / `check-arc` | Narrower structural instruments; their findings feed section 1 |
+| `restructure-chapter` | Where section 1's chapter-level findings become an actionable plan |
+| `revision-log.md` | Supplies the trajectory data for section 3.6 — the report's strongest evidence |
 | `define-references` | Supplies comparable-title grounding |
