@@ -1,0 +1,7 @@
+# Per-chapter technical analyses land here,
+# if the project uses centralized reports.
+#
+# Alternative convention: keep {chapter}_analysis.md
+# next to each chapter file in manuscript/.
+#
+# Set the choice in .project/config/project.yaml → paths.analyses

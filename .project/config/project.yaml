@@ -1,0 +1,44 @@
+# Project metadata
+# Fill this in when starting a new project.
+
+# ── LANGUAGE ──
+# System instructions are in English; ALL generated output uses this language.
+language: pt-BR          # pt-BR | en | es | fr | ...
+
+title: "{Title}"
+subtitle: ""
+author: "{Your name}"
+
+genre:
+  primary: ""            # e.g. literary fantasy, speculative fiction
+  secondary: ""
+  audience: ""           # e.g. adult, YA
+
+structure:
+  unit: "chapter"        # chapter | part | section
+  grouping: "act"        # act | part | none
+  planned_total: 0
+  interludes: 0
+
+length:
+  target_words: 0
+  current_words: 0
+
+paths:
+  manuscript: "manuscript/"
+  analyses: "manuscript/"          # or ".project/reports/technical/"
+  naming: "{act}.{chapter}.md"
+
+status:
+  phase: "draft"         # draft | revision | polish | submission
+  chapters_written: 0
+  chapters_revised: 0
+
+ai:
+  assisted: true
+  declaration: "human curation item by item"
+  density_target: 15     # max % per framework category
+
+dates:
+  started: ""
+  last_revision: ""

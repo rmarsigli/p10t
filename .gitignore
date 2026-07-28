@@ -1,0 +1,30 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Obsidian
+.obsidian/
+.trash/
+
+# Local agent state (not part of the project knowledge)
+.project/state/
+.project/cache/
+.claude/settings.local.json
+
+# Exports and builds
+export/
+build/
+*.docx
+*.epub
+*.pdf
+
+# Keep empty report folders tracked
+!.project/reports/technical/.gitkeep
+!.project/reports/literary/.gitkeep
