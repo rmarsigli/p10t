@@ -20,7 +20,7 @@ description: Evaluates the author's revision of a chapter against the R-annotate
 
 **Output**
 - Structured chat response
-- Optionally, an entry in `.project/reports/revision-log.md`
+- **An entry in `.project/reports/revision-log.md` — mandatory, not optional.** See "Revision log entry" below.
 
 > **Write all output in the project's output language.**
 
@@ -45,14 +45,15 @@ It is also where the system **learns**: author decisions feed `persona.md` and `
 
 ### Step 1 — Load context
 
-1. `.project/config/project.yaml` — output language
-2. The `_analysis.md` with `R:` annotations
+1. `.project/config/project.yaml` — output language, total density ceiling
+2. The `_analysis.md` with `R:` annotations — including its recorded word count and per-category densities, which are the "before" figures
 3. The revised chapter
 4. `.project/config/persona.md` — author signatures (do not correct what is their style)
 5. `.project/reports/preserve-list.md`
-6. `.project/templates/framework.md` — to re-assess density
+6. `.project/templates/framework.md` — counting rules and ceilings, to re-assess density
+7. `.project/config/style-guide.md` — project ceiling overrides
 
-If git is available, use `git diff` to see exactly what changed. Otherwise compare against the quotes in the `_analysis.md`.
+**Getting the diff.** The workflow expects the author to commit the chapter *before* revising it, so `git diff` (or `git diff HEAD~1`) shows exactly what the revision touched. If no such commit exists, say so once — recommending the commit habit is worth more than a workaround — then fall back to comparing against the literal quotes in the `_analysis.md`.
 
 ### Step 2 — Map the author's decisions
 
@@ -93,7 +94,9 @@ The most common revision error: over-correcting into the opposite flaw.
 Flag it when it happens.
 
 **Axis 4 — Residual density.**
-Re-assess the 14 categories on the new text. Which tics remain? How far did density fall (estimate before → after)?
+Re-count the 14 categories on the revised text, using the same counting rules as `analyze-chapter`. **Count the revised chapter's words again** — revision changes length, and reusing the old word count silently distorts the comparison.
+
+Report per category and for the chapter: `before → after`, both in `/1k`, plus which categories are still over ceiling. This before/after pair is the evidence base for `review-book`'s trajectory section and for the project's AI-use declaration, so it has to be counted rather than estimated.
 
 **Axis 5 — Holes and continuity.**
 - Necessary information lost in a cut?
@@ -130,7 +133,8 @@ Never do this automatically. The author decides what becomes a rule.
 
 ## Practical summary
 {3-5 concrete next actions}
-{density: before → after}
+{density: {before}/1k → {after}/1k; categories still over ceiling}
+{log entry written to revision-log.md}
 ```
 
 ---
@@ -149,7 +153,9 @@ Never do this automatically. The author decides what becomes a rule.
 
 6. **Be honest about the result.** If the revision did not improve enough, say so. The goal is quality, not reassurance.
 
-7. **Estimate density honestly.** Do not inflate progress.
+7. **Count density honestly.** Re-count; do not estimate, and never round in the improvement's favour. A revision that moved 6,8 → 6,1 is a revision that moved 6,8 → 6,1.
+
+8. **Always write the log entry.** It is not optional and not a formality: `consolidate-style`, `update-preserve-list`, and `define-persona`'s update mode all read `revision-log.md` as their primary source. A skipped entry is a decision that never reaches the persona — the learning loop silently stops compounding.
 
 ---
 
@@ -162,20 +168,26 @@ Calibrate the tone:
 
 ## Special case: heavily rewritten chapter
 
-If more than 50% changed, item-by-item comparison loses meaning. Treat it as new text: fresh analysis, compare global density, focus on what the rewrite gained and lost.
+If more than 50% changed, item-by-item comparison loses meaning. Treat it as new text: fresh analysis, compare chapter density, focus on what the rewrite gained and lost.
 
 ---
 
 ## Revision log entry
 
+**Mandatory.** Write it to `.project/reports/revision-log.md` at the end of every session, before reporting back.
+
 ```markdown
 ## {Chapter} — revised on {date}
 
-**Density:** {before} → {after}
+**Length:** {before} → {after} words
+**Density:** {before}/1k → {after}/1k (ceiling {N,N}/1k)
+**Still over ceiling:** {cat. N ({N,N}/1k)} — or "none"
 **Decisions:** {N} accepted, {M} rejected, {K} done differently
 **Confirmed signatures:** {what the author kept as style}
 **Errors corrected:** {N}
 **Status:** {✓ approved | needs another pass}
+
+**Notes:** {anything worth remembering about this revision}
 ```
 
-This builds the history that `consolidate-style` will later draw on.
+This builds the history that `consolidate-style`, `update-preserve-list`, and `define-persona` (update mode) all read. Also update the aggregate summary table at the foot of the log.

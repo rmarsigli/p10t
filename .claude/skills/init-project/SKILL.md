@@ -43,7 +43,7 @@ Check what exists:
 Seven questions, one message:
 
 1. **Title** (working title is fine)
-2. **Output language** — the language of the manuscript and of all generated output
+2. **Output language** — the language of the manuscript and of all generated output. **If it is not `pt-BR` or `en`, say so plainly**: the framework's detection signals are calibrated for those two, and other languages inherit the definitions, ceilings, and treatments but need their signals adapted. Note it in `style-guide.md → Density ceilings → Language adaptation` so analyses stay comparable
 3. **Genre and audience** (one line)
 4. **Structure** — chapters grouped in acts/parts? Interludes? Rough planned count?
 5. **Manuscript location** — use `manuscript/` or point to an existing folder?
@@ -56,6 +56,7 @@ Seven questions, one message:
 - Update the root `CLAUDE.md`: title, structure section, paths
 - Verify project-specific files are blank templates; if this is a copy from a previous book, **list any file still carrying old content** (previous persona, old preserve list) and confirm before clearing each — never silently wipe
 - Confirm generic machinery intact: `.claude/skills/`, `.project/templates/`
+- Offer to remove the template's own artifacts, which belong to p10t rather than to this book: `examples/`, `manuscript/README.md`, and this repo's `CHANGELOG.md`. Offer, do not delete — some authors keep `examples/` as a reference
 
 ### Step 4 — Report the configuration
 

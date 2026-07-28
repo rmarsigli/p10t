@@ -25,6 +25,8 @@ build/
 *.epub
 *.pdf
 
-# Keep empty report folders tracked
-!.project/reports/technical/.gitkeep
-!.project/reports/literary/.gitkeep
+# The report folders ship with a .gitkeep so they survive a fresh clone.
+# Nothing above ignores them, so no negation pattern is needed here —
+# if you ever add one (e.g. `.project/reports/*`), re-add the negations:
+#   !.project/reports/technical/.gitkeep
+#   !.project/reports/literary/.gitkeep
