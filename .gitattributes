@@ -1,0 +1,17 @@
+# Force LF in the repository, on every platform.
+#
+# This is not cosmetic. `review-revision` compares the pre-revision commit
+# against the rewritten chapter via `git diff` — CRLF churn fills that diff
+# with lines that changed nothing, degrading the skill that closes the
+# revision cycle. Books created from this template inherit the protection.
+
+* text=auto eol=lf
+
+# Never touch these, whatever the extension conventions say.
+*.docx binary
+*.epub binary
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
