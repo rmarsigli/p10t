@@ -48,7 +48,7 @@ Every proposed change carries its receipts: the decisions, chapters, and quotes 
 
 **b) Substitution habits.** When the author rewrites, what do they consistently do? Replace X-type words with Y-type; shorten; convert named emotion to gesture in their own way. These are the most generative findings — they teach `draft-scene` and `revise-passage` what the author would do.
 
-**c) Rejection patterns.** Suggestions consistently refused (3+): the analysis is misfiring somewhere → propose adjusting ceilings or adding an exception note.
+**c) Rejection patterns.** Suggestions consistently refused (3+): the analysis is misfiring somewhere → propose raising that category's `/1k` ceiling, or adding an exception note. Check the revision-log densities first: if the chapters landed under the total ceiling anyway, the refusals are evidence the default was wrong for this book, not that the author is over-attached.
 
 **d) Drift and evolution.** The author's revisions trending somewhere the persona doesn't describe — leaner over time, new devices appearing in their unassisted rewrites. Voice evolves; the persona must follow, dated.
 
@@ -69,7 +69,8 @@ _Scope: chapters {X–Y}, {N} decisions reviewed_
    Evidence: "{quote}" ({ch}); "{quote}" ({ch})
 
 ### Adjust ceilings ({N})
-1. {category}: {old} → {new} per chapter — you consistently kept {N} without density damage
+1. cat. {N} ({name}): {old}/1k → {new}/1k — you kept {N} occurrences across chs. {X–Y} and the chapters still landed under the total ceiling
+   Destination: `style-guide.md → Density ceilings` (project-wide) or `persona.md` §4 (voice-specific)
 
 ### Substitution habits to record ({N})
 1. {pattern} — seen in {N} rewrites

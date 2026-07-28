@@ -62,12 +62,33 @@ _Version 0 — to fill_
 
 ---
 
+## Density ceilings
+
+Overrides for `templates/framework.md`. Density is measured in **occurrences per 1,000 words**; categories 8, 9, and 13 carry their own units.
+
+**Precedence:** a construction declared in `persona.md → Personal signatures` has no ceiling at all — it is not a tic. Below that, this file overrides the framework defaults. List only what you are changing; everything unlisted uses the default.
+
+```markdown
+- **cat. {N} ({name}):** {N,N}/1k — overrides the default of {N,N}/1k. {Reason.}
+```
+
+**Example:**
+> - **cat. 1 (binary antithesis):** 3,5/1k — overrides the default of 2,0/1k. At turning points this is a signature (`persona.md` §3); the raised ceiling covers its use elsewhere.
+> - **cat. 11 (em-dash):** 0,5/1k — stricter than the 2,0/1k default. This book uses the dash only to open dialogue; a narrative dash is an error, not a density problem.
+> - **Total:** 6,0/1k — stricter than the 8,0/1k default in `project.yaml`.
+
+**Language adaptation.** If the manuscript is not in `[pt-BR]` or `[en]`, record here how the framework's detection signals were adapted — otherwise analyses stop being comparable across chapters.
+
+_(to fill)_
+
+---
+
 ## Quality target
 
 {How you define "done" for this project.}
 
 **Example:**
-> - No framework category above 15% density after revision.
+> - No framework category above its ceiling after revision; chapter total under 8,0/1k.
 > - Zero literal cross-chapter duplications.
 > - Every revised chapter passed `review-revision` with an approving verdict.
 

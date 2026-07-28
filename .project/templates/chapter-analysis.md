@@ -4,13 +4,17 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 > **Write the actual analysis in the project's output language.** The headings below are placeholders — translate them.
 
+**Density unit:** occurrences per 1,000 words, one decimal (`3,4/1k`). Counting rules and per-category ceilings live in `framework.md → How density is measured`. Categories 8, 9, and 13 carry their own units.
+
 ---
 
 ```markdown
 # Analysis — Chapter {number}: {title}
 
-**AI density:** {Low | Medium | High | Very high}. {1-2 sentences: what kind of scene it is, which tics concentrate.}
+**Length:** {N} words
+**Chapter density:** {N,N}/1k — ceiling {N,N}/1k. {1-2 sentences: what kind of scene it is, which categories carry the load.}
 **Priority:** {Low | Medium | High | Critical}. {1 sentence.}
+**Over ceiling:** {cat. N ({N,N}/1k), cat. M ({N,N}/1k)} — or "none"
 
 ---
 
@@ -20,7 +24,7 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 2. **"{literal quote}"** — {classification}. {Treatment}
 
-**Total: ~N. Target: M.**
+**Occurrences: {N} | Density: {N,N}/1k | Ceiling: {N,N}/1k | Target: cut {M}**
 
 ---
 
@@ -41,26 +45,34 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 ---
 
-## 7. Anglicized vocabulary
+## 7. Anglicized vocabulary / LLM literary register
 
-- **"{word}"** ({N}x) — {suggested substitution}
+- **"{word or construction}"** ({N}x, {N,N}/1k) — {suggested substitution}
 
-**Target: replace N.**
+**Occurrences: {N} | Density: {N,N}/1k | Ceiling: {N,N}/1k | Target: replace {M}**
 
 ---
 
 ## 8. Lexical repetition
 
-- **"{word}"** — Nx. {Thesis or habit? Vary with X, Y.}
+_Unit: per-1k of each individual word. The ceiling applies per word, not to the category._
+
+- **"{word}"** — {N}x, {N,N}/1k. {Thesis or habit? Vary with X, Y.}
+
+**Words over ceiling: {N}**
 
 ---
 
 ## 9. Symmetrical dialogue
 
+_Unit: symmetrical exchanges per chapter._
+
 **{Scene identification}:**
 > {literal dialogue quote}
 
 → {analysis + suggestion}
+
+**Exchanges: {N} | Ceiling: {N} per chapter**
 
 ---
 
@@ -71,11 +83,9 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 ## 11. Em-dashes
 
-**Count:** ~N narrative dashes (excluding dialogue openers).
+**Occurrences: {N} narrative dashes | Density: {N,N}/1k | Ceiling: {N,N}/1k | Target: cut {M}**
 
-{representative examples}
-
-**Target: reduce to ~M.**
+{representative examples, by problem type A/B/C/D}
 
 ---
 
@@ -84,11 +94,15 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 ---
 
-## 13. Single-line ending
+## 13. Chapter ending
+
+_Unit: % of the book's chapters closing on a single line. A single chapter has no density here._
 
 > {chapter's final sentence}
 
-→ {does it work? is it a recurring formula?}
+→ {single-line or not? does it work? is it a recurring formula?}
+
+**Book so far: {N} of {M} chapters ({N}%) close on a single line | Ceiling: {N}%**
 
 ---
 
@@ -99,7 +113,7 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 ## 15. Other tics
 
-[chapter-specific patterns outside 1-14]
+[chapter-specific patterns outside 1-14, with counts. No ceiling — descriptive.]
 
 ---
 
@@ -124,6 +138,12 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 
 ## Filling notes
 
+**Word count first.** Every density figure depends on it. Record it in the header before analyzing anything, and use the same count throughout.
+
+**PRESERVE and persona signatures are not counted.** They appear in the item list, marked, but never enter the density figure — counting them would make the metric argue against the author's own decisions. RECURRENCE instances *are* counted.
+
+**One occurrence, one category.** A triad that also closes a paragraph aphoristically counts once, in its dominant category. State which call you made when it is close.
+
 **Author `R:` annotations.** The author adds lines starting with `**R:**` under each item, marking what they accepted, changed, or rejected. **Never generate these** — only the author writes them.
 
 Example of the file after the author has worked through it (author writing in Portuguese):
@@ -137,7 +157,7 @@ Example of the file after the author has worked through it (author writing in Po
    **R:** por hora mantive, gostei. É um tique forte?
 ```
 
-**Empty categories.** If there are no occurrences, write "No relevant occurrences in this chapter." rather than skipping the section. This keeps analyses comparable.
+**Empty categories.** If there are no occurrences, write "No relevant occurrences in this chapter." and record `0,0/1k` rather than skipping the section. This keeps analyses comparable.
 
 **Quotes.** Always literal. For very long sentences: opening + `[...]` + closing.
 
@@ -145,4 +165,4 @@ Example of the file after the author has worked through it (author writing in Po
 
 **(RECURRENCE — also in ch. X, Y).** For phrases in `recurrences.md`. High priority in the verdict.
 
-**Verdict.** Order by **impact**, not by category order. Literal cross-chapter recurrences are almost always top 3.
+**Verdict.** Order by **impact**, not by category order. Literal cross-chapter recurrences are almost always top 3; after those, the categories furthest above their ceiling.

@@ -52,9 +52,9 @@ Read, in this order (yes, all of it — this is the expensive part and the entir
 1. `.project/config/project.yaml` — output language
 2. **The scene contract** — the outline entry or ad-hoc brief
 3. **The previous scene/chapter** — continuity of action, tone, and story time
-4. `.project/config/persona.md` — the voice. **Re-read the model passages (section 8) immediately before drafting; they are the tonal calibration.** Note the anti-models (section 9) as what to avoid. Note the density ceilings in "signatures to watch".
+4. `.project/config/persona.md` — the voice. **Re-read the model passages (section 8) immediately before drafting; they are the tonal calibration.** Note the anti-models (section 9) as what to avoid. Note the per-1k ceilings in "signatures to watch" (section 4)
 5. `.project/config/references.md` — borrowing instructions and their exclusion lines
-6. `.project/config/style-guide.md` — hard formatting and vocabulary rules
+6. `.project/config/style-guide.md` — hard formatting and vocabulary rules, plus the project's ceiling overrides
 7. `.project/knowledge/worldbuilding.md` — active rules, costs, knowledge distribution, **deliberately-unexplained list**
 8. **Character sheets** for everyone on stage — Voice sections above all; sample lines are calibration
 9. `.project/reports/preserve-list.md` — thesis phrases (may echo intentionally *only* if the contract calls for it)
@@ -66,7 +66,7 @@ Read, in this order (yes, all of it — this is the expensive part and the entir
 Before writing a word, produce (internally) the scene's constraint sheet:
 
 - **Voice targets:** register, rhythm, the 2–3 persona devices active in this kind of scene
-- **Density budget:** per-category ceilings from persona (e.g. max antitheses, max aphorism closes, max em-dashes for this scene length)
+- **Density budget:** convert the ceilings into an **absolute allowance for this scene's target length**. Ceilings are per-1k (persona §4 and `style-guide.md` overrides, otherwise the framework defaults); a 900-word scene against a 2,0/1k ceiling gets 1,8 → **1 occurrence**. Round down: a scene is not entitled to its full share of every category at once. Write the allowance out per category before drafting, or the self-audit in Step 4 has nothing to check against
 - **Character voice keys:** one line per character on stage — their register, their never-says
 - **World guards:** which rules are active in this scene; who on stage knows what
 - **Protection list:** what this scene must not reveal or resolve
@@ -89,8 +89,8 @@ Guidance that matters most in practice:
 
 Run the draft through the 14 categories as if it were a hostile `analyze-chapter` pass:
 
-- Count each category against the density budget
-- Anything over budget → revise now
+- Count the drafted words, then count each category against the Step 2 allowance
+- Anything over budget → revise now, and re-count after revising
 - Check every striking phrase against the recurrence blocklist
 - Check protection constraints one final time
 - Check each character's lines against their never-says
@@ -104,7 +104,7 @@ Present the draft with a short delivery note:
 ```markdown
 ## Draft notes — {scene}
 
-**Self-audit:** {clean | N flags kept deliberately, listed below}
+**Self-audit:** {N,N}/1k over {N} words — {clean | N flags kept deliberately, listed below}
 **Choices you should review:**
 - {a voice call, a pacing call, an interpretation of the contract — anything the skill decided that the author might decide differently}
 **Where I stopped:** {open questions respected, boundaries hit}

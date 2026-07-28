@@ -37,7 +37,10 @@ status:
 ai:
   assisted: true
   declaration: "human curation item by item"
-  density_target: 15     # max % per framework category
+  # Density is measured in occurrences per 1,000 words (see templates/framework.md).
+  # Per-category ceilings: framework defaults, overridable in config/style-guide.md.
+  # Only the whole-chapter total lives here.
+  density_ceiling_total: 8.0   # sum of all per-1k categories, revised chapter
 
 dates:
   started: ""

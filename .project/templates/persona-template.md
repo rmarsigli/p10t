@@ -73,9 +73,11 @@ Constructions the author recognizes as their own. `analyze-chapter` must **not**
 
 ## 4. Signatures to watch
 
-Legitimate constructions that become tics at high density.
+Legitimate constructions that become tics at high density. Unlike section 3, these keep a ceiling.
 
-- **{construction}** — suggested ceiling: {N} per chapter.
+Ceilings are in **occurrences per 1,000 words** — the same unit `analyze-chapter` reports in. A ceiling here overrides the `framework.md` default for that category.
+
+- **{construction}** — ceiling: {N,N}/1k. {Which framework category it maps to, and in which contexts it earns the higher figure.}
 
 ---
 
