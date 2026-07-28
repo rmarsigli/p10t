@@ -93,7 +93,7 @@ The author may take the revision whole, take pieces, or counter-propose. Their c
 
 ## What to avoid
 
-**Total rewrite.** If more than ~60% of the passage needs replacing, the problem is upstream (scene design, not sentences). Say so and suggest `outline-chapter` or a conversation instead of pretending sentence surgery will fix a structural wound.
+**Total rewrite.** If more than ~60% of the passage needs replacing, the problem is upstream — scene design, not sentences. Say so and hand off to `restructure-chapter`, which diagnoses at scene level, instead of pretending sentence surgery will fix a structural wound.
 
 **Style upgrade drift.** The job is fixing the diagnosed problem in the author's voice — not making the passage "better" by the machine's taste.
 
@@ -110,3 +110,4 @@ The author may take the revision whole, take pieces, or counter-propose. Their c
 | `draft-scene` | Sibling — same context, blank page vs. existing text |
 | `analyze-chapter` | Its findings often feed passages here |
 | `review-revision` | Evaluates the author's own revisions; this one proposes revisions |
+| `restructure-chapter` | Downstream escape hatch when the problem is scene design, not sentences |

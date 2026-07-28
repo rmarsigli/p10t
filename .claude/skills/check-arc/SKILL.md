@@ -68,6 +68,8 @@ The method is evidence-first: build the beat map from the text, *then* compare a
 
 Per finding: the evidence (beat map excerpt), the diagnosis, and **where the fix would go** — which chapters have room to carry the missing beat. A rushed turn is usually fixed two chapters earlier, not at the turn itself.
 
+This skill diagnoses; it does not restructure. Close by naming which findings are chapter-scoped enough to hand to `restructure-chapter`, and which are book-scoped and belong in a `review-book` pass instead.
+
 ---
 
 ## What to avoid
@@ -94,4 +96,5 @@ End of each Act, and always before a full revision pass — arc fixes reorder re
 |---|---|
 | `create-character` | Sheets provide intent; divergences flow back as sheet updates |
 | `outline-chapter` | Outlines carry intended beats; gaps found here become obligations there |
+| `restructure-chapter` | Where findings become action — flat stretches and rushed turns route there, chapter by chapter |
 | `review-book` | Consumes these findings for its structural sections |

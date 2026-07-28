@@ -103,3 +103,4 @@ Present the outline as a proposal. The author cuts, reorders, overrides. Only th
 | `draft-scene` | Executes this contract, scene by scene |
 | `check-arc` | Reads outlines to see intended trajectory vs. delivered |
 | `check-consistency` | Protection constraints come from its same sources |
+| `restructure-chapter` | Same obligations model, applied backwards to a chapter that already exists |

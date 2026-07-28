@@ -92,7 +92,7 @@ When the author decides, record it in the worldbuilding contradictions table wit
 
 ## Cadence
 
-After each Act, and before any `draft-scene` session that touches long-established material.
+After each Act, before any `draft-scene` session that touches long-established material, and **always after a `restructure-chapter` plan is executed** — moving scenes moves what the reader knows when, which is exactly what the knowledge sweep catches.
 
 ---
 
@@ -103,4 +103,5 @@ After each Act, and before any `draft-scene` session that touches long-establish
 | `build-worldbuilding` | Owns the rules and the contradictions log |
 | `create-character` | Owns consistency rules; receives voice-drift cases |
 | `draft-scene` | Its world guards draw on the same sources |
+| `restructure-chapter` | Run after its plans execute — reordering scenes breaks knowledge states |
 | `review-book` | Aggregates these findings at the structural level |
