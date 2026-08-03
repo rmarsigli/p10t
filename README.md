@@ -148,7 +148,9 @@ Plus an open category (**15 - other tics**) capturing whatever is specific to ea
 
 ## The skills
 
-Eighteen skills: `init-project` for bootstrap, and seventeen across six working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
+Nineteen skills: `init-project` for bootstrap, `commit` for the history, and seventeen across six working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
+
+**`commit`** - Writes a commit using the convention below: infers the type and scope from what changed, proposes one line, and commits only after you approve it. Warns before moving the boundary `review-revision` depends on. It is the only skill that touches git, it runs only when you ask, and no other skill may invoke it.
 
 ### Analysis layer
 
@@ -244,6 +246,48 @@ Eighteen skills: `init-project` for bootstrap, and seventeen across six working 
 ```
 
 Item 8 produces two things: a direct answer in the next review, and - if confirmed as a signature - a permanent entry in `persona.md` that stops future analyses from flagging it.
+
+---
+
+## Commits
+
+The commit is a working part of this system, not a record of it - step 3 above is what step 4 compares against. So the log deserves a vocabulary, and the one for code does not fit a novel.
+
+```
+type(scope)!: subject
+```
+
+Scope is optional - a chapter number, or a knowledge area. The `!` is optional and means **this invalidates text already written**, so that `git log --grep "!"` returns everything that requires going back. One line: no body, no footer.
+
+| Family | Types | |
+|---|---|---|
+| **Manuscript** | `draft` | material that did not exist before - new prose, and generated proposals awaiting curation |
+| | `revise` | changing prose that already exists, from a sentence to the order of the scenes |
+| | `cut` | material removed and parked in `_drafts.md` |
+| **Curation** | `annotate` | your `R:` rulings on an analysis file |
+| | `rule` | a world, character or timeline decision |
+| | `voice` | persona, style guide, references, preserve list |
+| **Machine** | `analyze` | `analyze-chapter`, `scan-recurrences` |
+| | `review` | `review-book`, `review-revision`, `check-consistency`, `check-arc`, and the revision log entry |
+| **Apparatus** | `chore` | renames, lint, file moves, plumbing |
+| | `docs` | README, CLAUDE.md - the project describing itself |
+
+```
+revise(02.05): tighten the arrival of the second crossing
+annotate(01.03): rule on the Waiting Room findings
+rule(world)!: reversal edits, crossing inserts
+cut(02.05): park the Vera diagnosis
+```
+
+**Messages are in English, always** - even when the book is not. The types are the same vocabulary the skills use internally, and the log stays readable across projects. It is the one place where the project's output language does not apply.
+
+**No skill commits on its own.** Skills may suggest a commit line in their closing output; only `commit` writes to git, and only when you ask. A commit is an assertion of authorship, and the log is the evidence base for the AI-use section of `review-book` - a history the machine writes about itself is self-reporting.
+
+**Never stage what the message does not describe.** This is the rule that protects the workflow, and it applies to you as much as to the tool. `review-revision` compares against the commit you made before rewriting; a `git add -A` in the middle of a rewrite sweeps half the new chapter into that baseline, and the comparison then reports on the remainder as though the rest had never been done. Nothing errors - a smaller diff is a valid diff - so the report comes back thin and reads as *I did less than I thought* rather than *the tool measured the wrong thing*. Since `review-revision` writes the revision log, and the log is what `consolidate-style` and `define-persona` learn from, the mistake compounds quietly. `commit` checks for that state and warns before committing.
+
+**Two conventions, one boundary.** A book repository is cloned from p10t, so it inherits p10t's own commits, which use Conventional Commits - p10t is software, with SemVer and a changelog. Commits before `init-project` belong to p10t; commits after it belong to the book. `docs` and `chore` mean the same thing in both, so the overlap is harmless.
+
+There is no hook and no linter. A writing tool that rejects a commit at 2 a.m. because you typed `edit` instead of `revise` is a tool you will route around.
 
 ---
 

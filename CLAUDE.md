@@ -48,6 +48,7 @@ Full directory tree: see the **Structure** section of the p10t [README](https://
 | **check-arc** | "check the arcs", "is {character}'s arc landing" |
 | **update-preserve-list** | "update the preserve list" |
 | **consolidate-style** | "consolidate the style", "what have you learned about my voice" |
+| **commit** | "commit", "commit this chapter" — **only when the author asks; no skill may invoke it** |
 
 Users may invoke skills in the output language — match by intent, not exact wording. In environments without skill auto-discovery, read the matching `.claude/skills/<name>/SKILL.md` and follow it literally.
 
@@ -62,6 +63,16 @@ The chapter revision cycle:
 5. Learnings feed `persona.md` and `preserve-list.md`
 
 At the end of each Act: `scan-recurrences`, `check-consistency`, `check-arc`, and optionally `review-book`.
+
+## Commits
+
+Book repositories use p10t's own commit convention — `type(scope)!: subject`, one line, in English, with ten types across four families. It is documented in the **Commits** section of the p10t [README](https://github.com/rmarsigli/p10t#commits), which is the canonical version.
+
+Two rules bind every skill:
+
+- **No skill commits.** A skill may end by *suggesting* a commit line. Only `commit` writes to git, and only when the author asks for it — a commit is an assertion of authorship, and the log is the evidence base for the AI-use section of `review-book`.
+- **Never stage what the message does not describe.** Step 3 above is the boundary `review-revision` compares against. Staging broadly mid-rewrite folds half the revision into that baseline, and the resulting report is wrong without failing.
+- **Commit messages are in English**, even when the output language is not. It is the one exception to the language rule.
 
 ## Density
 

@@ -5,6 +5,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/); versioning foll
 
 ## [Unreleased]
 
+### Added
+
+- **A commit convention for book repositories, and the `commit` skill that writes it.** The commit is a working part of this system — `review-revision` diffs a rewritten chapter against the commit that preceded it — but until now the only vocabulary available was the one p10t itself uses, which describes software. Book repositories now use `type(scope)!: subject`: one line, English, ten types across four families (Manuscript: `draft`, `revise`, `cut` · Curation: `annotate`, `rule`, `voice` · Machine: `analyze`, `review` · Apparatus: `chore`, `docs`). Scope is optional. `!` marks a change that **invalidates text already written**, so `git log --grep "!"` returns everything that requires going back. Documented in the README's new **Commits** section, which is the canonical version; `CLAUDE.md` links to it.
+- **`commit` is the only skill that touches git, and it runs only when the author asks.** No other skill may invoke it; skills may *suggest* a commit line in their closing output. A commit is an assertion of authorship, and the log is the evidence base for `book-review.md` §3.5 — a history the machine writes about itself is self-reporting rather than evidence.
+- **The rule that protects the workflow is narrow staging, and it binds the author too.** `review-revision` compares a rewritten chapter against the commit that preceded it. A broad `git add -A` in the middle of a rewrite folds half the revision into that baseline, and the comparison then reports on the remainder as though the rest had never been done — without erroring, because a smaller diff is still a valid diff. The report reads as *less was done than expected*, and since `review-revision` writes `revision-log.md`, which `consolidate-style`, `define-persona` and `update-preserve-list` read as their source, an applied suggestion recorded as refused can be promoted into `persona.md` as a style signature. `commit` detects the state (a manuscript file changed since its last commit, with an `R:`-annotated `_analysis.md` alongside it), warns before committing, proposes splitting a mixed tree into separate commits rather than flattening it, and stages only what the approved message covers.
+- **Commit messages are in English regardless of the project's output language** — the type names are the same vocabulary the skills use internally, and the log stays readable across projects. It is the one documented exception to the output-language rule.
+
 ### Planned
 - `[es]` and `[fr]` detection-signal sections in `framework.md`
 - Field-testing the generation and knowledge layers at book length (the revision cycle has been tested; see 0.3.0)
