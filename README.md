@@ -51,7 +51,11 @@ There is a known spectrum:
 | 4 | AI as drafter, passed off as solo authorship | Reputationally risky |
 | 5 | AI generating whole books unsupervised | Poorly regarded |
 
-`p10t` is built for **level 3** - and so that level 3 output is indistinguishable in quality from level 0.
+`p10t` is built for **levels 1 to 3, with 3 as the ceiling** - and so that level 3 output is indistinguishable in quality from level 0.
+
+Most use will sit below the ceiling, and that is the intended shape. The analysis and learning layers generate no prose at all: `analyze-chapter`, `review-revision`, `scan-recurrences` and `consolidate-style` read what you wrote and hand it back measured, which is level 2 with nothing to declare beyond having used a tool. Working out a chapter's obligations before writing it is level 1. Only the generation layer reaches level 3, and only when you ask it to.
+
+Levels 4 and 5 are outside the design rather than guarded against. Level 5 has nowhere to put curation, and curation is the entire mechanism. Level 4 is not a technical state but a choice about what you say afterwards - and the system's answer to it is to make the honest version cheap, because by then the record of every decision already exists.
 
 Declaring "I used AI for 40% of this project" is honest. What changes with this system is what those 40% mean: not "40% generated and shipped raw", but "40% generated in intensive collaboration, within a defined voice, reviewed item by item".
 
