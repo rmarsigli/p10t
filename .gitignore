@@ -18,6 +18,9 @@ desktop.ini
 .project/cache/
 .claude/settings.local.json
 
+# Working notes from the design process
+docs/superpowers/
+
 # Exports and builds
 export/
 build/
