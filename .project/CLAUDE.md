@@ -1,6 +1,6 @@
 # `.project/` — Book knowledge hub
 
-This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the eighteen skills, which read from and write to the files here.
+This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the nineteen skills, which read from and write to the files here.
 
 Portable (copy into another book and repopulate), git-versionable, plain markdown throughout.
 

@@ -322,7 +322,7 @@ Chapter-by-chapter analysis is blind to this. Only a global sweep sees it.
 
 ## Roadmap
 
-All eighteen skills described above are implemented. What is not yet built:
+All nineteen skills described above are implemented. What is not yet built:
 
 **Language coverage.** Detection signals are calibrated for `[pt-BR]` and `[en]`. Other languages inherit the definitions, ceilings, and treatments, but their signals need adapting - `[es]` and `[fr]` sections are the next addition.
 

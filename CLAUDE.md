@@ -19,7 +19,7 @@ All generated content — analyses, reports, drafts, feedback — must be writte
 
 Two roots, one job each:
 
-- **`.claude/skills/`** — what the system **does**. Eighteen skills, auto-discovered by Claude Code. Generic: identical across all books.
+- **`.claude/skills/`** — what the system **does**. Nineteen skills, auto-discovered by Claude Code. Generic: identical across all books.
 - **`.project/`** — what the system **knows**. Config (persona, references, style guide), knowledge (world, characters, timeline), reports (analyses, preserve list, recurrence map), templates. Book-specific.
 
 Skills read from and write to `.project/`; the manuscript lives in `manuscript/`.
@@ -68,7 +68,7 @@ At the end of each Act: `scan-recurrences`, `check-consistency`, `check-arc`, an
 
 Book repositories use p10t's own commit convention — `type(scope)!: subject`, one line, in English, with ten types across four families. It is documented in the **Commits** section of the p10t [README](https://github.com/rmarsigli/p10t#commits), which is the canonical version.
 
-Two rules bind every skill:
+Three rules bind every skill:
 
 - **No skill commits.** A skill may end by *suggesting* a commit line. Only `commit` writes to git, and only when the author asks for it — a commit is an assertion of authorship, and the log is the evidence base for the AI-use section of `review-book`.
 - **Never stage what the message does not describe.** Step 3 above is the boundary `review-revision` compares against. Staging broadly mid-rewrite folds half the revision into that baseline, and the resulting report is wrong without failing.
