@@ -136,6 +136,12 @@ The author may decline and ask for a single commit. That is their call; take it 
 
 Stage only the files the approved message covers. Never `git add -A` when the tree contains work the message does not describe.
 
+### Step 7 — Before any push, confirm where `origin` points
+
+**A book repository is cloned from p10t, so it inherits p10t's remote.** That is the default state of every new book, not a rare accident: `origin` points at the template until someone changes it. A `git push` in a fresh book repository pushes the manuscript into the system repository, and it succeeds whenever the template has not moved since the clone.
+
+Run `git remote get-url origin` and read it. If it points at p10t while the working repository is a book, stop and say so — do not push, and do not repoint the remote without asking. Repointing is one command; guessing which repository the author meant is not.
+
 ---
 
 ## The revision boundary
@@ -168,6 +174,8 @@ Then do what the author says. The point is that they know, not that they are sto
 **Being invoked by another skill.** Other skills may *suggest* a commit line in their closing output. Suggesting is free; committing is not. If this skill is ever reached from inside another skill's protocol, stop and hand back to the author.
 
 **`git add -A` reflexes.** Stage what the message describes and nothing else.
+
+**Pushing without reading the remote.** `origin` in a book repository points at p10t until someone changes it.
 
 **Bodies and footers.** One line. If the change needs a paragraph to explain, it needs two commits.
 
