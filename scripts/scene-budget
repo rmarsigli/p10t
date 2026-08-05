@@ -32,6 +32,8 @@ words budgeted, per scene and in total.
   - A header with no trailing number is counted, never judged.
   - A file with no scene headers reports a plain word count, never a warning.
   - Heading lines and HTML comment blocks never count as prose.
+  - Given several paths, satellite files ({id}_outline.md, …) are skipped;
+    given exactly one, it is honoured whatever its name.
 
 Exit status is 0 whenever the files could be read. Being over or under budget
 is information, not failure.
@@ -49,12 +51,37 @@ case "${1:-}" in
 		;;
 esac
 
+# Satellites (`{id}_outline.md`, `{id}_analysis.md`, …) carry `##` headings of
+# their own, and sweeping them produces a table of section sizes that means
+# nothing. When more than one path is given the caller is globbing, so drop
+# them silently; when exactly one is given the caller meant it, so honour it.
+files=''
+count=0
 for f do
 	[ -f "$f" ] || {
 		echo "scene-budget: no such file: $f" >&2
 		exit 1
 	}
+	count=$((count + 1))
 done
+
+if [ "$count" -eq 1 ]; then
+	files="$1"
+else
+	for f do
+		case "${f##*/}" in
+			*_*) continue ;;
+		esac
+		files="$files $f"
+	done
+	[ -n "$files" ] || {
+		echo "scene-budget: no chapter files among the paths given" >&2
+		exit 1
+	}
+fi
+
+# shellcheck disable=SC2086
+set -- $files
 
 awk '
 function trim(s) {
@@ -81,33 +108,44 @@ function strip_tail_sep(s) {
 
 # Pull title and budget out of a "## n - name - budget" header.
 #
-# The budget is the LAST standalone number in the header, which is what makes
-# the separator irrelevant: "-", "—" and "·" all work, and a trailing note
-# ("- SET PIECE") does not confuse it. The guard is that a number at the very
-# start is the scene number, not a budget — "## 3 - Not separating" has no
-# budget and must not be read as one.
-function parse_header(line,   rest, s, off, pos, len, num) {
+# The header is split on its separator and the budget is the last segment that
+# is *nothing but* a number. Two guards make that reliable:
+#
+#   - Segment 1 is never the budget. "## 3 - Not separating" carries a scene
+#     number and no budget, and must not be read as one.
+#   - The segment must be a bare number, so a chapter id inside a title —
+#     "## `01.03` - The vest" — is not mistaken for a budget of 103.
+#
+# Splitting also makes the separator irrelevant: "-", "—" and "·" all work,
+# and a trailing note ("- SET PIECE") sits in its own segment and is ignored.
+function parse_header(line,   rest, parts, n, best, i, j, num, sep) {
 	rest = substr(line, 4)
 	budget = 0
-	pos = 0
-	len = 0
+	title = trim(rest)
 
-	s = rest
-	off = 0
-	while (match(s, /[0-9][0-9.,]*/)) {
-		pos = off + RSTART
-		len = RLENGTH
-		off = off + RSTART + RLENGTH - 1
-		s = substr(s, RSTART + RLENGTH)
+	# Whichever separator is actually in use yields the most segments.
+	n = split(rest, parts, "—")
+	sep = "—"
+	if (split(rest, best, "·") > n) {
+		n = split(rest, parts, "·")
+		sep = "·"
 	}
+	if (split(rest, best, " - ") > n) {
+		n = split(rest, parts, " - ")
+		sep = " - "
+	}
+	if (n < 2) return
 
-	if (pos > 1) {
-		num = substr(rest, pos, len)
-		gsub(/[.,]/, "", num)
-		budget = num + 0
-		title = trim(strip_tail_sep(substr(rest, 1, pos - 1)))
-	} else {
-		title = trim(rest)
+	for (i = n; i >= 2; i--) {
+		if (trim(parts[i]) ~ /^[0-9][0-9.,]*$/) {
+			num = trim(parts[i])
+			gsub(/[.,]/, "", num)
+			budget = num + 0
+
+			title = trim(parts[1])
+			for (j = 2; j < i; j++) title = title " - " trim(parts[j])
+			return
+		}
 	}
 }
 
