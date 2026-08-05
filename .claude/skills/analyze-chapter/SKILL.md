@@ -17,6 +17,8 @@ description: Analyzes one manuscript chapter for AI-generation markers across 14
 
 **Output.** `{chapter}_analysis.md`, at the location set in `.project/config/project.yaml → paths.analyses` — next to the chapter, or centralized in `.project/reports/technical/`. That field is the single source of truth for this choice.
 
+> "Next to the chapter" resolves through `paths.layout`: the manuscript root under `flat`, the chapter's own directory under `chapter`. The two fields are **independent axes** and every combination is legal — see `.project/templates/layout.md`.
+
 > **Write the analysis in the project's output language** (`config/project.yaml → language`), not in English.
 
 ---

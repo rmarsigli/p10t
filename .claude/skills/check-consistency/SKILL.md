@@ -36,11 +36,12 @@ And when a real contradiction is found, which side wins is an **author decision*
 
 ### Step 1 — Load the sources of truth
 
-1. `.project/config/project.yaml` — output language
+1. `.project/config/project.yaml` — output language, `paths.layout`
 2. `.project/knowledge/worldbuilding.md` — rules (ESTABLISHED ones especially) and their costs
 3. `.project/knowledge/timeline.md` — chronology and the time-markers table
 4. `.project/knowledge/characters/*.md` — Consistency rules sections and knowledge states
 5. `.project/knowledge/glossary.md` — canonical spellings and term usage
+6. **The chapter list in scope, in reading order** — resolve via `.project/templates/layout.md`. Order is not optional here: timeline arithmetic and knowledge states ("who knows what, *when*") are only checkable against the sequence. An Act scope resolves from the chapter id prefix
 
 ### Step 2 — Read the scope against them
 

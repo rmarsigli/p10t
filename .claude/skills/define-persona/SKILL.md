@@ -52,7 +52,7 @@ Before asking anything, read:
 
 1. **The cleanest chapters** — lowest AI density. This is where the author's voice shows with least noise.
 2. **Already-revised chapters** — post-revision text is the consolidated voice.
-3. **Every `_analysis.md` with `R:` annotations** — each "kept it" is a style declaration.
+3. **Every `_analysis.md` with `R:` annotations** (search **recursively** — under `chapter` layout they sit inside each chapter's directory) — each "kept it" is a style declaration.
 4. **Earlier writing produced without AI assistance**, if any — the most valuable corpus available.
 
 Extract:

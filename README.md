@@ -69,9 +69,9 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 {your-book}/
 ├── CLAUDE.md                    Project guide (read first)
 ├── manuscript/                  Your chapters in markdown
-│   ├── Act 01/
-│   ├── Act 02/
-│   └── ...
+│   ├── 01.01.md                 flat layout: every chapter file here
+│   ├── 01.02.md
+│   └── ...                      (chapter layout nests each in 01.01/, 01.02/ — see below)
 ├── examples/                    Worked samples of the system's outputs
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
@@ -106,6 +106,7 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     │
     └── templates/               ── REUSABLE SKELETONS ──
         ├── framework.md         The 14 tic categories
+        ├── layout.md            How skills resolve and order chapter files
         ├── chapter-analysis.md
         ├── chapter-outline.md
         ├── persona-template.md
@@ -116,6 +117,34 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 The split is deliberate: **`.claude/skills/` is what the system does** (machinery - identical across all books), **`.project/` is what the system knows** (this book's voice, world, and decisions). Behaviour in one place, state in the other.
 
 **Portability.** Both directories copy to another book. Skills and `templates/` are generic; `config/`, `knowledge/`, and `reports/` are project-specific and get repopulated each time.
+
+### Manuscript layout
+
+Chapter files are arranged one of two ways, declared in `project.yaml → paths.layout`:
+
+```text
+flat                          chapter
+manuscript/                   manuscript/
+├── 01.01.md                  ├── 01.01/
+├── 01.01_outline.md          │   ├── 01.01.md
+├── 01.01_analysis.md         │   ├── 01.01_outline.md
+├── 01.02.md                  │   └── 01.01_analysis.md
+└── 01.02_analysis.md         └── 01.02/
+                                  ├── 01.02.md
+                                  └── 01.02_analysis.md
+```
+
+`flat` is right below ~15 chapters. `chapter` earns itself when each chapter carries an outline, an analysis, and a draft — a 32-chapter book is otherwise ~130 files in one directory.
+
+Three properties make this cheap:
+
+- **The chapter file repeats its id** (`01.01/01.01.md`, never `01.01/chapter.md`), so migration is a pure move, `git log --follow` survives, and the sort key is the same in both layouts.
+- **The id carries the act**, so "review Act 2" is a string comparison in either layout. That is why there is no third, per-act layout — it would duplicate what the id already holds.
+- **Layout and `paths.analyses` are independent axes.** All four combinations are legal.
+
+It is **declared, never detected**: `manuscript/01/` is unresolvable without opening it, and a half-migrated tree reads as valid. A wrong guess does not fail — it silently returns a partial chapter list, and the sweep that follows reports "no duplication found" for chapters it never read.
+
+Full rules — resolution, ordering, satellites, mixed-state handling, migration: **`.project/templates/layout.md`**.
 
 **Tool independence.** Skills are plain markdown with YAML frontmatter. Claude Code discovers them natively; any other AI agent with filesystem access can read and execute them - the root `CLAUDE.md` says where they live.
 

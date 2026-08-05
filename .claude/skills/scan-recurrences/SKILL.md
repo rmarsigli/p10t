@@ -43,7 +43,7 @@ This skill is the only way to catch it.
 1. **`.project/config/project.yaml`** — output language
 2. **`.project/reports/recurrences.md`** — current state (for incremental mode and to preserve decisions)
 3. **`.project/reports/preserve-list.md`** — recurrences of thesis phrases are **intentional**
-4. Chapter list within scope
+4. **Chapter list within scope** — resolve it via `.project/templates/layout.md`, using `project.yaml → paths.layout`. Never glob the manuscript directory on instinct: this skill's whole value is comparing every chapter against every other, and a chapter missing from the list produces "no duplication found" instead of an error
 
 ### Step 2 — Read all chapters
 

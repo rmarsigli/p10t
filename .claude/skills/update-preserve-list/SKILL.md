@@ -38,9 +38,9 @@ So this skill collects candidates and presents them in batch. One confirmation s
 
 1. `.project/config/project.yaml` — output language
 2. `.project/reports/preserve-list.md` — current state
-3. All `_analysis.md` files with `R:` annotations in scope
+3. All `_analysis.md` files with `R:` annotations in scope — searched **recursively**, since `chapter` layout nests them one level down
 4. `.project/reports/revision-log.md` — confirmed-signature entries
-5. The manuscript — to verify that listed phrases still exist
+5. The manuscript — to verify that listed phrases still exist. Resolve the chapter list via `.project/templates/layout.md`; a chapter missed here retires an entry whose phrase is still on the page
 
 ### Step 2 — Collect candidates
 

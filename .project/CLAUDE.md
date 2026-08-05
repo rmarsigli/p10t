@@ -17,13 +17,17 @@ Four directories, each with one job:
 | `config/` | ── **WHO YOU ARE** ── voice, references, hard rules, metadata | `define-persona`, `define-references`, by hand |
 | `knowledge/` | ── **WHAT EXISTS IN THE BOOK** ── world, timeline, glossary, characters | `build-worldbuilding`, `create-character`, by hand |
 | `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, preserve list, recurrence map, decision history | `analyze-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
-| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, output shapes | never — these are the machinery |
+| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, the layout resolver, output shapes | never — these are the machinery |
 
 The canonical file-by-file tree lives in the p10t [README](https://github.com/rmarsigli/p10t#structure), kept in one place so it cannot drift out of sync with this file.
 
 ## Density
 
 Occurrences per 1,000 words, one decimal. Counting rules and default ceilings: `templates/framework.md`. Project overrides: `config/style-guide.md`. Chapter total: `config/project.yaml`.
+
+## Manuscript layout
+
+`config/project.yaml → paths.layout` declares how chapter files are arranged — `flat` or one directory per chapter. **`templates/layout.md` is the single resolver**: any skill that reads more than one chapter follows it rather than globbing the manuscript directory. It also fixes the ordering rule, which timeline checks and cross-chapter sweeps depend on.
 
 ## Generic vs. project-specific
 

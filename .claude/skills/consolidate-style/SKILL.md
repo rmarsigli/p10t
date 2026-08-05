@@ -39,7 +39,7 @@ Every proposed change carries its receipts: the decisions, chapters, and quotes 
 1. `.project/config/project.yaml` — output language
 2. `.project/config/persona.md` — current state, including its changelog (what was already consolidated)
 3. `.project/reports/revision-log.md` — the decision history
-4. All `_analysis.md` files with `R:` annotations since the last consolidation
+4. All `_analysis.md` files with `R:` annotations since the last consolidation — searched **recursively**, since `chapter` layout nests them one level down
 5. Revised chapters vs. their pre-revision analyses — **the author's own rewrites are the richest data**
 
 ### Step 2 — Mine four pattern types

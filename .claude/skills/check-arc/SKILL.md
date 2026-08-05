@@ -36,8 +36,8 @@ The method is evidence-first: build the beat map from the text, *then* compare a
 
 ### Step 1 — Load context
 
-1. `.project/config/project.yaml` — output language
-2. The manuscript in scope — full read, in order
+1. `.project/config/project.yaml` — output language, `paths.layout`
+2. The manuscript in scope — full read, **in order**. Resolve the chapter list and its ordering via `.project/templates/layout.md`; an Act scope resolves from the chapter id prefix, not from directory structure
 3. `.project/knowledge/characters/*.md` — Arc and engine sections (intent)
 4. Chapter outlines, if they exist — intended trajectory per chapter
 5. `.project/reports/literary/` — previous arc reports, for trajectory over drafts

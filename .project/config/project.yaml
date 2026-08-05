@@ -28,6 +28,11 @@ paths:
   manuscript: "manuscript/"
   analyses: "manuscript/"          # or ".project/reports/technical/"
   naming: "{act}.{chapter}.md"
+  # How chapter files are arranged. Declared, never detected — a wrong guess
+  # produces a confident analysis of an incomplete book. See templates/layout.md.
+  #   flat     manuscript/01.01.md        every chapter file in one directory
+  #   chapter  manuscript/01.01/01.01.md  one directory per chapter, named the chapter id
+  layout: "flat"                   # flat | chapter
 
 status:
   phase: "draft"         # draft | revision | polish | submission

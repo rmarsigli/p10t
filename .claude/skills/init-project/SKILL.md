@@ -46,13 +46,14 @@ Seven questions, one message:
 2. **Output language** — the language of the manuscript and of all generated output. **If it is not `pt-BR` or `en`, say so plainly**: the framework's detection signals are calibrated for those two, and other languages inherit the definitions, ceilings, and treatments but need their signals adapted. Note it in `style-guide.md → Density ceilings → Language adaptation` so analyses stay comparable
 3. **Genre and audience** (one line)
 4. **Structure** — chapters grouped in acts/parts? Interludes? Rough planned count?
-5. **Manuscript location** — use `manuscript/` or point to an existing folder?
+5. **Manuscript location and layout** — use `manuscript/` or an existing folder; and `flat` (every chapter file in one directory) or `chapter` (one directory per chapter, named the chapter id)? **Default `flat`, and say why**: it is right below ~15 chapters, and migrating later is a mechanical move because the chapter filename never changes. Recommend `chapter` when the planned count from Q4 is large *and* the author expects outlines and analyses per chapter. See `.project/templates/layout.md`
 6. **Analyses next to chapters, or centralized** in `.project/reports/technical/`?
 7. **AI-use stance** — the declaration line for `project.yaml` (offer the default: *"human curation item by item"*)
 
 ### Step 3 — Apply
 
-- Fill `project.yaml` completely — including derived fields (naming pattern from the structure answer, paths from Q5–6)
+- Fill `project.yaml` completely — including derived fields (naming pattern from the structure answer, `paths.manuscript`/`paths.layout`/`paths.analyses` from Q5–6). **Zero-pad the numbers in `paths.naming`**: ordering is lexicographic, so unpadded ids sort `10` before `2`
+- If an existing manuscript was found in Step 1, check it against the declared layout and report any mismatch — **never move the author's files during init**
 - Update the root `CLAUDE.md`: title, structure section, paths
 - Verify project-specific files are blank templates; if this is a copy from a previous book, **list any file still carrying old content** (previous persona, old preserve list) and confirm before clearing each — never silently wipe
 - Confirm generic machinery intact: `.claude/skills/`, `.project/templates/`

@@ -61,7 +61,7 @@ Use when the character already exists on the page.
 
 ### Step 2 — Sweep the manuscript
 
-Read every scene the character appears in. Collect:
+Resolve the chapter list via `.project/templates/layout.md`, then read every scene the character appears in. Collect:
 
 **For Voice:**
 - Every line of dialogue they speak — verbatim

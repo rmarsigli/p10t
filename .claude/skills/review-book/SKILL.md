@@ -36,10 +36,10 @@ Three audiences read this report: the author deciding what to revise, the author
 
 ### Step 1 — Load context
 
-1. `.project/config/project.yaml` — output language, genre, targets
-2. **The entire manuscript in scope** — read fully, in order. No skimming; structural judgments require having actually felt the pacing
+1. `.project/config/project.yaml` — output language, genre, targets, `paths.layout`
+2. **The entire manuscript in scope** — read fully, in order. No skimming; structural judgments require having actually felt the pacing. Resolve the chapter list and its ordering via `.project/templates/layout.md`; an Act scope resolves from the chapter id prefix
 3. `.project/knowledge/` — worldbuilding, characters, timeline (to judge delivery against intent)
-4. `.project/reports/technical/` and existing `_analysis.md` files — per-chapter density data
+4. `.project/reports/technical/` and existing `_analysis.md` files (searched **recursively** — under `chapter` layout they sit inside each chapter's directory) — per-chapter density data
 5. `.project/reports/recurrences.md` and `revision-log.md` — revision history
 6. `.project/config/references.md` — for comparable-title reasoning
 7. `.project/templates/book-review.md` — the skeleton

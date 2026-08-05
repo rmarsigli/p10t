@@ -15,7 +15,7 @@ description: Builds a chapter's structure before any prose exists — obligation
 
 **Input.** Chapter position; whatever the author already knows about it (can be one sentence or nothing).
 
-**Output.** `{chapter}_outline.md` next to where the chapter will live, following `.project/templates/chapter-outline.md`.
+**Output.** `{chapter}_outline.md` next to where the chapter will live, following `.project/templates/chapter-outline.md`. Under `chapter` layout that directory may not exist yet — create it, named the chapter id (see `.project/templates/layout.md`).
 
 > **Write the outline in the project's output language.**
 

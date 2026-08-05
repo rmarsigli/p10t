@@ -85,8 +85,9 @@ Counting rules and default ceilings: `.project/templates/framework.md`. Project 
 > **Adjust this section** to match your actual organization.
 
 - Manuscript in `manuscript/`, plain markdown, one file per chapter
-- Naming: `{act}.{chapter}.md` (e.g. `02.03.md`)
-- Analyses land where `.project/config/project.yaml → paths.analyses` says — that field is the single source of truth, not this file
+- Naming: `{act}.{chapter}.md` (e.g. `02.03.md`), numbers zero-padded so ordering stays lexicographic
+- **Layout** — `.project/config/project.yaml → paths.layout`, either `flat` (`manuscript/02.03.md`) or `chapter` (`manuscript/02.03/02.03.md`). Declared, never detected. How skills resolve, order, and scope chapter files: `.project/templates/layout.md`
+- Analyses land where `.project/config/project.yaml → paths.analyses` says — that field is the single source of truth, not this file. It is **independent of `paths.layout`**; all four combinations are legal
 
 ## Operating notes
 

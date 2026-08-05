@@ -63,7 +63,7 @@ Use when a manuscript already exists, in whole or in part.
 1. `.project/config/project.yaml` — output language
 2. `.project/knowledge/worldbuilding.md` — current state, if any
 3. `.project/knowledge/glossary.md` and `timeline.md` — avoid duplicating what belongs there
-4. The manuscript, in scope
+4. The manuscript, in scope — resolve the chapter list via `.project/templates/layout.md`
 
 ### Step 2 — Read the manuscript
 
