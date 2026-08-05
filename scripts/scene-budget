@@ -3,7 +3,7 @@
 #
 # While a chapter is being drafted, its scenes may carry headers of the form
 #
-#     ## 2 · The six minutes — 900
+#     ## 2 - The six minutes - 900
 #
 # where the trailing number is the word budget from the chapter outline. This
 # reads those headers back and reports what was written against what was
@@ -24,10 +24,10 @@ Usage:
   scene-budget manuscript/01.03/01.03.md
   scene-budget manuscript/*/*.md
 
-Reads `## <n> · <name> — <budget>` headers and reports words written against
+Reads `## <n> - <name> - <budget>` headers and reports words written against
 words budgeted, per scene and in total.
 
-  - The budget separator may be an em dash (—) or " - ".
+  - The separator is a hyphen; em dash and middle dot are also accepted.
   - Thousands separators are accepted: 1.100 and 1,100 both mean 1100.
   - A header with no trailing number is counted, never judged.
   - A file with no scene headers reports a plain word count, never a warning.
@@ -63,24 +63,49 @@ function trim(s) {
 	return s
 }
 
-# Pull title and budget out of a "## n · name — budget" header.
-# Splitting on the separator avoids byte-vs-character substr arithmetic,
-# which is where multibyte dashes break portability between awks.
-function parse_header(line,   rest, parts, n, tail, num) {
+# Strip a trailing separator so "1 - The count - " becomes "1 - The count".
+# Anchored literals rather than a character class: the em dash and the middle
+# dot are multibyte, and awks disagree about them inside [...].
+function strip_tail_sep(s) {
+	sub(/[ \t]+$/, "", s)
+	while (1) {
+		if (s ~ /-$/) sub(/-$/, "", s)
+		else if (s ~ /—$/) sub(/—$/, "", s)
+		else if (s ~ /·$/) sub(/·$/, "", s)
+		else if (s ~ /\|$/) sub(/\|$/, "", s)
+		else break
+		sub(/[ \t]+$/, "", s)
+	}
+	return s
+}
+
+# Pull title and budget out of a "## n - name - budget" header.
+#
+# The budget is the LAST standalone number in the header, which is what makes
+# the separator irrelevant: "-", "—" and "·" all work, and a trailing note
+# ("- SET PIECE") does not confuse it. The guard is that a number at the very
+# start is the scene number, not a budget — "## 3 - Not separating" has no
+# budget and must not be read as one.
+function parse_header(line,   rest, s, off, pos, len, num) {
 	rest = substr(line, 4)
 	budget = 0
+	pos = 0
+	len = 0
 
-	n = split(rest, parts, "—")
-	if (n < 2) n = split(rest, parts, " - ")
+	s = rest
+	off = 0
+	while (match(s, /[0-9][0-9.,]*/)) {
+		pos = off + RSTART
+		len = RLENGTH
+		off = off + RSTART + RLENGTH - 1
+		s = substr(s, RSTART + RLENGTH)
+	}
 
-	if (n >= 2) {
-		title = trim(parts[1])
-		tail = parts[2]
-		if (match(tail, /[0-9][0-9.,]*/)) {
-			num = substr(tail, RSTART, RLENGTH)
-			gsub(/[.,]/, "", num)
-			budget = num + 0
-		}
+	if (pos > 1) {
+		num = substr(rest, pos, len)
+		gsub(/[.,]/, "", num)
+		budget = num + 0
+		title = trim(strip_tail_sep(substr(rest, 1, pos - 1)))
 	} else {
 		title = trim(rest)
 	}

@@ -91,15 +91,15 @@ A chapter being drafted may carry its scene contracts as `##` headers, each endi
 ```markdown
 # 3
 
-## 1 · The count — 250
+## 1 - The count - 250
 
 Prose.
 
-## 2 · The six minutes — 900
+## 2 - The six minutes - 900
 
 Prose.
 
-## 3 · Not separating — 450
+## 3 - Not separating - 450
 ```
 
 The last header sits over an empty section on purpose: you write *under* a budget rather than *against* a table in another file. `scripts/scene-budget` reads those headers back and reports words written against words planned.
