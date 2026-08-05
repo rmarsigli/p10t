@@ -4,7 +4,27 @@
 
 `p10t` is short for **palimpsest** - the scraped and rewritten manuscript, where the older text still shows through beneath the new. That is exactly what this system does: you write over the machine layer until only your voice remains.
 
-> **Note on the system language.** All instructions, skills, and templates are written in English - this is the language LLMs handle most reliably, and it keeps the project portable. **Your manuscript and all generated output stay in your language.** Set it in `.project/config/project.yaml`.
+---
+
+## In plain terms
+
+You are writing a book. You want a machine's help without the book ending up sounding like a machine wrote it.
+
+The obvious approach - ask a chatbot to write a chapter, then edit it - fails in a specific way. The machine's fingerprints are not in its word choice, which you would catch. They are in the *shape* of its sentences, repeated across a hundred thousand words until the prose reads smooth and anonymous. You cannot edit that out by hand, because by chapter forty you no longer see it.
+
+p10t attacks that from the other side. It is a set of nineteen instructions an AI coding agent follows, plus a folder of files describing **your** book: how you write, who your characters are, what your world does not explain. Point it at a chapter and it does not rewrite anything. It hands the chapter back to you **measured** - every suspect construction quoted, counted, and compared against what you have already declared to be your own voice. You rule on each one. Your rulings become permanent, and the next chapter is judged against them.
+
+The unit is `occurrences per 1,000 words`. That matters more than it sounds: an editor tells you a chapter feels overwritten, and you have an opinion to argue with. p10t tells you the figure is 4.5 against a ceiling of 2.0, and it will be the same figure next week.
+
+**Three things it does that a careful human reader cannot:**
+
+- **Catches the sentence you reused in chapters 3, 11 and 24.** Nobody reading a book front to back over two weeks notices this. It is also the single most damaging thing a critical reader can find, because unlike a tic it has no stylistic defence.
+- **Holds the continuity contract** - timeline arithmetic, and who knows what *when*, across the whole manuscript.
+- **Remembers your decisions.** Protect a phrase once and nothing suggests cutting it again. Human editors forget; a new editor never knew.
+
+**Who it is for:** anyone drafting long-form fiction with an AI agent who would rather the result be theirs. It is a working system, not a demo, and it runs entirely on your machine - plain markdown files in a git repository, no service, no account, nothing uploaded.
+
+> **A note on language.** All instructions, skills, and templates are written in English - the language LLMs handle most reliably, and it keeps the project portable. **Your manuscript and all generated output stay in your language.** Set it in `.project/config/project.yaml`.
 
 ---
 
@@ -34,6 +54,20 @@ The system does not ask "how do you want to write?". It reads what you have alre
 
 **3. Preventing beats fixing.**
 LLM tics mark sentence *structure*, not just word choice. Rewriting afterwards is cosmetic. The system's endgame is prose that is **born** in the right voice, carrying persona, world, and constraints from the first token.
+
+---
+
+## What p10t is not
+
+Stated up front, because each of these is a fair question to ask of a system like this.
+
+**It is not a way to make generated text pass as human.** This is the serious objection and it deserves a real answer rather than a slogan. The markers p10t removes are markers of *uniformity* - triads, binary antithesis, an aphorism closing every paragraph. Removing them by rewriting in the author's own documented voice makes the prose more theirs, not less. But the honest part: if someone fed it wholly generated text and curated nothing, it would help them polish that text, and no tool can prevent it. What this system does instead is **keep the record**. Every suggestion requires an explicit ruling, every ruling is committed, and the analysis refuses to output a "% human" figure precisely because that number cannot be measured from prose. A system that made the dishonest version easy would not bother with any of that.
+
+**It is not an editor.** It finds *markers*; it does not find *deadness*. A chapter can pass all fourteen categories and still be boring, and nothing here will tell you so. The structural reason is in the first principle: the AI proposes, the author decides. That makes the system trustworthy and it also makes it an instrument you operate - and you cannot be gatekept by a tool you control. A good editor sometimes has to say "you are wrong, cut it" and be believed. p10t never will, and changing that would break the thing that makes it worth using.
+
+**It is not a publisher.** Publishing houses sell capital, distribution, rights and imprint. Editing is a service they bundle, not the product. p10t touches none of it.
+
+**It is not finished, and it is not widely tested.** The revision cycle - `analyze-chapter` → `R:` → rewrite → `review-revision` - has run on a real manuscript. The generation and knowledge layers have not been exercised at book length. Detection signals are calibrated for `[pt-BR]` and `[en]` only. Expect the ceilings in `framework.md` to move. See the [Roadmap](#roadmap).
 
 ---
 
