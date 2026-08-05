@@ -15,3 +15,7 @@
 *.jpg   binary
 *.jpeg  binary
 *.gif   binary
+
+# Markdown diffs show the nearest heading in the hunk header, so `git diff`
+# names the scene you changed instead of just the line numbers.
+*.md diff=markdown

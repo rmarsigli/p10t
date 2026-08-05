@@ -72,7 +72,7 @@ If you prefer the manuscript folders to hold only prose, switch `paths.analyses`
 
 ## Chapter file format
 
-Plain markdown. No front matter required.
+Plain markdown. No front matter required. One `#` per file.
 
 ```markdown
 # Chapter title
@@ -81,3 +81,35 @@ Prose starts here.
 ```
 
 Formatting conventions for dialogue, scene breaks, and in-world documents belong in `.project/config/style-guide.md` — decide once, apply everywhere.
+
+---
+
+## Scene headers while drafting — optional
+
+A chapter being drafted may carry its scene contracts as `##` headers, each ending in the word budget from the outline:
+
+```markdown
+# 3
+
+## 1 · The count — 250
+
+Prose.
+
+## 2 · The six minutes — 900
+
+Prose.
+
+## 3 · Not separating — 450
+```
+
+The last header sits over an empty section on purpose: you write *under* a budget rather than *against* a table in another file. `scripts/scene-budget` reads those headers back and reports words written against words planned.
+
+**They are scaffolding, and scaffolding comes down.** When the chapter is finished the `##` headers are deleted and only the `#` survives — that removal is the signal that the chapter is done, not a chore bolted onto export.
+
+### The rule that matters, and it binds the agent
+
+> **A chapter with no scene headers is a choice, not an omission. Never ask for them, never flag their absence, never add them unprompted.**
+
+Plenty of chapters are written straight through, and the author is the one who decides which. `scene-budget` reports such a file as a plain word count with no warning, and every skill that reads a chapter does the same. Treating a missing header as a defect would turn an optional aid into a demand — and a tool that nags about its own conventions stops being used.
+
+The corollary: **do not read structural meaning into the headers either.** They are a drafting aid. A chapter's real structure is what the prose does, which is what `restructure-chapter` and `check-arc` judge — from the page, never from the markup.

@@ -17,6 +17,8 @@ description: Generates scene prose from a validated outline contract, loading th
 
 **Output.** `{chapter}_draft.md` (or appended scene block), explicitly marked as a draft for curation. **Never written into the manuscript file itself.**
 
+> Report the draft's length against the scene's budget. If the chapter file carries `## n · name — budget` headers, `scripts/scene-budget` gives the surrounding context; if it does not, use the outline. **Never add those headers to the author's chapter, and never note that they are missing** — see `manuscript/README.md → Scene headers while drafting`.
+
 > **Write the prose in the project's output language.**
 
 ---

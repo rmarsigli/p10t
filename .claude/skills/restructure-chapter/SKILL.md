@@ -82,6 +82,8 @@ A scene with no conflict and no turn is not automatically cut — it may be a tr
 
 ### Step 3 — Recompute the obligations from the page
 
+> **Derive scene boundaries from the prose, not from `##` headers.** Those headers are an optional drafting aid; a chapter may have none, may have stale ones, or may have been written straight through on purpose. The structure this skill judges is what the page does — see `manuscript/README.md → Scene headers while drafting`.
+
 The same three obligations `outline-chapter` uses, derived backwards from the manuscript rather than forwards from intent:
 
 - **Debt** — what earlier chapters left open that this one is positioned to pay. Which does it actually pay? Which does it drop silently?

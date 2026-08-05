@@ -73,6 +73,8 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │   ├── 01.02.md
 │   └── ...                      (chapter layout nests each in 01.01/, 01.02/ — see below)
 ├── examples/                    Worked samples of the system's outputs
+├── scripts/
+│   └── scene-budget             Per-scene word counts vs. the header budgets
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
 │       ├── init-project/        analyze-chapter/     scan-recurrences/

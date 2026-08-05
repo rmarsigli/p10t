@@ -19,6 +19,8 @@ description: Analyzes one manuscript chapter for AI-generation markers across 14
 
 > "Next to the chapter" resolves through `paths.layout`: the manuscript root under `flat`, the chapter's own directory under `chapter`. The two fields are **independent axes** and every combination is legal — see `.project/templates/layout.md`.
 
+> **Drafting scaffolding is not prose.** `##` scene headers, HTML comment notes, and budget lines are excluded from word counts and from every density figure. Their **absence is never a finding** — a chapter written straight through is a choice, not a defect. See `manuscript/README.md → Scene headers while drafting`.
+
 > **Write the analysis in the project's output language** (`config/project.yaml → language`), not in English.
 
 ---

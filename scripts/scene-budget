@@ -1,0 +1,171 @@
+#!/bin/sh
+# scene-budget — per-scene word counts against the budgets written in the headers.
+#
+# While a chapter is being drafted, its scenes may carry headers of the form
+#
+#     ## 2 · The six minutes — 900
+#
+# where the trailing number is the word budget from the chapter outline. This
+# reads those headers back and reports what was written against what was
+# planned, so the budget sits next to the cursor instead of in another file.
+#
+# The headers are scaffolding: they are removed when the chapter is finished.
+# A chapter with no scene headers is reported as a plain total. That is a
+# legitimate way to write and the tool never treats it as a defect.
+
+set -eu
+
+usage() {
+	cat <<'EOF'
+scene-budget — per-scene word counts against the budgets in the headers
+
+Usage:
+  scene-budget <file.md> [file.md ...]
+  scene-budget manuscript/01.03/01.03.md
+  scene-budget manuscript/*/*.md
+
+Reads `## <n> · <name> — <budget>` headers and reports words written against
+words budgeted, per scene and in total.
+
+  - The budget separator may be an em dash (—) or " - ".
+  - Thousands separators are accepted: 1.100 and 1,100 both mean 1100.
+  - A header with no trailing number is counted, never judged.
+  - A file with no scene headers reports a plain word count, never a warning.
+  - Heading lines and HTML comment blocks never count as prose.
+
+Exit status is 0 whenever the files could be read. Being over or under budget
+is information, not failure.
+EOF
+}
+
+case "${1:-}" in
+	-h | --help)
+		usage
+		exit 0
+		;;
+	'')
+		usage
+		exit 2
+		;;
+esac
+
+for f do
+	[ -f "$f" ] || {
+		echo "scene-budget: no such file: $f" >&2
+		exit 1
+	}
+done
+
+awk '
+function trim(s) {
+	sub(/^[ \t]+/, "", s)
+	sub(/[ \t]+$/, "", s)
+	return s
+}
+
+# Pull title and budget out of a "## n · name — budget" header.
+# Splitting on the separator avoids byte-vs-character substr arithmetic,
+# which is where multibyte dashes break portability between awks.
+function parse_header(line,   rest, parts, n, tail, num) {
+	rest = substr(line, 4)
+	budget = 0
+
+	n = split(rest, parts, "—")
+	if (n < 2) n = split(rest, parts, " - ")
+
+	if (n >= 2) {
+		title = trim(parts[1])
+		tail = parts[2]
+		if (match(tail, /[0-9][0-9.,]*/)) {
+			num = substr(tail, RSTART, RLENGTH)
+			gsub(/[.,]/, "", num)
+			budget = num + 0
+		}
+	} else {
+		title = trim(rest)
+	}
+}
+
+function close_scene() {
+	if (!open) return
+	file_words += words
+	file_budget += budget
+	rows[++nrows] = sprintf("  %-36s %8s %8d %8s", \
+		title, \
+		(budget > 0 ? budget "" : "-"), \
+		words, \
+		(budget > 0 ? sprintf("%+d", words - budget) : "-"))
+	open = 0
+	words = 0
+	budget = 0
+}
+
+function report(   i, d) {
+	if (curfile == "") return
+	close_scene()
+
+	print curfile
+
+	if (scenes == 0) {
+		# No scene headers. This is a choice, not an omission — say the
+		# number and stop. Nothing here suggests adding them.
+		printf "  %d words, no scene headers\n\n", loose_words
+		return
+	}
+
+	printf "  %-36s %8s %8s %8s\n", "scene", "target", "actual", "delta"
+	print "  --------------------------------------------------------------------"
+	for (i = 1; i <= nrows; i++) print rows[i]
+	print "  --------------------------------------------------------------------"
+	d = file_words - file_budget
+	printf "  %-36s %8s %8d %8s\n", "TOTAL", \
+		(file_budget > 0 ? file_budget "" : "-"), \
+		file_words, \
+		(file_budget > 0 ? sprintf("%+d", d) : "-")
+	if (loose_words > 0)
+		printf "  %-36s %8s %8d %8s\n", "(before first scene header)", "-", loose_words, "-"
+	print ""
+}
+
+function reset(f) {
+	curfile = f
+	scenes = 0
+	nrows = 0
+	loose_words = 0
+	file_words = 0
+	file_budget = 0
+	open = 0
+	words = 0
+	budget = 0
+	in_comment = 0
+	split("", rows)
+}
+
+FILENAME != curfile {
+	report()
+	reset(FILENAME)
+}
+
+/<!--/ { in_comment = 1 }
+in_comment {
+	if (/-->/) in_comment = 0
+	next
+}
+
+/^##[ \t]/ {
+	close_scene()
+	parse_header($0)
+	open = 1
+	scenes++
+	next
+}
+
+/^#/ { next }
+
+{
+	if (open) words += NF
+	else loose_words += NF
+}
+
+END { report() }
+' "$@"
