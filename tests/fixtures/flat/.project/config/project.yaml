@@ -1,0 +1,14 @@
+# The same book in the flat layout, so both resolution paths are covered
+# against a real tree rather than only against directories built in a test.
+language: en
+title: "The Open Shed"
+author: "Ana Régis Vilalba"
+
+genre:
+  primary: "speculative fiction"
+  audience: "adult"
+
+paths:
+  manuscript: "manuscript/"
+  naming: "{act}.{n}.md"
+  layout: "flat"

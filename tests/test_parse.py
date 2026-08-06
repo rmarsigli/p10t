@@ -3,6 +3,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 
 from p10t_export.chapters import ChapterFile, find_chapters
 from p10t_export.parse import parse_chapter, count_words, Block
+from tests import fixtures
 
 
 def _chapter(tmp, text, chapter_id="01.01"):
@@ -14,50 +15,50 @@ def _chapter(tmp, text, chapter_id="01.01"):
 CLEAN = """\
 # 1
 
-O terceiro vidro trincou. Ninguém percebeu.
+The third pane cracked. Nobody noticed.
 
-Melvile é uma cidade de interior.
+Melvile is an inland town.
 """
 
 WITH_SCENES = """\
 # 3
 
-## 1 - A contagem - 250
+## 1 - The count - 250
 
-— Contagem.
+— Count off.
 
-Estávamos em um lugar vazio.
+We were standing in an empty place.
 
-## 2 — Os seis minutos — 900
+## 2 — The six minutes — 900
 
-— O trem parou a 3 quilômetros.
+— The train stopped 3 kilometres back.
 """
 
 SCAFFOLDED = """\
 # 4
 
-<!-- ANDAIME. As linhas em { } são para você sobrescrever. -->
+<!-- SCAFFOLD. Lines in { } are to be overwritten. -->
 
-| # | Cena | Palavras |
+| # | Scene | Words |
 | --- | --- | --- |
-| 1 | Dentro do duto | 400 |
+| 1 | Inside the culvert | 400 |
 
-## 1 - Dentro do duto - 400
+## 1 - Inside the culvert - 400
 
-{ O duto é largo, escuro e fedido. }
+{ The culvert is wide, dark and foul. }
 
-**Dentro:**
+**Inside:**
 
-- Por que é seguro: é coberto.
+- Why it is safe: it is covered.
 """
 
 
 class TestWordCount(unittest.TestCase):
     def test_bare_em_dash_is_not_a_word(self):
-        self.assertEqual(count_words("— Contagem."), 1)
+        self.assertEqual(count_words("— Yes."), 1)
 
     def test_numbers_count(self):
-        self.assertEqual(count_words("O trem parou a 3 quilômetros."), 6)
+        self.assertEqual(count_words("The train stopped 3 kilometres back."), 6)
 
 
 class TestCleanChapter(unittest.TestCase):
@@ -68,12 +69,12 @@ class TestCleanChapter(unittest.TestCase):
         self.assertEqual(parsed.title, "1")
         self.assertEqual([b.kind for b in parsed.blocks],
                          ["paragraph", "paragraph"])
-        self.assertTrue(parsed.blocks[0].text.startswith("O terceiro vidro"))
+        self.assertTrue(parsed.blocks[0].text.startswith("The third pane"))
 
     def test_word_count_excludes_the_title(self):
         with tempfile.TemporaryDirectory() as tmp:
             parsed = parse_chapter(_chapter(tmp, CLEAN))
-        self.assertEqual(parsed.words, 12)
+        self.assertEqual(parsed.words, 11)
 
     def test_absence_of_scene_headers_is_not_a_refusal(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -83,7 +84,7 @@ class TestCleanChapter(unittest.TestCase):
 
     def test_missing_heading_falls_back_to_the_chapter_id(self):
         with tempfile.TemporaryDirectory() as tmp:
-            parsed = parse_chapter(_chapter(tmp, "Só prosa, sem título.\n"))
+            parsed = parse_chapter(_chapter(tmp, "Just prose, no heading.\n"))
         self.assertEqual(parsed.title, "01.01")
         self.assertTrue(parsed.accepted)
 
@@ -102,7 +103,7 @@ class TestSceneHeaders(unittest.TestCase):
         self.assertIn(Block("scene_break", ""), parsed.blocks)
 
     def test_trailing_note_after_the_budget_is_accepted(self):
-        text = "# 4\n\n## 2 - O labirinto - 1.100 - SET PIECE\n\nProsa.\n"
+        text = "# 4\n\n## 2 - The maze - 1,100 - SET PIECE\n\nProse.\n"
         with tempfile.TemporaryDirectory() as tmp:
             parsed = parse_chapter(_chapter(tmp, text))
         self.assertTrue(parsed.accepted)
@@ -110,10 +111,10 @@ class TestSceneHeaders(unittest.TestCase):
     def test_budget_and_name_do_not_reach_the_word_count(self):
         with tempfile.TemporaryDirectory() as tmp:
             parsed = parse_chapter(_chapter(tmp, WITH_SCENES, "01.03"))
-        self.assertEqual(parsed.words, 12)
+        self.assertEqual(parsed.words, 15)
 
     def test_a_plain_heading_is_not_a_scene_header(self):
-        text = "# 4\n\n## Tabela de guia\n\nProsa.\n"
+        text = "# 4\n\n## Scene guide\n\nProse.\n"
         with tempfile.TemporaryDirectory() as tmp:
             parsed = parse_chapter(_chapter(tmp, text))
         self.assertEqual([r.kind for r in parsed.refusals], ["heading"])
@@ -137,35 +138,60 @@ class TestRefusal(unittest.TestCase):
 
     def test_horizontal_rule_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
-            parsed = parse_chapter(_chapter(tmp, "# 1\n\nProsa.\n\n---\n"))
+            parsed = parse_chapter(_chapter(tmp, "# 1\n\nProse.\n\n---\n"))
         self.assertEqual([r.kind for r in parsed.refusals], ["rule"])
 
     def test_hyphen_dialogue_is_refused_because_pandoc_would_bullet_it(self):
         with tempfile.TemporaryDirectory() as tmp:
-            parsed = parse_chapter(_chapter(tmp, "# 1\n\n- Contagem.\n"))
+            parsed = parse_chapter(_chapter(tmp, "# 1\n\n- Count off.\n"))
         self.assertEqual([r.kind for r in parsed.refusals], ["list"])
 
     def test_multiline_comment_refuses_every_line(self):
-        text = "# 1\n\n<!-- nota\n  segue\n  fim -->\n\nProsa.\n"
+        text = "# 1\n\n<!-- note\n  continues\n  ends -->\n\nProse.\n"
         with tempfile.TemporaryDirectory() as tmp:
             parsed = parse_chapter(_chapter(tmp, text))
         self.assertEqual([r.line for r in parsed.refusals], [3, 4, 5])
 
 
-class TestRealBook(unittest.TestCase):
-    def test_three_chapters_accepted_and_the_plan_refused(self):
-        book = pathlib.Path(
-            "/home/rafhael/projects/books/gods-between-us/manuscript")
-        if not book.is_dir():
-            self.skipTest("reference book not present")
-        results = {c.chapter_id: parse_chapter(c)
-                   for c in find_chapters(book, "chapter", "{act}.{n}.md")}
-        self.assertTrue(results["01.01"].accepted)
-        self.assertTrue(results["01.02"].accepted)
-        self.assertTrue(results["01.03"].accepted)
-        self.assertFalse(results["01.04"].accepted)
-        self.assertGreater(len(results["01.04"].refusals), 100)
-        self.assertEqual(results["01.03"].scene_breaks, 5)
+class TestFixtureBook(unittest.TestCase):
+    """The four states a chapter can be in, on a real tree."""
+
+    def setUp(self):
+        self.chapters = {
+            chapter.chapter_id: parse_chapter(chapter)
+            for chapter in find_chapters(fixtures.BOOK_MANUSCRIPT, "chapter",
+                                         fixtures.NAMING)}
+
+    def test_written_chapters_are_accepted(self):
+        for chapter_id, words in (("01.01", 11), ("01.02", 38), ("01.03", 17)):
+            parsed = self.chapters[chapter_id]
+            self.assertTrue(parsed.accepted, chapter_id)
+            self.assertEqual(parsed.words, words, chapter_id)
+
+    def test_dialogue_dashes_are_not_counted_as_words(self):
+        # 01.02 opens two lines with a bare em dash; neither dash counts.
+        self.assertEqual(self.chapters["01.02"].words, 38)
+
+    def test_a_chapter_written_straight_through_has_no_breaks(self):
+        self.assertEqual(self.chapters["01.01"].scene_breaks, 0)
+        self.assertTrue(self.chapters["01.01"].accepted)
+
+    def test_three_scene_headers_produce_two_breaks(self):
+        self.assertEqual(self.chapters["01.03"].scene_breaks, 2)
+
+    def test_the_plan_is_refused_with_every_kind_named(self):
+        parsed = self.chapters["01.04"]
+        self.assertFalse(parsed.accepted)
+        self.assertEqual(parsed.words, 0)
+        self.assertEqual(
+            sorted({refusal.kind for refusal in parsed.refusals}),
+            ["comment", "emphasis-only", "heading", "list", "placeholder",
+             "quote", "rule", "table"])
+
+    def test_titles_come_from_the_heading(self):
+        self.assertEqual([self.chapters[k].title
+                          for k in sorted(self.chapters)],
+                         ["1", "2", "3", "4"])
 
 
 if __name__ == "__main__":

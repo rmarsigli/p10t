@@ -1,0 +1,13 @@
+# The address deliberately contains a comma inside its quotes: an inline
+# list split naively on commas turns one line into two.
+contact:
+  name: "Ana Vilalba"
+  address: ["12 Oliver Street, Apt. 3", "Fairmont, OR"]
+  phone: "+1 555 0100"
+  email: "ana@example.com"
+labels:
+  wordcount: "Word count"
+  byline: "by"
+profiles:
+  submission:
+    scene_break: "#"

@@ -3,14 +3,15 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 
 from p10t_export.config import (load_config, default_labels, format_number,
                                 ConfigError)
+from tests import fixtures
 
 PROJECT_YAML = """\
-language: pt-BR
-title: "Deuses Entre Nós"
-author: "Rafhael Marsigli"
+language: en
+title: "The Open Shed"
+author: "Ana Vilalba"
 genre:
-  primary: "ficção especulativa"
-  audience: "adulto"
+  primary: "speculative fiction"
+  audience: "adult"
 paths:
   manuscript: "manuscript/"
   naming: "{act}.{n}.md"
@@ -19,12 +20,12 @@ paths:
 
 EXPORT_YAML = """\
 contact:
-  name: "Rafhael Marsigli"
+  name: "Ana Vilalba"
   address: []
   phone: ""
   email: ""
 labels:
-  wordcount: "Contagem de palavras"
+  wordcount: "Word count"
 profiles:
   submission:
     formats: [docx, pdf]
@@ -48,11 +49,11 @@ class TestConfig(unittest.TestCase):
     def test_metadata_comes_from_project_yaml(self):
         with tempfile.TemporaryDirectory() as tmp:
             cfg = load_config(_project(tmp))
-        self.assertEqual(cfg.metadata.title, "Deuses Entre Nós")
-        self.assertEqual(cfg.metadata.author, "Rafhael Marsigli")
-        self.assertEqual(cfg.metadata.author_last, "Marsigli")
-        self.assertEqual(cfg.metadata.audience, "adulto")
-        self.assertEqual(cfg.metadata.genre, "ficção especulativa")
+        self.assertEqual(cfg.metadata.title, "The Open Shed")
+        self.assertEqual(cfg.metadata.author, "Ana Vilalba")
+        self.assertEqual(cfg.metadata.author_last, "Vilalba")
+        self.assertEqual(cfg.metadata.audience, "adult")
+        self.assertEqual(cfg.metadata.genre, "speculative fiction")
         self.assertEqual(cfg.layout, "chapter")
 
     def test_profile_falls_back_to_builtin_defaults(self):
@@ -73,8 +74,8 @@ class TestConfig(unittest.TestCase):
     def test_labels_merge_over_language_defaults(self):
         with tempfile.TemporaryDirectory() as tmp:
             cfg = load_config(_project(tmp))
-        self.assertEqual(cfg.labels["wordcount"], "Contagem de palavras")
-        self.assertEqual(cfg.labels["byline"], "por")
+        self.assertEqual(cfg.labels["wordcount"], "Word count")
+        self.assertEqual(cfg.labels["byline"], "by")
 
     def test_missing_export_yaml_is_not_an_error(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -104,14 +105,34 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(format_number(80000, "pt-BR"), "80.000")
         self.assertEqual(format_number(80000, "en"), "80,000")
 
-    def test_loads_the_real_book(self):
-        book = pathlib.Path("/home/rafhael/projects/books/gods-between-us")
-        if not book.is_dir():
-            self.skipTest("reference book not present")
-        cfg = load_config(book)
+
+class TestFixtureBooks(unittest.TestCase):
+    def test_chapter_layout_book(self):
+        cfg = load_config(fixtures.BOOK)
         self.assertEqual(cfg.layout, "chapter")
         self.assertEqual(cfg.naming, "{act}.{n}.md")
-        self.assertEqual(cfg.metadata.author_last, "Marsigli")
+        self.assertEqual(cfg.metadata.title, "The Open Shed")
+        self.assertEqual(cfg.metadata.author_last, "Vilalba")
+        self.assertEqual(cfg.metadata.language, "en")
+        self.assertEqual(cfg.metadata.audience, "adult")
+
+    def test_contact_and_labels_come_from_export_yaml(self):
+        cfg = load_config(fixtures.BOOK)
+        self.assertFalse(cfg.contact.is_empty)
+        self.assertEqual(cfg.contact.email, "ana@example.com")
+        self.assertEqual(len(cfg.contact.address), 2)
+        self.assertEqual(cfg.labels["wordcount"], "Word count")
+
+    def test_flat_layout_book_without_export_yaml(self):
+        cfg = load_config(fixtures.FLAT)
+        self.assertEqual(cfg.layout, "flat")
+        self.assertEqual(cfg.metadata.language, "en")
+        self.assertTrue(cfg.contact.is_empty)
+        self.assertEqual(cfg.labels["byline"], "by")
+
+    def test_the_manuscript_path_resolves_under_the_project_root(self):
+        cfg = load_config(fixtures.BOOK)
+        self.assertTrue(cfg.manuscript.is_dir())
 
 
 if __name__ == "__main__":

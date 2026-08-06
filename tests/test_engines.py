@@ -37,7 +37,7 @@ class TestPandoc(unittest.TestCase):
     def test_produces_a_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             source = pathlib.Path(tmp) / "in.md"
-            source.write_text("# 1\n\nProsa.\n", encoding="utf-8")
+            source.write_text("# 1\n\nProse.\n", encoding="utf-8")
             dest = pathlib.Path(tmp) / "out.docx"
             run_pandoc(shutil.which("pandoc"), source, dest, [])
             self.assertTrue(dest.exists())

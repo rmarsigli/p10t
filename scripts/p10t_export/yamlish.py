@@ -36,6 +36,30 @@ def _strip_comment(raw):
     return "".join(out).rstrip()
 
 
+def _split_items(inner):
+    """Split an inline list on commas that are not inside quotes.
+
+    An address line is "Street, 12" — splitting naively turns one item
+    into two, and the title page then prints a stray number on its own row.
+    """
+    items, current, quote = [], [], None
+    for ch in inner:
+        if quote:
+            current.append(ch)
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+            current.append(ch)
+        elif ch == ",":
+            items.append("".join(current))
+            current = []
+        else:
+            current.append(ch)
+    items.append("".join(current))
+    return [item for item in items if item.strip()]
+
+
 def _scalar(text):
     text = text.strip()
     if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
@@ -43,7 +67,7 @@ def _scalar(text):
     inline = _INLINE_LIST.match(text)
     if inline:
         inner = inline.group(1).strip()
-        return [_scalar(part) for part in inner.split(",")] if inner else []
+        return [_scalar(part) for part in _split_items(inner)] if inner else []
     low = text.lower()
     if low in ("true", "false"):
         return low == "true"
