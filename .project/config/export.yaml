@@ -31,9 +31,16 @@ profiles:
   # by an editor, not to be admired.
   submission:
     formats: [docx, pdf]
-    font: "Courier New"
+    font: "Times New Roman"
+    # Times New Roman and Courier New ship with Windows and macOS, and with
+    # neither Linux nor most CI images. These metric-compatible substitutes
+    # are tried in order when the first is missing.
+    font_fallback: ["Nimbus Roman", "Liberation Serif", "DejaVu Serif"]
     size: 12pt
     leading: double
+    # Standard manuscript format is unhyphenated and ragged right: a broken
+    # word is one more thing for an editor to work around.
+    hyphenate: false
     indent: 1.27cm
     margins: 2.54cm
     scene_break: "#"
@@ -47,8 +54,10 @@ profiles:
   reading:
     formats: [epub, pdf]
     font: "EB Garamond"
+    font_fallback: ["Libertinus Serif", "Nimbus Roman", "DejaVu Serif"]
     size: 11pt
     leading: "1.3"
+    hyphenate: true
     indent: 1em
     margins: 2.2cm
     scene_break: "* * *"
