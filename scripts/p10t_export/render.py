@@ -6,8 +6,16 @@ scene-break marker that is not centred means nothing.
 """
 import datetime
 import re
+import unicodedata
 
 from .config import format_number
+
+#: Letters that carry no combining mark to strip, so NFKD leaves them alone.
+_TRANSLITERATE = {
+    "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE",
+    "ø": "o", "Ø": "O", "đ": "d", "Đ": "D", "ł": "l", "Ł": "L",
+    "þ": "th", "Þ": "Th", "ð": "d", "Ð": "D",
+}
 
 _FORBIDDEN = re.compile(r'[<>:"/\\|?*]+')
 _SPACES = re.compile(r"\s+")
@@ -21,9 +29,29 @@ OPENXML_PAGE_BREAK = (
 )
 
 
+def to_ascii(text):
+    """Fold accented letters onto their plain ASCII form.
+
+    A filename crosses machines the manuscript never will: mail clients,
+    submission portals, and older systems mangle non-ASCII names, and macOS
+    stores them decomposed while everything else stores them composed, so the
+    same file lists differently in two places. Returns "" when the text has
+    no Latin script at all.
+    """
+    for source, target in _TRANSLITERATE.items():
+        text = text.replace(source, target)
+    decomposed = unicodedata.normalize("NFKD", text)
+    unmarked = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+    return "".join(ch for ch in unmarked if ord(ch) < 128)
+
+
 def slugify(text):
-    """Strip what Windows forbids in a filename and collapse whitespace."""
-    cleaned = _FORBIDDEN.sub(" ", text)
+    """ASCII, no characters Windows forbids, spaces collapsed to hyphens."""
+    folded = to_ascii(text)
+    # A title written in a non-Latin script folds to nothing. An unreadable
+    # filename beats no filename, so keep the original in that case.
+    source = folded if folded.strip() else text
+    cleaned = _FORBIDDEN.sub(" ", source)
     cleaned = _SPACES.sub(" ", cleaned).strip()
     return cleaned.replace(" ", "-")
 

@@ -4,8 +4,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 from p10t_export.config import (Metadata, Contact, Profile, ExportConfig,
                                 DEFAULT_PROFILES, default_labels)
 from p10t_export.parse import ParsedChapter, Block
-from p10t_export.render import (slugify, round_wordcount, output_name,
-                                render_title_page, render_body,
+from p10t_export.render import (slugify, to_ascii, round_wordcount,
+                                output_name, render_title_page, render_body,
                                 render_document, typst_escape,
                                 markdown_escape)
 
@@ -35,8 +35,25 @@ class TestSlug(unittest.TestCase):
         self.assertEqual(slugify('The Fall: Part One/Two "x"'),
                          "The-Fall-Part-One-Two-x")
 
-    def test_keeps_accents(self):
-        self.assertEqual(slugify("Naïve Voyager"), "Naïve-Voyager")
+    def test_folds_accents_to_ascii(self):
+        self.assertEqual(slugify("Naïve Voyager"), "Naive-Voyager")
+        self.assertEqual(slugify("dano não observado"), "dano-nao-observado")
+
+    def test_folds_every_accent_a_latin_manuscript_uses(self):
+        self.assertEqual(slugify("Ação Coração Über Señor Île Ångström"),
+                         "Acao-Coracao-Uber-Senor-Ile-Angstrom")
+
+    def test_folds_letters_that_carry_no_combining_mark(self):
+        self.assertEqual(slugify("Straße Ø Æther"), "Strasse-O-AEther")
+
+    def test_a_title_in_another_script_keeps_its_own_characters(self):
+        # Folding would leave nothing, and no filename is worse than an
+        # awkward one.
+        self.assertEqual(slugify("三体"), "三体")
+
+    def test_folding_is_reported_separately_from_slugging(self):
+        self.assertEqual(to_ascii("Nós"), "Nos")
+        self.assertEqual(to_ascii("三体"), "")
 
 
 class TestWordcount(unittest.TestCase):
