@@ -11,18 +11,22 @@ import zipfile
 from pathlib import Path
 
 TYPST = """\
+#let body-font = {font}
+
 #set page(
   paper: "a4",
   margin: {margins},
   header: context {{
-    let page = counter(page).get().first()
-    if page > 1 [
-      #set text(font: "{font}", size: {size})
+    // Not named `page`: that would shadow typst's own page element and
+    // break `counter(page)` below.
+    let current = counter(page).get().first()
+    if current > 1 [
+      #set text(font: body-font, size: {size})
       #align(right)[{running_head}]
     ]
   }},
 )
-#set text(font: "{font}", size: {size}, lang: "{lang}", hyphenate: true)
+#set text(font: body-font, size: {size}, lang: "{lang}", hyphenate: {hyphenate})
 #set par(leading: {leading}, first-line-indent: {indent}, justify: false)
 
 #show heading.where(level: 1): it => {{
@@ -37,7 +41,7 @@ $body$
 
 CSS = """\
 body {{
-  font-family: "{font}", Georgia, serif;
+  font-family: {font};
   line-height: {line_height};
 }}
 h1 {{
@@ -86,6 +90,27 @@ def _lang(language):
     return (language or "en").split("-")[0]
 
 
+def font_chain(profile):
+    """The requested font first, then metric-compatible substitutes.
+
+    Times New Roman and Courier New ship with Windows and macOS and with
+    neither Linux nor most CI images. Without a chain, typst warns and
+    silently falls back to its own default, which is not the typeface the
+    profile asked for.
+    """
+    names = [profile.font]
+    names.extend(name for name in getattr(profile, "font_fallback", [])
+                 if name not in names)
+    return names
+
+
+def typst_font(profile):
+    names = font_chain(profile)
+    if len(names) == 1:
+        return '"%s"' % names[0]
+    return "(%s)" % ", ".join('"%s"' % name for name in names)
+
+
 def typst_template(cfg, profile):
     head = (profile.running_head
             .replace("{author_last}", cfg.metadata.author_last)
@@ -94,8 +119,9 @@ def typst_template(cfg, profile):
     return TYPST.format(
         margins=profile.margins,
         size=profile.size,
-        font=profile.font,
+        font=typst_font(profile),
         lang=_lang(cfg.metadata.language),
+        hyphenate="true" if profile.hyphenate else "false",
         leading=leading_to_typst(profile.leading),
         indent=profile.indent,
         running_head=head,
@@ -105,7 +131,8 @@ def typst_template(cfg, profile):
 def epub_css(profile):
     line_height = "2" if str(profile.leading).lower() == "double" \
         else str(profile.leading)
-    return CSS.format(font=profile.font, line_height=line_height,
+    family = ", ".join('"%s"' % name for name in font_chain(profile))
+    return CSS.format(font=family + ", serif", line_height=line_height,
                       indent=profile.indent)
 
 

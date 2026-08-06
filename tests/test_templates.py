@@ -13,20 +13,39 @@ READING = Profile(name="reading", **DEFAULT_PROFILES["reading"])
 class TestTypstTemplate(unittest.TestCase):
     def test_carries_font_size_and_margins(self):
         out = typst_template(make_cfg(), SUBMISSION)
-        self.assertIn('font: "Courier New"', out)
+        self.assertIn('"Times New Roman"', out)
         self.assertIn("size: 12pt", out)
         self.assertIn("margin: 2.54cm", out)
+
+    def test_font_falls_back_to_metric_compatible_substitutes(self):
+        out = typst_template(make_cfg(), SUBMISSION)
+        self.assertIn('#let body-font = ("Times New Roman", "Nimbus Roman"',
+                      out)
+
+    def test_the_header_variable_does_not_shadow_the_page_element(self):
+        # `let page = counter(page)...` makes the next counter(page) an
+        # integer, and typst refuses to compile.
+        out = typst_template(make_cfg(), SUBMISSION)
+        self.assertNotIn("let page =", out)
+        self.assertIn("counter(page)", out)
 
     def test_running_head_is_interpolated_and_suppressed_on_page_one(self):
         out = typst_template(make_cfg(), SUBMISSION)
         self.assertIn("Marsigli / Deuses Entre Nós /", out)
-        self.assertIn("if page > 1", out)
+        self.assertIn("if current > 1", out)
 
     def test_body_placeholder_present_for_pandoc(self):
         self.assertIn("$body$", typst_template(make_cfg(), SUBMISSION))
 
     def test_language_reaches_hyphenation(self):
         self.assertIn('lang: "pt"', typst_template(make_cfg(), SUBMISSION))
+
+    def test_submission_is_not_hyphenated(self):
+        # Standard manuscript format is ragged right and unhyphenated.
+        self.assertIn("hyphenate: false", typst_template(make_cfg(), SUBMISSION))
+
+    def test_reading_is_hyphenated(self):
+        self.assertIn("hyphenate: true", typst_template(make_cfg(), READING))
 
     def test_chapter_headings_start_a_new_page(self):
         out = typst_template(make_cfg(), SUBMISSION)
@@ -67,7 +86,7 @@ class TestReferenceDocx(unittest.TestCase):
                                         pathlib.Path(tmp) / "ref.docx")
             styles = zipfile.ZipFile(out).read("word/styles.xml").decode("utf-8")
             leftovers = list(pathlib.Path(tmp).glob("*.default.docx"))
-        self.assertIn('w:ascii="Courier New"', styles)
+        self.assertIn('w:ascii="Times New Roman"', styles)
         self.assertIn('w:val="24"', styles)
         self.assertIn("SceneBreak", styles)
         self.assertIn('w:line="480"', styles)

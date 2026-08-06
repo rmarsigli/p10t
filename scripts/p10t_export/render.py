@@ -11,7 +11,7 @@ from .config import format_number
 
 _FORBIDDEN = re.compile(r'[<>:"/\\|?*]+')
 _SPACES = re.compile(r"\s+")
-_TYPST_SPECIAL = re.compile(r"([\\#\[\]$@])")
+_TYPST_SPECIAL = re.compile(r"([\\#\[\]$@*_])")
 _MARKDOWN_SPECIAL = re.compile(r"([#*_~>|+-])")
 
 OPENXML_PAGE_BREAK = (

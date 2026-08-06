@@ -17,9 +17,11 @@ class ConfigError(Exception):
 DEFAULT_PROFILES = {
     "submission": {
         "formats": ["docx", "pdf"],
-        "font": "Courier New",
+        "font": "Times New Roman",
+        "font_fallback": ["Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
         "size": "12pt",
         "leading": "double",
+        "hyphenate": False,
         "indent": "1.27cm",
         "margins": "2.54cm",
         "scene_break": "#",
@@ -32,8 +34,10 @@ DEFAULT_PROFILES = {
     "reading": {
         "formats": ["epub", "pdf"],
         "font": "EB Garamond",
+        "font_fallback": ["Libertinus Serif", "Nimbus Roman", "DejaVu Serif"],
         "size": "11pt",
         "leading": "1.3",
+        "hyphenate": True,
         "indent": "1em",
         "margins": "2.2cm",
         "scene_break": "* * *",
@@ -83,8 +87,10 @@ class Profile:
     name: str
     formats: list
     font: str
+    font_fallback: list
     size: str
     leading: str
+    hyphenate: bool
     indent: str
     margins: str
     scene_break: str

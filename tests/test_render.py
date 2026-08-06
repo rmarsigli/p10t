@@ -66,6 +66,12 @@ class TestTypstEscape(unittest.TestCase):
         self.assertEqual(typst_escape("r@example.com"), "r\\@example.com")
         self.assertEqual(typst_escape("#1 [a]"), "\\#1 \\[a\\]")
 
+    def test_escapes_emphasis_markers(self):
+        # "* * *" is an unclosed strong-emphasis delimiter in typst content
+        # mode, and it is the default scene break of the reading profile.
+        self.assertEqual(typst_escape("* * *"), "\\* \\* \\*")
+        self.assertEqual(typst_escape("_x_"), "\\_x\\_")
+
 
 class TestMarkdownEscape(unittest.TestCase):
     def test_escapes_a_bare_hash(self):

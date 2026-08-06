@@ -59,9 +59,10 @@ class TestConfig(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             cfg = load_config(_project(tmp))
         profile = cfg.profiles["submission"]
-        self.assertEqual(profile.font, "Courier New")
-        self.assertEqual(profile.leading, "double")
+        self.assertEqual(profile.font, "Courier New")   # from export.yaml
+        self.assertEqual(profile.leading, "double")     # from the default
         self.assertEqual(profile.margins, "2.54cm")
+        self.assertIn("Nimbus Roman", profile.font_fallback)
 
     def test_reading_profile_exists_even_when_unconfigured(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -78,7 +79,7 @@ class TestConfig(unittest.TestCase):
     def test_missing_export_yaml_is_not_an_error(self):
         with tempfile.TemporaryDirectory() as tmp:
             cfg = load_config(_project(tmp, export_yaml=None))
-        self.assertEqual(cfg.profiles["submission"].font, "Courier New")
+        self.assertEqual(cfg.profiles["submission"].font, "Times New Roman")
         self.assertTrue(cfg.contact.is_empty)
 
     def test_missing_title_is_an_error(self):
