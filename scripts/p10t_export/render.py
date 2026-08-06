@@ -142,7 +142,11 @@ def render_title_page(cfg, profile, words, fmt):
 
 def render_body(chapters, profile, fmt):
     parts = []
-    for chapter in chapters:
+    for index, chapter in enumerate(chapters):
+        # Typst starts chapters on a new page through a show rule, and EPUB
+        # reflows, so only docx needs the break spelled out here.
+        if fmt == "docx" and index > 0:
+            parts.append(OPENXML_PAGE_BREAK)
         parts.append("# %s" % chapter.title)
         for block in chapter.blocks:
             if block.kind == "scene_break":
