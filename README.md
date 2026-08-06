@@ -107,8 +107,11 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │   ├── 01.02.md
 │   └── ...                      (chapter layout nests each in 01.01/, 01.02/ — see below)
 ├── examples/                    Worked samples of the system's outputs
+├── docs/
+│   └── export.md                Dependencies and use of the exporter
 ├── scripts/
-│   └── scene-budget             Per-scene word counts vs. the header budgets
+│   ├── scene-budget             Per-scene word counts vs. the header budgets
+│   └── export                   Manuscript to .docx, .epub and .pdf
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
 │       ├── init-project/        analyze-chapter/     scan-recurrences/
@@ -125,6 +128,7 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     │   ├── persona.md           Your voice: vocabulary, signatures, tone
     │   ├── references.md        Reference authors and works
     │   ├── style-guide.md       Hard rules for this project
+    │   ├── export.yaml          Export profiles and typography
     │   └── project.yaml         Metadata (including output language)
     │
     ├── knowledge/               ── WHAT EXISTS IN THE BOOK ──
@@ -143,6 +147,7 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     └── templates/               ── REUSABLE SKELETONS ──
         ├── framework.md         The 14 tic categories
         ├── layout.md            How skills resolve and order chapter files
+        ├── export/              Optional hand-written export templates
         ├── chapter-analysis.md
         ├── chapter-outline.md
         ├── persona-template.md
@@ -376,6 +381,31 @@ Chapter-by-chapter analysis is blind to this. Only a global sweep sees it.
 
 ---
 
+## Export
+
+When the prose is ready, `scripts/export` turns the manuscript into the three files you actually send.
+
+```sh
+scripts/export --profile submission   # .docx + .pdf
+scripts/export --profile reading      # .epub + .pdf
+```
+
+| Output | For | Requires |
+|---|---|---|
+| `.docx` | agents and publishers — it is what they ask for, because PDF cannot be annotated | pandoc |
+| `.epub` | beta readers — it reflows, so it fits a phone | pandoc |
+| `.pdf` | print, or a fixed artifact | pandoc + [typst](https://typst.app) |
+
+pandoc is one installer on all three platforms; typst is one self-contained binary and **no LaTeX is involved**, whatever pandoc's own install page says. Without typst the other formats are still written and the PDF is skipped with a note. **Nothing else in p10t depends on this** — delete the script and every skill still works.
+
+The `submission` profile is standard manuscript format: 12 pt, double spaced, one-inch margins, ragged right and unhyphenated, chapters on new pages, a `Surname / Title / page` running head, and a title page with the rounded word count.
+
+**It refuses rather than cleans.** Only a title, paragraphs, and scene headers are accepted; a table, a list, a `{ }` placeholder or an HTML comment refuses that chapter by name and line, and exports the rest. Scaffolding is not dirt to be stripped — it is the signal that the chapter is still a plan, and a chapter exported down to its four surviving lines would be worse than one left out. The absence of scene headers stays a choice, and is never reported.
+
+Dependencies, configuration, profiles, and the template escape hatch: **[`docs/export.md`](docs/export.md)**.
+
+---
+
 ## Starting a new book
 
 1. **Copy this repository** into the book folder.
@@ -399,7 +429,7 @@ All nineteen skills described above are implemented. What is not yet built:
 
 **A validation script.** Frontmatter names against directory names, unfilled `{placeholders}` after init, dangling cross-references between skills. Cheap insurance for a system made entirely of markdown.
 
-**Export.** Manuscript to submission format. Deliberately last: nothing about it is interesting until the prose is done.
+**An `export-manuscript` skill.** `scripts/export` already does the work (see below); a skill would read its refusals aloud and offer to fix them. Deferred until the script has been used on a real submission.
 
 ---
 
