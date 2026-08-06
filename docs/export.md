@@ -219,4 +219,9 @@ your own binary, in the one place documented to hold one.
 python3 -m unittest discover -s tests -t .
 ```
 
+The suite runs against two synthetic books in `tests/fixtures/` — one per
+layout — so it passes anywhere, including a fresh clone and a CI runner. The
+fixtures cover the four states a chapter can be in: written without scene
+headers, written with them, written with em-dash dialogue, and still a plan.
+
 Tests that need pandoc or typst skip themselves when the tool is absent.
