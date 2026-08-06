@@ -22,11 +22,16 @@ desktop.ini
 docs/superpowers/
 
 # Exports and builds
-export/
+# Anchored to the repository root: `export/` unanchored would also swallow
+# .project/templates/export/, which is tracked and ships a README.
+/export/
 build/
 *.docx
 *.epub
 *.pdf
+# The one binary a book may legitimately version: a hand-written Word
+# reference document, in the directory documented as the escape hatch.
+!.project/templates/export/reference.docx
 
 # The report folders ship with a .gitkeep so they survive a fresh clone.
 # Nothing above ignores them, so no negation pattern is needed here —
