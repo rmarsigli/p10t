@@ -3,22 +3,23 @@ from contextlib import redirect_stdout, redirect_stderr
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 
 from p10t_export.cli import main
+from tests import fixtures
 
 PROJECT = """\
-language: pt-BR
-title: "Deuses Entre Nós"
-author: "Rafhael Marsigli"
+language: en
+title: "The Open Shed"
+author: "Ana Vilalba"
 genre:
-  primary: "ficção especulativa"
-  audience: "adulto"
+  primary: "speculative fiction"
+  audience: "adult"
 paths:
   manuscript: "manuscript/"
   naming: "{act}.{n}.md"
   layout: "flat"
 """
 
-CLEAN = "# 1\n\nO terceiro vidro trincou. Ninguém percebeu.\n"
-CLEAN_TWO = "# 2\n\nA cidade esperava do outro lado.\n"
+CLEAN = "# 1\n\nThe third pane cracked. Nobody noticed.\n"
+CLEAN_TWO = "# 2\n\nThe town was waiting on the other side.\n"
 DIRTY = "# 3\n\n| a | b |\n\n{ placeholder }\n"
 
 
@@ -106,7 +107,7 @@ class TestRealOutput(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = _book(tmp, {"01.01.md": CLEAN, "01.02.md": CLEAN_TWO})
             code, _ = _run(root, "--profile", "submission")
-            produced = list((root / "export").glob("Marsigli_*.docx"))
+            produced = list((root / "export").glob("Vilalba_*.docx"))
         self.assertIn(code, (0, 2))
         self.assertEqual(len(produced), 1)
 
@@ -122,9 +123,9 @@ class TestRealOutput(unittest.TestCase):
             content = archive.read(opf).decode("utf-8")
             chapters = [n for n in archive.namelist()
                         if re.search(r"ch\d+\.xhtml$", n)]
-        self.assertIn("Deuses Entre Nós", content)
-        self.assertIn("Rafhael Marsigli", content)
-        self.assertIn("pt-BR", content)
+        self.assertIn("The Open Shed", content)
+        self.assertIn("Ana Vilalba", content)
+        self.assertIn("<dc:language>en</dc:language>", content)
         self.assertEqual(len(chapters), 2)
 
     def test_docx_carries_the_title_page_and_a_page_break(self):
@@ -132,11 +133,58 @@ class TestRealOutput(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = _book(tmp, {"01.01.md": CLEAN, "01.02.md": CLEAN_TWO})
             _run(root, "--profile", "submission")
-            produced = list((root / "export").glob("Marsigli_*.docx"))
+            produced = list((root / "export").glob("Vilalba_*.docx"))
             document = zipfile.ZipFile(produced[0]).read(
                 "word/document.xml").decode("utf-8")
-        self.assertIn("DEUSES ENTRE NÓS", document)
+        self.assertIn("THE OPEN SHED", document)
         self.assertIn('w:type="page"', document)
+
+
+@unittest.skipUnless(shutil.which("pandoc"), "pandoc is not installed")
+class TestFixtureBookEndToEnd(unittest.TestCase):
+    """The whole pipeline over the fixture book, writing to a temp directory
+    so the fixture itself is never modified."""
+
+    def test_three_chapters_out_one_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, output = _run(fixtures.BOOK, "--profile", "submission",
+                                "--out", tmp)
+            produced = sorted(p.name for p in pathlib.Path(tmp).iterdir())
+        self.assertEqual(code, 2)          # 01.04 refused, and no typst here
+        self.assertIn("01.04", output)
+        self.assertIn("REFUSED", output)
+        self.assertIn("01.04_plot.md", output)
+        self.assertTrue(any(name.startswith("Vilalba_The-Open-Shed_")
+                            and name.endswith(".docx") for name in produced))
+
+    def test_the_title_page_carries_contact_and_rounded_wordcount(self):
+        import zipfile, re
+        with tempfile.TemporaryDirectory() as tmp:
+            _run(fixtures.BOOK, "--profile", "submission", "--out", tmp)
+            docx = list(pathlib.Path(tmp).glob("Vilalba_*.docx"))[0]
+            xml = zipfile.ZipFile(docx).read("word/document.xml").decode("utf-8")
+            text = re.sub(r"<[^>]+>", "", xml)
+        self.assertIn("THE OPEN SHED", text)            # title_case: upper
+        self.assertIn("by Ana Vilalba", text)
+        self.assertIn("ana@example.com", text)
+        self.assertIn("12 Oliver Street, Apt. 3", text)  # the comma survived
+        self.assertIn("Word count: 100", text)          # 66 words, rounded
+        self.assertIn("adult", text)
+
+    def test_scene_breaks_reach_the_document(self):
+        import zipfile
+        with tempfile.TemporaryDirectory() as tmp:
+            _run(fixtures.BOOK, "--profile", "submission", "--out", tmp)
+            docx = list(pathlib.Path(tmp).glob("Vilalba_*.docx"))[0]
+            xml = zipfile.ZipFile(docx).read("word/document.xml").decode("utf-8")
+        self.assertEqual(xml.count('w:val="SceneBreak"'), 2)
+
+    def test_flat_fixture_exports_too(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, _ = _run(fixtures.FLAT, "--profile", "reading", "--out", tmp)
+            produced = sorted(p.suffix for p in pathlib.Path(tmp).iterdir())
+        self.assertIn(code, (0, 2))
+        self.assertIn(".epub", produced)
 
 
 if __name__ == "__main__":

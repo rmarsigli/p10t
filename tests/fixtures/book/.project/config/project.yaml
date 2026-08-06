@@ -1,0 +1,24 @@
+# Fixture project. Synthetic content, English like the rest of the repository.
+language: en
+title: "The Open Shed"
+author: "Ana Vilalba"
+
+genre:
+  primary: "speculative fiction"
+  secondary: ""
+  audience: "adult"
+
+structure:
+  unit: "chapter"
+  grouping: "act"
+  planned_total: 4
+
+paths:
+  manuscript: "manuscript/"
+  analyses: "manuscript/"
+  naming: "{act}.{n}.md"
+  layout: "chapter"
+
+ai:
+  assisted: true
+  density_ceiling_total: 8.0

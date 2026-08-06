@@ -10,14 +10,14 @@ from p10t_export.render import (slugify, round_wordcount, output_name,
                                 markdown_escape)
 
 
-def make_cfg(title="Deuses Entre Nós", contact=None):
-    meta = Metadata(title=title, author="Rafhael Marsigli", language="pt-BR",
-                    audience="adulto", genre="ficção especulativa")
+def make_cfg(title="The Open Shed", contact=None, language="en"):
+    meta = Metadata(title=title, author="Ana Vilalba", language=language,
+                    audience="adult", genre="speculative fiction")
     if contact is None:
-        contact = Contact(name="Rafhael Marsigli", address=["Rua X, 1"],
-                          phone="+55 11 0000", email="r@example.com")
+        contact = Contact(name="Ana Vilalba", address=["12 Oliver Street"],
+                          phone="+1 555 0100", email="ana@example.com")
     return ExportConfig(
-        metadata=meta, contact=contact, labels=default_labels("pt-BR"),
+        metadata=meta, contact=contact, labels=default_labels(language),
         profiles={n: Profile(name=n, **d) for n, d in DEFAULT_PROFILES.items()},
         manuscript=pathlib.Path("manuscript"), layout="chapter",
         naming="{act}.{n}.md", root=pathlib.Path("."))
@@ -25,18 +25,18 @@ def make_cfg(title="Deuses Entre Nós", contact=None):
 
 def make_chapters():
     return [ParsedChapter("01.01", pathlib.Path("a.md"), "1",
-                          [Block("paragraph", "Primeiro."),
+                          [Block("paragraph", "First."),
                            Block("scene_break", ""),
-                           Block("paragraph", "Segundo.")], 2, [])]
+                           Block("paragraph", "Second.")], 2, [])]
 
 
 class TestSlug(unittest.TestCase):
     def test_strips_characters_windows_forbids(self):
-        self.assertEqual(slugify('Deuses: A Queda/Parte "1"'),
-                         "Deuses-A-Queda-Parte-1")
+        self.assertEqual(slugify('The Fall: Part One/Two "x"'),
+                         "The-Fall-Part-One-Two-x")
 
     def test_keeps_accents(self):
-        self.assertEqual(slugify("Deuses Entre Nós"), "Deuses-Entre-Nós")
+        self.assertEqual(slugify("Naïve Voyager"), "Naïve-Voyager")
 
 
 class TestWordcount(unittest.TestCase):
@@ -52,18 +52,18 @@ class TestOutputName(unittest.TestCase):
     def test_submission_name_carries_author_and_title(self):
         cfg = make_cfg()
         name = output_name(cfg, cfg.profiles["submission"], "docx")
-        self.assertTrue(name.startswith("Marsigli_Deuses-Entre-Nós_"))
+        self.assertTrue(name.startswith("Vilalba_The-Open-Shed_"))
         self.assertTrue(name.endswith(".docx"))
 
     def test_colon_in_the_title_never_reaches_the_filename(self):
-        cfg = make_cfg(title="Deuses: A Queda")
+        cfg = make_cfg(title="The Fall: Part One")
         name = output_name(cfg, cfg.profiles["submission"], "pdf")
         self.assertNotIn(":", name)
 
 
 class TestTypstEscape(unittest.TestCase):
     def test_escapes_the_characters_typst_reads_as_syntax(self):
-        self.assertEqual(typst_escape("r@example.com"), "r\\@example.com")
+        self.assertEqual(typst_escape("ana@example.com"), "ana\\@example.com")
         self.assertEqual(typst_escape("#1 [a]"), "\\#1 \\[a\\]")
 
     def test_escapes_emphasis_markers(self):
@@ -85,25 +85,32 @@ class TestTitlePage(unittest.TestCase):
     def test_submission_page_has_contact_and_wordcount(self):
         cfg = make_cfg()
         page = render_title_page(cfg, cfg.profiles["submission"], 80000, "typst")
-        self.assertIn("Contagem de palavras: 80.000", page)
+        self.assertIn("Word count: 80,000", page)
         self.assertIn("example.com", page)
-        self.assertIn("DEUSES ENTRE NÓS", page)
-        self.assertIn("por Rafhael Marsigli", page)
-        self.assertIn("adulto", page)
-        self.assertIn("ficção especulativa", page)
+        self.assertIn("THE OPEN SHED", page)
+        self.assertIn("by Ana Vilalba", page)
+        self.assertIn("adult", page)
+        self.assertIn("speculative fiction", page)
 
     def test_reading_page_has_neither_contact_nor_wordcount(self):
         cfg = make_cfg()
         page = render_title_page(cfg, cfg.profiles["reading"], 80000, "typst")
         self.assertNotIn("example.com", page)
-        self.assertNotIn("Contagem", page)
-        self.assertIn("Deuses Entre Nós", page)
+        self.assertNotIn("Word count", page)
+        self.assertIn("The Open Shed", page)
+
+    def test_the_title_page_is_localised(self):
+        # Labels and the thousands separator follow the project's language.
+        cfg = make_cfg(language="pt-BR")
+        page = render_title_page(cfg, cfg.profiles["submission"], 80000, "typst")
+        self.assertIn("Contagem de palavras: 80.000", page)
+        self.assertIn("por Ana Vilalba", page)
 
     def test_empty_contact_block_is_simply_absent(self):
         cfg = make_cfg(contact=Contact())
         page = render_title_page(cfg, cfg.profiles["submission"], 1000, "typst")
-        self.assertIn("Contagem de palavras", page)
-        self.assertNotIn("Rua X", page)
+        self.assertIn("Word count", page)
+        self.assertNotIn("Oliver Street", page)
 
 
 class TestBody(unittest.TestCase):
@@ -156,7 +163,7 @@ class TestDocument(unittest.TestCase):
         doc = render_document(cfg, cfg.profiles["submission"], make_chapters(),
                               "docx")
         self.assertIn('w:br w:type="page"', doc)
-        self.assertIn("DEUSES ENTRE NÓS", doc)
+        self.assertIn("THE OPEN SHED", doc)
 
 
 if __name__ == "__main__":

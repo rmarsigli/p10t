@@ -3,6 +3,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 
 from p10t_export.chapters import (find_chapters, naming_regex,
                                   MixedLayoutError, LayoutError)
+from tests import fixtures
 
 NAMING = "{act}.{n}.md"
 
@@ -96,15 +97,30 @@ class TestMixedState(unittest.TestCase):
         self.assertEqual([c.chapter_id for c in found], ["01.01"])
 
 
-class TestRealBook(unittest.TestCase):
-    def test_enumerates_the_reference_manuscript(self):
-        book = pathlib.Path(
-            "/home/rafhael/projects/books/gods-between-us/manuscript")
-        if not book.is_dir():
-            self.skipTest("reference book not present")
-        found = find_chapters(book, "chapter", NAMING)
+class TestFixtureTrees(unittest.TestCase):
+    """Both layouts resolved against a real tree, not a built one."""
+
+    def test_chapter_layout(self):
+        found = find_chapters(fixtures.BOOK_MANUSCRIPT, "chapter", NAMING)
         self.assertEqual([c.chapter_id for c in found],
                          ["01.01", "01.02", "01.03", "01.04"])
+
+    def test_chapter_layout_ignores_satellites_and_notes(self):
+        found = find_chapters(fixtures.BOOK_MANUSCRIPT, "chapter", NAMING)
+        names = [c.path.name for c in found]
+        self.assertNotIn("01.03_analysis.md", names)
+        self.assertNotIn("01.01_outline.md", names)
+        self.assertNotIn("README.md", names)
+        self.assertNotIn("_drafts.md", names)
+
+    def test_flat_layout(self):
+        found = find_chapters(fixtures.FLAT_MANUSCRIPT, "flat", NAMING)
+        self.assertEqual([c.chapter_id for c in found],
+                         ["01.01", "01.02", "01.10"])
+
+    def test_zero_padding_keeps_ten_after_two(self):
+        found = find_chapters(fixtures.FLAT_MANUSCRIPT, "flat", NAMING)
+        self.assertEqual(found[-1].chapter_id, "01.10")
 
 
 if __name__ == "__main__":

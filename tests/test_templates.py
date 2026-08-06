@@ -31,14 +31,16 @@ class TestTypstTemplate(unittest.TestCase):
 
     def test_running_head_is_interpolated_and_suppressed_on_page_one(self):
         out = typst_template(make_cfg(), SUBMISSION)
-        self.assertIn("Marsigli / Deuses Entre Nós /", out)
+        self.assertIn("Vilalba / The Open Shed /", out)
         self.assertIn("if current > 1", out)
 
     def test_body_placeholder_present_for_pandoc(self):
         self.assertIn("$body$", typst_template(make_cfg(), SUBMISSION))
 
     def test_language_reaches_hyphenation(self):
-        self.assertIn('lang: "pt"', typst_template(make_cfg(), SUBMISSION))
+        self.assertIn('lang: "en"', typst_template(make_cfg(), SUBMISSION))
+        self.assertIn('lang: "pt"',
+                      typst_template(make_cfg(language="pt-BR"), SUBMISSION))
 
     def test_submission_is_not_hyphenated(self):
         # Standard manuscript format is ragged right and unhyphenated.
@@ -54,7 +56,7 @@ class TestTypstTemplate(unittest.TestCase):
 
     def test_reading_head_has_no_author(self):
         out = typst_template(make_cfg(), READING)
-        self.assertIn("align(right)[Deuses Entre Nós]", out)
+        self.assertIn("align(right)[The Open Shed]", out)
 
 
 class TestLeading(unittest.TestCase):
@@ -99,7 +101,7 @@ class TestReferenceDocx(unittest.TestCase):
                                               shutil.which("pandoc"),
                                               tmp / "ref.docx")
             source = tmp / "in.md"
-            source.write_text("# 1\n\nProsa.\n", encoding="utf-8")
+            source.write_text("# 1\n\nProse.\n", encoding="utf-8")
             target = tmp / "out.docx"
             import subprocess
             subprocess.check_call([shutil.which("pandoc"), str(source),
