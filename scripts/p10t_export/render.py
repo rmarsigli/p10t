@@ -12,6 +12,7 @@ from .config import format_number
 _FORBIDDEN = re.compile(r'[<>:"/\\|?*]+')
 _SPACES = re.compile(r"\s+")
 _TYPST_SPECIAL = re.compile(r"([\\#\[\]$@])")
+_MARKDOWN_SPECIAL = re.compile(r"([#*_~>|+-])")
 
 OPENXML_PAGE_BREAK = (
     "```{=openxml}\n"
@@ -29,6 +30,15 @@ def slugify(text):
 
 def typst_escape(text):
     return _TYPST_SPECIAL.sub(r"\\\1", str(text))
+
+
+def markdown_escape(text):
+    """Escape a scene-break marker so pandoc reads it as text.
+
+    A bare "#" on its own line is an empty heading, and "* * *" is a
+    horizontal rule. Either one silently swallows the marker.
+    """
+    return _MARKDOWN_SPECIAL.sub(r"\\\1", str(text))
 
 
 def round_wordcount(n):
@@ -53,7 +63,8 @@ def _scene_break(marker, fmt):
         return ("```{=typst}\n#v(1em)\n#align(center)[%s]\n#v(1em)\n```"
                 % typst_escape(marker))
     if fmt == "docx":
-        return '::: {custom-style="SceneBreak"}\n%s\n:::' % marker
+        return ('::: {custom-style="SceneBreak"}\n%s\n:::'
+                % markdown_escape(marker))
     return '<p class="scene-break">%s</p>' % marker
 
 

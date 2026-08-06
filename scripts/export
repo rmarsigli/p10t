@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+"""p10t export — manuscript to .docx, .epub and .pdf.
+
+    scripts/export [--profile submission|reading|all] [--root PATH]
+
+Requires pandoc. The PDF additionally requires typst, a single
+self-contained binary; without it the other formats are still written.
+
+Full documentation: docs/export.md
+"""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from p10t_export.cli import main  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(main())

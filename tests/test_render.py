@@ -6,7 +6,8 @@ from p10t_export.config import (Metadata, Contact, Profile, ExportConfig,
 from p10t_export.parse import ParsedChapter, Block
 from p10t_export.render import (slugify, round_wordcount, output_name,
                                 render_title_page, render_body,
-                                render_document, typst_escape)
+                                render_document, typst_escape,
+                                markdown_escape)
 
 
 def make_cfg(title="Deuses Entre Nós", contact=None):
@@ -66,6 +67,14 @@ class TestTypstEscape(unittest.TestCase):
         self.assertEqual(typst_escape("#1 [a]"), "\\#1 \\[a\\]")
 
 
+class TestMarkdownEscape(unittest.TestCase):
+    def test_escapes_a_bare_hash(self):
+        self.assertEqual(markdown_escape("#"), "\\#")
+
+    def test_escapes_an_asterisk_rule(self):
+        self.assertEqual(markdown_escape("* * *"), "\\* \\* \\*")
+
+
 class TestTitlePage(unittest.TestCase):
     def test_submission_page_has_contact_and_wordcount(self):
         cfg = make_cfg()
@@ -112,6 +121,21 @@ class TestBody(unittest.TestCase):
         cfg = make_cfg()
         body = render_body(make_chapters(), cfg.profiles["reading"], "epub")
         self.assertIn('<p class="scene-break">', body)
+
+    def test_docx_marker_is_escaped_so_pandoc_does_not_eat_it(self):
+        # A bare "#" on its own line is an empty heading, and "* * *" is a
+        # horizontal rule: either one silently swallows the scene break.
+        cfg = make_cfg()
+        body = render_body(make_chapters(), cfg.profiles["submission"], "docx")
+        self.assertIn("\\#", body)
+        self.assertNotIn("\n#\n", body)
+
+    def test_asterisk_marker_is_escaped_for_docx(self):
+        cfg = make_cfg()
+        profile = cfg.profiles["reading"]
+        profile.scene_break = "* * *"
+        body = render_body(make_chapters(), profile, "docx")
+        self.assertIn("\\*", body)
 
 
 class TestDocument(unittest.TestCase):
