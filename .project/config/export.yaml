@@ -1,0 +1,58 @@
+# Export configuration.
+#
+# Keys are English, like the rest of the machinery. Label VALUES are in the
+# project's output language (project.yaml -> language).
+#
+# Everything here is optional: with this file absent, export still runs on
+# built-in defaults. Metadata is never repeated here — title, author,
+# language, genre and audience all come from project.yaml.
+#
+# Full documentation: docs/export.md
+
+# WARNING: this block is committed to the repository, and git history is not
+# easily erased. Leave it empty if this repository may ever be public; the
+# title page is then generated without a contact block.
+contact:
+  name: ""
+  address: []
+  phone: ""
+  email: ""
+
+# Printed on the page, so these follow the output language. Defaults ship for
+# pt-BR and en; other languages inherit English and override them here.
+labels:
+  wordcount: "Word count"
+  byline: "by"
+  novel_by: "a novel by"
+  the_end: "THE END"
+
+profiles:
+  # Standard manuscript format. Deliberately plain: it exists to be annotated
+  # by an editor, not to be admired.
+  submission:
+    formats: [docx, pdf]
+    font: "Courier New"
+    size: 12pt
+    leading: double
+    indent: 1.27cm
+    margins: 2.54cm
+    scene_break: "#"
+    title_case: upper
+    chapter_starts: new_page
+    running_head: "{author_last} / {title} / {page}"
+    title_page: [contact, wordcount, title, byline, audience, genre]
+
+  # A reading copy. EPUB reflows, which is what a phone or an e-reader wants;
+  # the PDF is for printing.
+  reading:
+    formats: [epub, pdf]
+    font: "EB Garamond"
+    size: 11pt
+    leading: "1.3"
+    indent: 1em
+    margins: 2.2cm
+    scene_break: "* * *"
+    title_case: none
+    chapter_starts: new_page
+    running_head: "{title}"
+    title_page: [title, byline]
