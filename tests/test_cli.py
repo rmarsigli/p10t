@@ -66,6 +66,10 @@ class TestReporting(unittest.TestCase):
 
 
 class TestExitCodes(unittest.TestCase):
+    # Exit 2 means "some chapters refused, the rest were written". Without an
+    # engine nothing can be written at all, so the run exits 1 and the
+    # distinction this test exists to check is not observable.
+    @unittest.skipUnless(shutil.which("pandoc"), "pandoc is not installed")
     def test_partial_export_exits_two(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _book(tmp, {"01.01.md": CLEAN, "01.02.md": DIRTY})

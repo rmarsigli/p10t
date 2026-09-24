@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""p10t validate — structural checks for a system made entirely of markdown.
+
+    scripts/validate [--root PATH]
+
+There is no compiler here. A skill that names a template which was renamed,
+a frontmatter name that drifted from its directory, a count in the README
+that nobody updated when a skill was added — none of these fail loudly. They
+produce an agent that reads a file that is not there and continues anyway.
+
+This is the cheap insurance: five checks, no dependencies, one second.
+
+Exit status is 0 when every check passes, 1 otherwise. Checks that do not
+apply to the repository's current state are skipped with a reason, and a
+skip is never a failure.
+"""
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+SKILLS_DIR = Path(".claude/skills")
+
+# Directories whose contents are machinery and must exist. Paths under
+# manuscript/ and translations/ are the author's, created at run time, and
+# are deliberately not checked.
+MACHINERY = (".project/", ".claude/", "scripts/", "tests/", "docs/")
+
+# Files whose prose states how many skills there are.
+COUNTED_IN = ("README.md", "CLAUDE.md", ".project/CLAUDE.md")
+
+NUMBER_WORDS = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+    "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
+    "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19,
+    "twenty": 20, "twenty-one": 21, "twenty-two": 22, "twenty-three": 23,
+    "twenty-four": 24, "twenty-five": 25, "twenty-six": 26,
+    "twenty-seven": 27, "twenty-eight": 28, "twenty-nine": 29, "thirty": 30,
+}
+
+
+class Report:
+    def __init__(self):
+        self.failures = []
+        self.skips = []
+
+    def fail(self, check, detail):
+        self.failures.append((check, detail))
+
+    def skip(self, check, why):
+        self.skips.append((check, why))
+
+
+def markdown_files(root):
+    for path in sorted(root.rglob("*.md")):
+        rel = path.relative_to(root)
+        parts = rel.parts
+        if ".git" in parts or "node_modules" in parts:
+            continue
+        # Working notes from the design process are not part of the system.
+        if parts[:2] == ("docs", "superpowers"):
+            continue
+        yield rel, path
+
+
+def skill_names(root):
+    d = root / SKILLS_DIR
+    if not d.is_dir():
+        return []
+    return sorted(p.name for p in d.iterdir() if (p / "SKILL.md").is_file())
+
+
+def frontmatter(text):
+    """Return the frontmatter block's key/value pairs, or None if absent."""
+    if not text.startswith("---\n"):
+        return None
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return None
+    out = {}
+    for line in text[4:end].splitlines():
+        if ":" in line and not line.startswith((" ", "\t", "#")):
+            k, _, v = line.partition(":")
+            out[k.strip()] = v.strip()
+    return out
+
+
+# ── check 1 ────────────────────────────────────────────────────────────────
+
+def check_frontmatter(root, report):
+    """Every skill's frontmatter name matches its directory, with a description."""
+    names = skill_names(root)
+    if not names:
+        report.skip("frontmatter", f"no skills found under {SKILLS_DIR}")
+        return
+    for name in names:
+        path = root / SKILLS_DIR / name / "SKILL.md"
+        fm = frontmatter(path.read_text(encoding="utf-8"))
+        if fm is None:
+            report.fail("frontmatter", f"{name}: no YAML frontmatter")
+            continue
+        if fm.get("name") != name:
+            report.fail(
+                "frontmatter",
+                f"{name}: frontmatter name is {fm.get('name')!r}, "
+                f"directory is {name!r}",
+            )
+        if not fm.get("description"):
+            report.fail("frontmatter", f"{name}: empty or missing description")
+
+
+# ── check 2 ────────────────────────────────────────────────────────────────
+
+COUNT_RE = re.compile(
+    r"\b([A-Za-z]+(?:-[a-z]+)?)\s+(skills|instructions)\b", re.IGNORECASE
+)
+
+
+def check_counts(root, report):
+    """Prose that states how many skills exist agrees with how many exist."""
+    actual = len(skill_names(root))
+    if not actual:
+        report.skip("counts", "no skills to count")
+        return
+    checked = 0
+    for rel in COUNTED_IN:
+        path = root / rel
+        if not path.is_file():
+            continue
+        for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            # A table cell is a label or an example, not the canonical claim.
+            # Every real count in the docs is a prose sentence, and a table
+            # documenting this very check would otherwise trip it.
+            if line.lstrip().startswith("|"):
+                continue
+            for word, _noun in COUNT_RE.findall(line):
+                claimed = NUMBER_WORDS.get(word.lower())
+                if claimed is None:
+                    continue
+                checked += 1
+                if claimed != actual:
+                    report.fail(
+                        "counts",
+                        f"{rel}:{n}: says {word.lower()} ({claimed}), "
+                        f"there are {actual}",
+                    )
+    if not checked:
+        report.skip("counts", "no spelled-out skill count found in the docs")
+
+
+# ── check 3 ────────────────────────────────────────────────────────────────
+
+PATH_RE = re.compile(r"`([^`\s]+)`|\]\(([^)\s]+)\)")
+
+
+def check_paths(root, report):
+    """Machinery paths named in the docs exist."""
+    seen = set()
+    candidates = []
+    for rel, path in markdown_files(root):
+        # A changelog documents past states by definition: every rename it
+        # records names a path that is correctly no longer there.
+        if rel.name == "CHANGELOG.md":
+            continue
+        for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for backticked, linked in PATH_RE.findall(line):
+                ref = backticked or linked
+                ref = ref.split("#", 1)[0].rstrip("/")
+                if not ref or not ref.startswith(MACHINERY):
+                    continue
+                # Placeholders and globs name a shape, not a file.
+                if any(c in ref for c in "{}*<>|"):
+                    continue
+                if (root / ref).exists():
+                    continue
+                key = (str(rel), ref)
+                if key in seen:
+                    continue
+                seen.add(key)
+                candidates.append((rel, n, ref))
+
+    # A gitignored path is absent on purpose — local settings, caches, the
+    # author's own exports. Naming one in the docs is correct, not dangling.
+    ignored = git_ignored(root, {ref for _, _, ref in candidates})
+    for rel, n, ref in candidates:
+        if ref not in ignored:
+            report.fail("paths", f"{rel}:{n}: {ref} does not exist")
+
+
+def git_ignored(root, refs):
+    """The subset of refs git considers ignored. Empty if git is unavailable."""
+    if not refs or not (root / ".git").exists():
+        return set()
+    try:
+        proc = subprocess.run(
+            ["git", "check-ignore", "--stdin"],
+            cwd=root, input="\n".join(sorted(refs)),
+            capture_output=True, text=True, timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    return {line.strip() for line in proc.stdout.splitlines() if line.strip()}
+
+
+# ── check 4 ────────────────────────────────────────────────────────────────
+
+# Triggers are written `"/name"` in the skills and `` `/name` `` in prose.
+SLASH_RE = re.compile(r"[\"`]/([a-z][a-z0-9]*(?:-[a-z0-9]+)+)[\"`]")
+ROW_RE = re.compile(r"^\|\s*`([a-z][a-z0-9]*(?:-[a-z0-9]+)+)`\s*\|")
+
+
+def check_skill_refs(root, report):
+    """Skills referenced by name, or as /slash-commands, are implemented."""
+    names = set(skill_names(root))
+    if not names:
+        report.skip("skill-refs", "no skills found")
+        return
+    for rel, path in markdown_files(root):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        in_relationship = False
+        for n, line in enumerate(lines, 1):
+            if line.startswith("## "):
+                in_relationship = "elationship to other skills" in line
+            for name in SLASH_RE.findall(line):
+                if name not in names:
+                    report.fail(
+                        "skill-refs", f"{rel}:{n}: /{name} is not an implemented skill"
+                    )
+            if in_relationship:
+                m = ROW_RE.match(line)
+                if m and m.group(1) not in names:
+                    report.fail(
+                        "skill-refs",
+                        f"{rel}:{n}: {m.group(1)} is not an implemented skill",
+                    )
+
+
+# ── check 5 ────────────────────────────────────────────────────────────────
+
+PLACEHOLDER_RE = re.compile(r"\{[A-Za-z][^{}\n]{0,40}\}")
+
+
+def check_placeholders(root, report):
+    """An initialized project has no {placeholders} left in its config."""
+    yaml = root / ".project/config/project.yaml"
+    if not yaml.is_file():
+        report.skip("placeholders", "no .project/config/project.yaml")
+        return
+    text = yaml.read_text(encoding="utf-8")
+    if "{Title}" in text or "{Your name}" in text:
+        report.skip(
+            "placeholders",
+            "project is the uninitialized template — placeholders are expected",
+        )
+        return
+    for rel in ("config/project.yaml", "config/persona.md", "config/style-guide.md"):
+        path = root / ".project" / rel
+        if not path.is_file():
+            continue
+        fenced = False
+        for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if line.lstrip().startswith("```"):
+                fenced = not fenced
+                continue
+            # A fenced block documents an entry format; its braces name a
+            # shape the author fills per entry, not a blank left in the file.
+            if fenced:
+                continue
+            # Path patterns legitimately use braces: {act}.{chapter}.md
+            if "paths" in line or ".md" in line:
+                continue
+            for hit in PLACEHOLDER_RE.findall(line):
+                report.fail(
+                    "placeholders", f".project/{rel}:{n}: unfilled {hit}"
+                )
+
+
+CHECKS = (
+    ("frontmatter", check_frontmatter),
+    ("counts", check_counts),
+    ("paths", check_paths),
+    ("skill-refs", check_skill_refs),
+    ("placeholders", check_placeholders),
+)
+
+
+def main(argv):
+    root = Path.cwd()
+    if "--root" in argv:
+        root = Path(argv[argv.index("--root") + 1]).resolve()
+    if argv and argv[0] in ("-h", "--help"):
+        print(__doc__.strip())
+        return 0
+
+    report = Report()
+    for _name, fn in CHECKS:
+        fn(root, report)
+
+    for check, why in report.skips:
+        print(f"skip  {check}: {why}")
+
+    if report.failures:
+        by_check = {}
+        for check, detail in report.failures:
+            by_check.setdefault(check, []).append(detail)
+        for check, details in by_check.items():
+            print(f"\nFAIL  {check}")
+            for d in details:
+                print(f"      {d}")
+        n = len(report.failures)
+        print(f"\n{n} problem{'s' if n != 1 else ''} found.")
+        return 1
+
+    ran = len(CHECKS) - len(report.skips)
+    print(f"ok    {ran} check{'s' if ran != 1 else ''} passed, "
+          f"{len(skill_names(root))} skills validated.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

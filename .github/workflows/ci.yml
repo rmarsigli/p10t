@@ -1,0 +1,77 @@
+name: CI
+
+# p10t is markdown plus a stdlib-only exporter, so CI is fast and has no
+# package manager to wait on. Two jobs: the structural checks that keep the
+# markdown honest, and the test suite across the Python versions an author
+# might actually have.
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: structural checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Frontmatter names against directory names, skill counts stated in the
+      # docs, dangling machinery paths, references to unimplemented skills,
+      # and leftover {placeholders}. None of these fail at run time — they
+      # produce an agent that reads a file which is not there.
+      - name: scripts/validate
+        run: scripts/validate
+
+  tests:
+    name: tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # The exporter's end-to-end tests are guarded by skipUnless(pandoc).
+      # Without it they skip, the suite still reports OK, and the coverage
+      # loss is invisible. Installing it is what makes the green tick mean
+      # something. typst is deliberately not installed: no test needs it,
+      # and the exporter is designed to skip the PDF when it is absent.
+      - name: Install pandoc
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends pandoc
+
+      - name: Run the suite
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -v 2>&1 | tee test-output.txt
+
+      # A test skipped here is a test that never runs anywhere: the tooling
+      # it needs is installed above. Treat it as a failure rather than let
+      # coverage erode quietly.
+      - name: No test may skip in CI
+        run: |
+          if grep -q "skipped=" test-output.txt; then
+            echo "::error::tests were skipped despite their tooling being installed"
+            grep -E "\.\.\. skipped" test-output.txt || true
+            exit 1
+          fi
+          echo "no skips"

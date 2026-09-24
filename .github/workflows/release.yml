@@ -1,0 +1,89 @@
+name: Release
+
+# There is nothing to deploy: p10t is a repository you copy into a book
+# folder. "Delivery" therefore means a tagged, downloadable version whose
+# notes are the CHANGELOG section that was written when the work landed —
+# not a second set of notes typed at tag time, which would drift.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release, e.g. v0.4.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: cut the release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # A release that ships broken machinery is worse than a late one, and
+      # tags skip the CI workflow (tags-ignore), so re-run the checks here.
+      - name: Structural checks
+        run: scripts/validate
+
+      - name: Install pandoc
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends pandoc
+
+      - name: Tests
+        run: python -m unittest discover -s tests
+
+      # Refuses when the tag has no matching CHANGELOG section, rather than
+      # publishing a release with empty notes.
+      - name: Extract the release notes
+        id: notes
+        env:
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          python - <<'PY'
+          import os, re, sys, pathlib
+
+          tag = os.environ["TAG"]
+          version = tag[1:] if tag.startswith("v") else tag
+          lines = pathlib.Path("CHANGELOG.md").read_text(encoding="utf-8").splitlines()
+
+          start = None
+          for i, line in enumerate(lines):
+              if re.match(rf"^## \[{re.escape(version)}\]", line):
+                  start = i + 1
+                  break
+          if start is None:
+              sys.exit(f"CHANGELOG.md has no '## [{version}]' section for tag {tag}")
+
+          end = len(lines)
+          for i in range(start, len(lines)):
+              if lines[i].startswith("## ["):
+                  end = i
+                  break
+
+          body = "\n".join(lines[start:end]).strip()
+          if not body:
+              sys.exit(f"the '## [{version}]' section is empty")
+
+          pathlib.Path("release-notes.md").write_text(body + "\n", encoding="utf-8")
+          print(f"{len(body.splitlines())} lines of notes for {version}")
+          PY
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file release-notes.md \
+            --verify-tag
