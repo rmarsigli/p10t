@@ -19,7 +19,7 @@ All generated content — analyses, reports, drafts, feedback — must be writte
 
 Two roots, one job each:
 
-- **`.claude/skills/`** — what the system **does**. Nineteen skills, auto-discovered by Claude Code. Generic: identical across all books.
+- **`.claude/skills/`** — what the system **does**. Twenty-two skills, auto-discovered by Claude Code. Generic: identical across all books.
 - **`.project/`** — what the system **knows**. Config (persona, references, style guide), knowledge (world, characters, timeline), reports (analyses, preserve list, recurrence map), templates. Book-specific.
 
 Skills read from and write to `.project/`; the manuscript lives in `manuscript/`.
@@ -48,6 +48,9 @@ Full directory tree: see the **Structure** section of the p10t [README](https://
 | **check-arc** | "check the arcs", "is {character}'s arc landing" |
 | **update-preserve-list** | "update the preserve list" |
 | **consolidate-style** | "consolidate the style", "what have you learned about my voice" |
+| **define-localization** | "set up the English translation", "add {language} as a target" |
+| **translate-chapter** | "translate chapter X to {language}" |
+| **review-translation** | "review the {language} translation of chapter X" |
 | **commit** | "commit", "commit this chapter" — **only when the author asks; no skill may invoke it** |
 
 Users may invoke skills in the output language — match by intent, not exact wording. In environments without skill auto-discovery, read the matching `.claude/skills/<name>/SKILL.md` and follow it literally.
@@ -88,6 +91,19 @@ Counting rules and default ceilings: `.project/templates/framework.md`. Project 
 - Naming: `{act}.{chapter}.md` (e.g. `02.03.md`), numbers zero-padded so ordering stays lexicographic
 - **Layout** — `.project/config/project.yaml → paths.layout`, either `flat` (`manuscript/02.03.md`) or `chapter` (`manuscript/02.03/02.03.md`). Declared, never detected. How skills resolve, order, and scope chapter files: `.project/templates/layout.md`
 - Analyses land where `.project/config/project.yaml → paths.analyses` says — that field is the single source of truth, not this file. It is **independent of `paths.layout`**; all four combinations are legal
+
+## Translations
+
+> Optional. A book with no target-language edition has no `translations/` directory and nothing here applies.
+
+A target-language edition lives in `translations/{bcp47}/` — contract, locked lexicon, referents, per-chapter state, and its own `manuscript/` mirroring `paths.layout`. Layout, file formats, the three crossing verdicts and the rules binding the localization skills: `.project/templates/localization.md`.
+
+Four things bind regardless of target:
+
+- **The setting never moves.** Translation changes the language, never the map. A French edition of a book set in the US says *comté*; it does not relocate to France.
+- **The book's rules outrank the source sentence.** Transcreation, not translation — because a faithful rendering can break a rule the book imposes on itself.
+- **A target edition does not inherit the source's AI declaration.** Its prose is machine-produced; saying otherwise falsifies the evidence base `review-book` uses.
+- **The localization skills never modify the source**, never convert a measurement, and never commit.
 
 ## Operating notes
 

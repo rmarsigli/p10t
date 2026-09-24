@@ -12,7 +12,7 @@ You are writing a book. You want a machine's help without the book ending up sou
 
 The obvious approach - ask a chatbot to write a chapter, then edit it - fails in a specific way. The machine's fingerprints are not in its word choice, which you would catch. They are in the *shape* of its sentences, repeated across a hundred thousand words until the prose reads smooth and anonymous. You cannot edit that out by hand, because by chapter forty you no longer see it.
 
-p10t attacks that from the other side. It is a set of nineteen instructions an AI coding agent follows, plus a folder of files describing **your** book: how you write, who your characters are, what your world does not explain. Point it at a chapter and it does not rewrite anything. It hands the chapter back to you **measured** - every suspect construction quoted, counted, and compared against what you have already declared to be your own voice. You rule on each one. Your rulings become permanent, and the next chapter is judged against them.
+p10t attacks that from the other side. It is a set of twenty-two instructions an AI coding agent follows, plus a folder of files describing **your** book: how you write, who your characters are, what your world does not explain. Point it at a chapter and it does not rewrite anything. It hands the chapter back to you **measured** - every suspect construction quoted, counted, and compared against what you have already declared to be your own voice. You rule on each one. Your rulings become permanent, and the next chapter is judged against them.
 
 The unit is `occurrences per 1,000 words`. That matters more than it sounds: an editor tells you a chapter feels overwritten, and you have an opinion to argue with. p10t tells you the figure is 4.5 against a ceiling of 2.0, and it will be the same figure next week.
 
@@ -106,11 +106,14 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │   ├── 01.01.md                 flat layout: every chapter file here
 │   ├── 01.02.md
 │   └── ...                      (chapter layout nests each in 01.01/, 01.02/ — see below)
+├── translations/                Optional: one folder per target-language edition
+│   └── en-US/                   Contract, locked lexicon, referents, state, prose + reports
 ├── examples/                    Worked samples of the system's outputs
 ├── docs/
 │   └── export.md                Dependencies and use of the exporter
 ├── scripts/
 │   ├── scene-budget             Per-scene word counts vs. the header budgets
+│   ├── validate                 Structural checks over the markdown
 │   └── export                   Manuscript to .docx, .epub and .pdf
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
@@ -120,7 +123,9 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │       ├── draft-scene/         revise-passage/      expand-beat/
 │       ├── restructure-chapter/ review-book/         check-consistency/
 │       ├── check-arc/           update-preserve-list/
-│       └── consolidate-style/
+│       ├── consolidate-style/
+│       ├── define-localization/ translate-chapter/
+│       └── review-translation/
 └── .project/
     ├── CLAUDE.md                Knowledge hub guide
     │
@@ -147,6 +152,7 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     └── templates/               ── REUSABLE SKELETONS ──
         ├── framework.md         The 14 tic categories
         ├── layout.md            How skills resolve and order chapter files
+        ├── localization.md      How a target-language edition is laid out and decided
         ├── export/              Optional hand-written export templates
         ├── chapter-analysis.md
         ├── chapter-outline.md
@@ -222,7 +228,7 @@ Plus an open category (**15 - other tics**) capturing whatever is specific to ea
 
 ## The skills
 
-Nineteen skills: `init-project` for bootstrap, `commit` for the history, and seventeen across six working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
+Twenty-two skills: `init-project` for bootstrap, `commit` for the history, and twenty across seven working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
 
 **`commit`** - Writes a commit using the convention below: infers the type and scope from what changed, proposes one line, and commits only after you approve it. Warns before moving the boundary `review-revision` depends on. It is the only skill that touches git, it runs only when you ask, and no other skill may invoke it.
 
@@ -271,6 +277,18 @@ Nineteen skills: `init-project` for bootstrap, `commit` for the history, and sev
 **`update-preserve-list`** - Harvests your protection decisions from annotations into the preserve list, and retires entries whose phrases were cut. Proposes in batch; never promotes silently.
 
 **`consolidate-style`** - Reads the accumulated decision history, finds patterns (three occurrences make a pattern; one makes an anecdote), and proposes evidence-backed persona updates. The mechanism by which the system genuinely learns your voice.
+
+### Localization layer
+
+Optional, and **additive**: it modifies no other skill and no existing `.project/` file. Delete `translations/` and p10t is exactly as it was. Layout, formats and rules: [`.project/templates/localization.md`](.project/templates/localization.md).
+
+**`define-localization`** - The crossing contract for one target language, written once, before a single line is translated. Every rule in your style guide and every signature in your persona gets **one of three verdicts**: crosses intact, crosses with another tool (named), or does not cross (replacement declared). There is no fourth. The reason this exists: a *faithful* translation can break the book's own rules while being correct - a cap on how often characters are named, held in place by Portuguese's null subject, has no mechanism left in English, where every clause needs a subject. Also carries the typographic profile, the target language's own AI-tic watchlist, and this edition's AI declaration, which is **not** the source's.
+
+**`translate-chapter`** - Transcreation under the contract: **where the source sentence and a book rule collide, the rule wins and the sentence is rebuilt**. Hard-stops on any term whose target form is still open - designations and thesis words appear in every chapter, so a hurried choice costs the whole edition. Produces two files: the prose, and a report **in your language** arguing every non-obvious choice. If you cannot judge literary prose in the target language, the report is the deliverable and the prose is the attachment.
+
+**`review-translation`** - Blind back-translation first, before the source is loaded, so meaning drift shows up instead of being reproduced. Then contract compliance, a tic sweep against the target watchlist, locked-pair consistency, and staleness against the source commit. It hunts *additions* hardest - the characteristic failure of a generated translation is not error but helpfulness: filling an ellipsis, resolving an ambiguity the book kept open. It never clears the native-reader gate; only a human does that.
+
+**The setting never moves.** A French edition of a book set in the United States keeps the county, the feds, the sycamore - it says *comté*, *platane d'Occident*. Translation changes the language, never the map.
 
 ---
 
@@ -406,6 +424,30 @@ Dependencies, configuration, profiles, and the template escape hatch: **[`docs/e
 
 ---
 
+## Checks
+
+A system made entirely of markdown has no compiler. A skill naming a template that was renamed, a frontmatter name that drifted from its directory, a skill count in the README that nobody updated - none of these fail loudly. They produce an agent that reads a file which is not there and carries on.
+
+```sh
+scripts/validate      # five structural checks, no dependencies, one second
+```
+
+| Check | Catches |
+|---|---|
+| frontmatter | a skill whose `name:` no longer matches its directory, or has no description |
+| counts | prose saying "nineteen skills" when there are twenty-two |
+| paths | a machinery path named in the docs that does not exist |
+| skill-refs | a slash-command trigger, or a relationship table, naming an unimplemented skill |
+| placeholders | `{blanks}` left in config after `init-project` |
+
+Paths under `manuscript/` and `translations/` are yours and are never checked; a changelog may name paths that were correctly removed; a check that does not apply to the repository's state is **skipped with a reason**, and a skip is never a failure.
+
+`.github/workflows/ci.yml` runs `validate` plus the test suite on Python 3.9, 3.11 and 3.13. It installs pandoc, because the exporter's end-to-end tests are guarded by `skipUnless(pandoc)` and would otherwise skip while the suite still reported OK - and it then **fails if any test skipped at all**, so coverage cannot erode quietly behind a green tick.
+
+There is nothing to deploy - p10t is a repository you copy - so `release.yml` is the whole of delivery: on a `v*` tag it re-runs the checks and cuts a GitHub Release whose notes are the matching `CHANGELOG.md` section, refusing rather than publishing empty notes.
+
+---
+
 ## Starting a new book
 
 1. **Copy this repository** into the book folder.
@@ -421,13 +463,13 @@ Dependencies, configuration, profiles, and the template escape hatch: **[`docs/e
 
 ## Roadmap
 
-All nineteen skills described above are implemented. What is not yet built:
+All twenty-two skills described above are implemented. What is not yet built:
 
-**Language coverage.** Detection signals are calibrated for `[pt-BR]` and `[en]`. Other languages inherit the definitions, ceilings, and treatments, but their signals need adapting - `[es]` and `[fr]` sections are the next addition.
+**Language coverage.** Detection signals are calibrated for `[pt-BR]` and `[en]`. Other languages inherit the definitions, ceilings, and treatments, but their signals need adapting - `[es]` and `[fr]` sections are the next addition. This is `framework.md`, which reads the *source* language; a target edition uses its own watchlist, written per language by `define-localization`.
+
+**A field-tested localization contract.** The three verdicts, the hard stop on open terms, and the back-translation check are designed but have not yet produced a full edition. The first real translation is expected to move them - most likely by showing which typographic conversions are mechanical enough to compile into `scripts/` instead of asking a model to apply them.
 
 **Field testing.** The revision cycle - `analyze-chapter` → `R:` → rewrite → `review-revision` - has run on a real manuscript. The generation and knowledge layers have not been exercised at book length. Expect the ceilings in `framework.md` to move once they are.
-
-**A validation script.** Frontmatter names against directory names, unfilled `{placeholders}` after init, dangling cross-references between skills. Cheap insurance for a system made entirely of markdown.
 
 **An `export-manuscript` skill.** `scripts/export` already does the work (see below); a skill would read its refusals aloud and offer to fix them. Deferred until the script has been used on a real submission.
 
