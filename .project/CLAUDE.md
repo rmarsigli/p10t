@@ -1,6 +1,6 @@
 # `.project/` — Book knowledge hub
 
-This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the nineteen skills, which read from and write to the files here.
+This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the twenty-two skills, which read from and write to the files here.
 
 Portable (copy into another book and repopulate), git-versionable, plain markdown throughout.
 
@@ -17,7 +17,7 @@ Four directories, each with one job:
 | `config/` | ── **WHO YOU ARE** ── voice, references, hard rules, metadata | `define-persona`, `define-references`, by hand |
 | `knowledge/` | ── **WHAT EXISTS IN THE BOOK** ── world, timeline, glossary, characters | `build-worldbuilding`, `create-character`, by hand |
 | `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, preserve list, recurrence map, decision history | `analyze-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
-| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, the layout resolver, output shapes | never — these are the machinery |
+| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, the layout and localization resolvers, output shapes | never — these are the machinery |
 
 The canonical file-by-file tree lives in the p10t [README](https://github.com/rmarsigli/p10t#structure), kept in one place so it cannot drift out of sync with this file.
 
@@ -28,6 +28,12 @@ Occurrences per 1,000 words, one decimal. Counting rules and default ceilings: `
 ## Manuscript layout
 
 `config/project.yaml → paths.layout` declares how chapter files are arranged — `flat` or one directory per chapter. **`templates/layout.md` is the single resolver**: any skill that reads more than one chapter follows it rather than globbing the manuscript directory. It also fixes the ordering rule, which timeline checks and cross-chapter sweeps depend on.
+
+## Target-language editions
+
+Optional. When a book has one, it lives in `translations/{bcp47}/` — outside `.project/`, one self-contained folder per language, mirroring `paths.layout` for its own manuscript. **`templates/localization.md` is the single resolver**, the same way `layout.md` is for chapters.
+
+Nothing here is modified by a translation run. The localization skills read `config/` and `knowledge/`, and report findings about them — an uncatalogued referent, a term that drifted, culture of the prose language leaking into a setting that is not its own. **The author rules; the skills do not edit.**
 
 ## Generic vs. project-specific
 
