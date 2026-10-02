@@ -98,3 +98,4 @@ End of each Act, and always before a full revision pass — arc fixes reorder re
 | `outline-chapter` | Outlines carry intended beats; gaps found here become obligations there |
 | `restructure-chapter` | Where findings become action — flat stretches and rushed turns route there, chapter by chapter |
 | `review-book` | Consumes these findings for its structural sections |
+| `critique-chapter` | Owns tension *inside* a chapter; its multi-chapter synthesis cites this report rather than rebuilding the curve |

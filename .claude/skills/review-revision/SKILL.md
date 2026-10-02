@@ -1,11 +1,11 @@
 ---
 name: review-revision
-description: Evaluates the author's revision of a chapter against the R-annotated analysis file — introduced errors, rewrite quality, inverted problems, residual density, continuity gaps — and explicitly answers every question the author left in their annotations. Use when the user asks to check their notes and a chapter, review their revision, or evaluate their edits.
+description: Evaluates the author's revision of a chapter against the R-annotated analysis and critique files — introduced errors, rewrite quality, inverted problems, residual density, continuity gaps, craft findings resolved — and explicitly answers every question the author left in their annotations. Use when the user asks to check their notes and a chapter, review their revision, or evaluate their edits.
 ---
 
 # Skill: review-revision
 
-**What it does.** After the author revises a chapter using an `_analysis.md` annotated with `R:`, this evaluates the result: what works, what needs adjustment, errors introduced during revision, and whether the quality target was met.
+**What it does.** After the author revises a chapter using an `_analysis.md` and/or a `_critique.md` annotated with `R:`, this evaluates the result: what works, what needs adjustment, errors introduced during revision, and whether the quality target was met.
 
 **Triggers**
 - "check my notes and chapter X"
@@ -16,7 +16,7 @@ description: Evaluates the author's revision of a chapter against the R-annotate
 
 **Inputs**
 - Path to the revised chapter
-- (Implicit) The matching `_analysis.md` with `R:` annotations
+- (Implicit) The matching `_analysis.md` and/or `_critique.md` with `R:` annotations — at least one must exist
 
 **Output**
 - Structured chat response
@@ -30,7 +30,7 @@ description: Evaluates the author's revision of a chapter against the R-annotate
 
 The cycle is:
 
-1. `analyze-chapter` produces the report
+1. `critique-chapter` and/or `analyze-chapter` produce their reports
 2. The author decides item by item, annotates `R:`
 3. The author rewrites
 4. **`review-revision`** closes the loop
@@ -46,18 +46,22 @@ It is also where the system **learns**: author decisions feed `persona.md` and `
 ### Step 1 — Load context
 
 1. `.project/config/project.yaml` — output language, total density ceiling
-2. The `_analysis.md` with `R:` annotations — including its recorded word count and per-category densities, which are the "before" figures
-3. The revised chapter
-4. `.project/config/persona.md` — author signatures (do not correct what is their style)
-5. `.project/reports/preserve-list.md`
-6. `.project/templates/framework.md` — counting rules and ceilings, to re-assess density
-7. `.project/config/style-guide.md` — project ceiling overrides
+2. The `_analysis.md` with `R:` annotations, if one exists — including its recorded word count and per-category densities, which are the "before" figures
+3. The `_critique.md` with `R:` annotations, if one exists — its findings, load-bearing scene, and verdict are the craft "before". Scene sections and `_draft_critique.md` files are not part of the chapter's baseline
+4. The revised chapter
+5. `.project/config/persona.md` — author signatures (do not correct what is their style)
+6. `.project/reports/preserve-list.md`
+7. `.project/templates/framework.md` — counting rules and ceilings, to re-assess density
+8. `.project/config/style-guide.md` — project ceiling overrides
+9. `.project/templates/craft.md` — reader effects and the verdict rule, when a critique exists
 
-**Getting the diff.** The workflow expects the author to commit the chapter *before* revising it, so `git diff` (or `git diff HEAD~1`) shows exactly what the revision touched. If no such commit exists, say so once — recommending the commit habit is worth more than a workaround — then fall back to comparing against the literal quotes in the `_analysis.md`.
+**Either file may be missing.** A chapter revised against its critique alone has no density baseline: skip axis 4 and say so. One revised against its analysis alone has no craft baseline: skip axis 6 and say so. Neither is an error.
+
+**Getting the diff.** The workflow expects the author to commit the chapter *before* revising it, so `git diff` (or `git diff HEAD~1`) shows exactly what the revision touched. If no such commit exists, say so once — recommending the commit habit is worth more than a workaround — then fall back to comparing against the literal quotes in the `_analysis.md` and `_critique.md`.
 
 ### Step 2 — Map the author's decisions
 
-Categorize each `R:`:
+Categorize each `R:` — in both files:
 
 - **Accepted and applied** → check whether the application landed
 - **Accepted but done differently** → evaluate the alternative (often better than the suggestion)
@@ -69,7 +73,7 @@ Categorize each `R:`:
 
 Not just the altered passages. A revision can break rhythm in untouched places — a transition that depended on a cut sentence, for instance.
 
-### Step 4 — Evaluate across five axes
+### Step 4 — Evaluate across six axes
 
 **Axis 1 — Introduced errors (top priority).**
 Manual revision introduces errors. Look for:
@@ -103,13 +107,20 @@ Report per category and for the chapter: `before → after`, both in `/1k`, plus
 - Abrupt transition?
 - Contradiction with another chapter? (cross-check `knowledge/`)
 
+**Axis 6 — Craft findings** *(only when a `_critique.md` exists).*
+For every `break`, and every finding the author accepted, decide on the revised text: **resolved**, **partly resolved**, or **not resolved** — with the passage that shows it. Then:
+- **New breaks.** A revision can open a gap the old text did not have: a cut that removes the only cue for who is speaking, a moved scene that now arrives before its plant. List them with the same five fields `craft.md` requires.
+- **Re-apply the verdict rule** to the revised chapter — load-bearing scene first, since a revision may have moved the turn. Report `before → after`: *Does not work yet → Works with reservations*.
+
+This is not a fresh critique. It re-judges the findings on record and catches new breaks; a full re-read for frictions belongs to `critique-chapter`. If more than 50% of the chapter changed, say so and recommend a fresh critique instead.
+
 ### Step 5 — Answer direct questions
 
 If the author left questions in the annotations, **answer each in its own section**. Do not bury them in the general analysis. Be honest when the answer is "yes, keep it" — often the author is right and the original suggestion was unnecessary.
 
 ### Step 6 — Update learnings
 
-When the author rejected something as a personal signature, **ask** whether to add it to `persona.md`. When they marked a phrase as thesis, suggest `preserve-list.md`.
+When the author rejected something as a personal signature, **ask** whether to add it to `persona.md`. When they rejected a craft finding as a choice ("this narrator always reports what she perceives"), ask whether it belongs in `persona.md` §6 as a declared choice. When they marked a phrase as thesis, suggest `preserve-list.md`.
 
 Never do this automatically. The author decides what becomes a rule.
 
@@ -134,6 +145,7 @@ Never do this automatically. The author decides what becomes a rule.
 ## Practical summary
 {3-5 concrete next actions}
 {density: {before}/1k → {after}/1k; categories still over ceiling}
+{craft: {verdict before} → {verdict after}; breaks {N} → {M}}
 {log entry written to revision-log.md}
 ```
 
@@ -180,10 +192,12 @@ If more than 50% changed, item-by-item comparison loses meaning. Treat it as new
 ## {Chapter} — revised on {date}
 
 **Length:** {before} → {after} words
-**Density:** {before}/1k → {after}/1k (ceiling {N,N}/1k)
+**Density:** {before}/1k → {after}/1k (ceiling {N,N}/1k) — or "no analysis"
 **Still over ceiling:** {cat. N ({N,N}/1k)} — or "none"
+**Craft:** {verdict before} → {verdict after}; breaks {N} → {M} — or "no critique"
 **Decisions:** {N} accepted, {M} rejected, {K} done differently
 **Confirmed signatures:** {what the author kept as style}
+**Declared craft choices:** {craft findings the author rejected as deliberate} — or "none"
 **Errors corrected:** {N}
 **Status:** {✓ approved | needs another pass}
 

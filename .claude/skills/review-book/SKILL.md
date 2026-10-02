@@ -40,9 +40,10 @@ Three audiences read this report: the author deciding what to revise, the author
 2. **The entire manuscript in scope** — read fully, in order. No skimming; structural judgments require having actually felt the pacing. Resolve the chapter list and its ordering via `.project/templates/layout.md`; an Act scope resolves from the chapter id prefix
 3. `.project/knowledge/` — worldbuilding, characters, timeline (to judge delivery against intent)
 4. `.project/reports/technical/` and existing `_analysis.md` files (searched **recursively** — under `chapter` layout they sit inside each chapter's directory) — per-chapter density data
-5. `.project/reports/recurrences.md` and `revision-log.md` — revision history
-6. `.project/config/references.md` — for comparable-title reasoning
-7. `.project/templates/book-review.md` — the skeleton
+5. Existing `_critique.md` files (same recursive search) and `critique-chapter` syntheses in `.project/reports/literary/` — per-chapter craft verdicts and cross-chapter habits
+6. `.project/reports/recurrences.md` and `revision-log.md` — revision history
+7. `.project/config/references.md` — for comparable-title reasoning
+8. `.project/templates/book-review.md` — the skeleton
 
 ### Step 2 — Literary review
 
@@ -52,6 +53,7 @@ Work through architecture, premise, characters, prose, themes. Discipline points
 - **Characters are judged by arc delivery**, not likability: does the page deliver what the sheet intends?
 - **The thesis test:** state the book's thesis in one line, then check whether the ending pays it. Books that lose their thesis in the final act fail here even when every scene works locally.
 - **Strengths get the same rigor as weaknesses.** The author needs to know what to protect during revision, not just what to fix.
+- **Chapter verdicts are aggregated, never re-judged.** Section 1.8 is built from the `_critique.md` files, the way section 3 is built from the analyses. A chapter never critiqued gets `not critiqued` — not a verdict improvised during this read. Where this report's whole-book reading disagrees with a chapter's recorded verdict, say so and cite both; do not silently overwrite the record.
 
 ### Step 3 — Commercial assessment
 
@@ -79,7 +81,7 @@ Save to `reports/literary/`. Summarize in chat: verdict in three lines, top thre
 
 ## What to avoid
 
-**Chapter-analysis duplication.** This report does not re-list tics — it references the technical layer and aggregates. The microscope work stays in `analyze-chapter`.
+**Chapter-analysis duplication.** This report does not re-list tics or craft findings — it references the per-chapter layer and aggregates. The microscope work stays in `analyze-chapter` and `critique-chapter`.
 
 **Praise inflation and hedge inflation.** "Promising", "interesting", "could be stronger" — banned without a concrete follow-up.
 
@@ -102,6 +104,7 @@ Run at the end of each Act, not only at the end of the manuscript. Structural pr
 | Skill | Relationship |
 |---|---|
 | `analyze-chapter` | Supplies the per-chapter density data this aggregates |
+| `critique-chapter` | Supplies the per-chapter craft verdicts section 1.8 aggregates |
 | `check-consistency` / `check-arc` | Narrower structural instruments; their findings feed section 1 |
 | `restructure-chapter` | Where section 1's chapter-level findings become an actionable plan |
 | `revision-log.md` | Supplies the trajectory data for section 3.6 — the report's strongest evidence |

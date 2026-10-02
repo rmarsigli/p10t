@@ -105,6 +105,11 @@ Ceilings are in **occurrences per 1,000 words** — the same unit `analyze-chapt
 
 ## 6. Narrative craft
 
+> Declared choices here are read by `critique-chapter` and never flagged for being those choices. State each with its context — "lingers before every reveal", not "slow".
+
+### Pacing
+{Brisk or lingering? Where does it slow down on purpose?}
+
 ### Description
 {Dense or economical? Sensory or conceptual?}
 

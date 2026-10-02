@@ -19,8 +19,8 @@ All generated content — analyses, reports, drafts, feedback — must be writte
 
 Two roots, one job each:
 
-- **`.claude/skills/`** — what the system **does**. Twenty-two skills, auto-discovered by Claude Code. Generic: identical across all books.
-- **`.project/`** — what the system **knows**. Config (persona, references, style guide), knowledge (world, characters, timeline), reports (analyses, preserve list, recurrence map), templates. Book-specific.
+- **`.claude/skills/`** — what the system **does**. Twenty-three skills, auto-discovered by Claude Code. Generic: identical across all books.
+- **`.project/`** — what the system **knows**. Config (persona, references, style guide), knowledge (world, characters, timeline), reports (analyses, critiques, preserve list, recurrence map), templates. Book-specific.
 
 Skills read from and write to `.project/`; the manuscript lives in `manuscript/`.
 
@@ -31,6 +31,7 @@ Full directory tree: see the **Structure** section of the p10t [README](https://
 | Skill | Triggered by |
 |---|---|
 | **init-project** | "set up this book", "start a new book here" |
+| **critique-chapter** | "critique chapter X", "does chapter X work", "what's slow in X", "critique Act 2" |
 | **analyze-chapter** | "analyze chapter X", "check chapter X for AI tics" |
 | **scan-recurrences** | "find duplications", "what repeats across chapters" |
 | **review-revision** | "check my notes and chapter X", "review my revision" |
@@ -59,13 +60,16 @@ Users may invoke skills in the output language — match by intent, not exact wo
 
 The chapter revision cycle:
 
-1. `analyze-chapter` produces `{chapter}_analysis.md`
-2. The author reads, decides item by item, annotates `**R:**` under each point
-3. The author **commits the chapter**, then rewrites it — the commit is what `review-revision` diffs against
-4. `review-revision` evaluates the result, answers the author's questions, and writes its entry in `reports/revision-log.md`
-5. Learnings feed `persona.md` and `preserve-list.md`
+1. `critique-chapter` produces `{chapter}_critique.md` — does the narrative work?
+2. `analyze-chapter` produces `{chapter}_analysis.md` — what marks did generation leave?
+3. The author reads, decides item by item, annotates `**R:**` under each point, in both files
+4. The author **commits the chapter**, then rewrites it — the commit is what `review-revision` diffs against
+5. `review-revision` evaluates the result, answers the author's questions, and writes its entry in `reports/revision-log.md`
+6. Learnings feed `persona.md` and `preserve-list.md`
 
-At the end of each Act: `scan-recurrences`, `check-consistency`, `check-arc`, and optionally `review-book`.
+Craft before markers: when the critique routes a chapter to `restructure-chapter`, restructure first and analyze afterwards — counting the markers of prose about to be moved or cut is wasted work. Either step may be skipped; `review-revision` works with whichever file exists.
+
+At the end of each Act: `scan-recurrences`, `check-consistency`, `check-arc`, `critique-chapter` over the Act (for the cross-chapter synthesis), and optionally `review-book`.
 
 ## Commits
 
@@ -74,7 +78,7 @@ Book repositories use p10t's own commit convention — `type(scope)!: subject`, 
 Three rules bind every skill:
 
 - **No skill commits.** A skill may end by *suggesting* a commit line. Only `commit` writes to git, and only when the author asks for it — a commit is an assertion of authorship, and the log is the evidence base for the AI-use section of `review-book`.
-- **Never stage what the message does not describe.** Step 3 above is the boundary `review-revision` compares against. Staging broadly mid-rewrite folds half the revision into that baseline, and the resulting report is wrong without failing.
+- **Never stage what the message does not describe.** Step 4 above is the boundary `review-revision` compares against. Staging broadly mid-rewrite folds half the revision into that baseline, and the resulting report is wrong without failing.
 - **Commit messages are in English**, even when the output language is not. It is the one exception to the language rule.
 
 ## Density
@@ -82,6 +86,10 @@ Three rules bind every skill:
 Measured in **occurrences per 1,000 words**, one decimal. Same unit everywhere: per-chapter analyses, revision before/after, generation budgets, whole-book aggregates.
 
 Counting rules and default ceilings: `.project/templates/framework.md`. Project overrides: `.project/config/style-guide.md`. Whole-chapter total: `.project/config/project.yaml → ai.density_ceiling_total`. Categories 8, 9, and 13 carry their own units — never force them into per-1k.
+
+## Craft
+
+Narrative quality is **judged, never scored**. Eleven categories, a closed list of reader effects, three severities, and a verdict decided by rule: `.project/templates/craft.md`. No grades anywhere — not per category, not per chapter. The only numbers in a critique are counts (words per scene, shares).
 
 ## Manuscript structure
 
@@ -109,8 +117,9 @@ Four things bind regardless of target:
 
 - The author writes in plain markdown, versioned in git.
 - **Active human curation:** the AI proposes, the author decides. Accept/reject annotations are marked with `**R:**` inside analysis files.
-- Phrases listed in `.project/reports/preserve-list.md` are **never** suggested for cutting, and never counted toward density.
-- Constructions listed under "Personal signatures" in `.project/config/persona.md` are **never** flagged as tics, and never counted toward density.
+- Phrases listed in `.project/reports/preserve-list.md` are **never** suggested for cutting, never counted toward density, and never flagged as worn.
+- Constructions listed under "Personal signatures" in `.project/config/persona.md` are **never** flagged as tics, and never counted toward density. Choices declared in its §6 (narrative craft) are never flagged by the critique for being those choices.
+- Information listed in `.project/knowledge/worldbuilding.md → Deliberately unexplained` is **never** a clarity, exposition, or motivation finding.
 - Generated drafts go to `_draft` files — **never** directly into manuscript files. The same holds for restructuring plans (`_restructure`) and outlines (`_outline`).
 - `review-revision` always writes its entry to `.project/reports/revision-log.md`. The learning layer reads nothing else.
 - Quality target and density ceiling overrides: `.project/config/style-guide.md`.

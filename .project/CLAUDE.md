@@ -1,6 +1,6 @@
 # `.project/` — Book knowledge hub
 
-This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the twenty-two skills, which read from and write to the files here.
+This directory holds **what the system knows** about this book. Its counterpart, `.claude/skills/`, holds **what the system does** — the twenty-three skills, which read from and write to the files here.
 
 Portable (copy into another book and repopulate), git-versionable, plain markdown throughout.
 
@@ -16,14 +16,18 @@ Four directories, each with one job:
 |---|---|---|
 | `config/` | ── **WHO YOU ARE** ── voice, references, hard rules, metadata | `define-persona`, `define-references`, by hand |
 | `knowledge/` | ── **WHAT EXISTS IN THE BOOK** ── world, timeline, glossary, characters | `build-worldbuilding`, `create-character`, by hand |
-| `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, preserve list, recurrence map, decision history | `analyze-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
-| `templates/` | ── **REUSABLE SKELETONS** ── the 14 categories, the layout and localization resolvers, output shapes | never — these are the machinery |
+| `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, critiques, preserve list, recurrence map, decision history | `analyze-chapter`, `critique-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
+| `templates/` | ── **REUSABLE SKELETONS** ── the 14 marker categories, the 11 craft categories, the layout and localization resolvers, output shapes | never — these are the machinery |
 
 The canonical file-by-file tree lives in the p10t [README](https://github.com/rmarsigli/p10t#structure), kept in one place so it cannot drift out of sync with this file.
 
 ## Density
 
 Occurrences per 1,000 words, one decimal. Counting rules and default ceilings: `templates/framework.md`. Project overrides: `config/style-guide.md`. Chapter total: `config/project.yaml`.
+
+## Craft
+
+Judged, never scored. Categories, reader effects, severities, and the verdict rule: `templates/craft.md`. Output shape: `templates/chapter-critique.md`.
 
 ## Manuscript layout
 

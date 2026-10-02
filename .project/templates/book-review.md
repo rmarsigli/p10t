@@ -46,6 +46,14 @@ _Estimated length: {N}k words_
 ### 1.7 Weaknesses and risks
 {Numbered, each with a suggested treatment.}
 
+### 1.8 Chapter by chapter
+{The craft verdict map, aggregated from the `_critique.md` files — never re-judged here. Chapters never critiqued say `not critiqued`.}
+
+| Chapter | Verdict | Load-bearing scene | Breaks | Main level |
+|---|---|---|---|---|
+
+{Habits found across chapters, from `critique-chapter` syntheses, and where this whole-book reading disagrees with a recorded verdict — both cited.}
+
 ---
 
 ## 2. Commercial potential
@@ -147,6 +155,8 @@ _Estimated length: {N}k words_
 **Real comparables.** Do not invent titles or force flattering comparisons. A good comparable is one an editor would recognize instantly.
 
 **Section 3 is the most delicate.** Every claim must come with explicit reasoning — which markers, at what density, in which chapters. Numbers without evidence are worthless, and invented numbers are worse than none: this section may end up backing a public declaration of AI use, where a fabricated figure is a reputational liability for the author rather than a reporting flaw.
+
+**Aggregate, never re-judge.** Section 1.8 comes from the per-chapter `_critique.md` files. A chapter without one is `not critiqued`, never given a verdict improvised during the whole-book read.
 
 **Aggregate, never re-estimate.** Section 3's figures come from the per-chapter `_analysis.md` files and from `revision-log.md`. If a chapter was never analyzed, its data is missing — say so and exclude it, rather than eyeballing a density.
 

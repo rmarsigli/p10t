@@ -109,5 +109,6 @@ The author may take the revision whole, take pieces, or counter-propose. Their c
 |---|---|
 | `draft-scene` | Sibling — same context, blank page vs. existing text |
 | `analyze-chapter` | Its findings often feed passages here |
+| `critique-chapter` | Its sentence-level findings route here |
 | `review-revision` | Evaluates the author's own revisions; this one proposes revisions |
 | `restructure-chapter` | Downstream escape hatch when the problem is scene design, not sentences |

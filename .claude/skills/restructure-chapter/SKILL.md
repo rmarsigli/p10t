@@ -1,6 +1,6 @@
 ---
 name: restructure-chapter
-description: Rebuilds the obligations of a chapter that already exists, from what is actually on the page, then proposes reordering, merging, cutting, or adding scenes to fix a diagnosed structural problem. Delivers a plan against the current structure — never rewrites the manuscript. Use when the user asks to restructure a chapter, when a chapter's problem is scene-level rather than sentence-level, or when check-arc, review-book, or revise-passage identified a structural fault.
+description: Rebuilds the obligations of a chapter that already exists, from what is actually on the page, then proposes reordering, merging, cutting, or adding scenes to fix a diagnosed structural problem. Delivers a plan against the current structure — never rewrites the manuscript. Use when the user asks to restructure a chapter, when a chapter's problem is scene-level rather than sentence-level, or when critique-chapter, check-arc, review-book, or revise-passage identified a structural fault.
 ---
 
 # Skill: restructure-chapter
@@ -12,10 +12,10 @@ description: Rebuilds the obligations of a chapter that already exists, from wha
 - "/restructure-chapter X.Y"
 - "this chapter's problem isn't the sentences"
 - "chapter X drags in the middle" / "nothing happens in X"
-- Routed here by `revise-passage` when a passage's problem is upstream, or by `check-arc` / `review-book` when a finding is scene-level
+- Routed here by `revise-passage` when a passage's problem is upstream, by `critique-chapter` when a finding is scene- or chapter-level, or by `check-arc` / `review-book` when a finding is scene-level
 - Equivalent phrasing in the project's output language
 
-**Input.** The chapter, plus the diagnosis if one exists (a `check-arc` finding, a `review-book` note, or the author's own complaint). If none is given, the skill diagnoses first.
+**Input.** The chapter, plus the diagnosis if one exists (a `critique-chapter` finding, a `check-arc` finding, a `review-book` note, or the author's own complaint). If none is given, the skill diagnoses first.
 
 **Output.** `{chapter}_restructure.md` next to the chapter — a plan, presented against the current structure. **Never applied to the manuscript.** Once validated, the author executes it, or hands individual scenes to `draft-scene` and `expand-beat`.
 
@@ -63,6 +63,7 @@ Route here, not to `revise-passage`:
 2. **The chapter, in full** — plus the previous and following chapters, for the debt it inherits and the debt it owes
 3. The existing `{chapter}_outline.md`, **if one exists** — but read it *after* the chapter, never before
 4. `{chapter}_analysis.md` — a chapter that is dense *and* structurally broken gets restructured first; the analysis is re-run afterwards on new text
+   `{chapter}_critique.md` — its scene map, load-bearing scene, and scene-level findings are the strongest existing diagnosis; verify them against the page rather than re-deriving from nothing
 5. `.project/knowledge/characters/` — arc positions of everyone on stage
 6. `.project/knowledge/worldbuilding.md` — the deliberately-unexplained list and knowledge states
 7. `.project/knowledge/timeline.md` — what story time this chapter occupies
@@ -178,6 +179,7 @@ Close with the execution route: which scenes the author rewrites themselves, whi
 
 | Skill | Relationship |
 |---|---|
+| `critique-chapter` | Chapter-scoped upstream source — scene- and chapter-level findings route here |
 | `check-arc` | Primary upstream source — flat stretches and rushed turns route here |
 | `review-book` | Its structural findings route here, chapter by chapter |
 | `revise-passage` | Hands off here when a passage's problem is upstream of the sentences |

@@ -39,10 +39,10 @@ Every proposed change carries its receipts: the decisions, chapters, and quotes 
 1. `.project/config/project.yaml` — output language
 2. `.project/config/persona.md` — current state, including its changelog (what was already consolidated)
 3. `.project/reports/revision-log.md` — the decision history
-4. All `_analysis.md` files with `R:` annotations since the last consolidation — searched **recursively**, since `chapter` layout nests them one level down
+4. All `_analysis.md` and `_critique.md` files with `R:` annotations since the last consolidation — searched **recursively**, since `chapter` layout nests them one level down
 5. Revised chapters vs. their pre-revision analyses — **the author's own rewrites are the richest data**
 
-### Step 2 — Mine four pattern types
+### Step 2 — Mine five pattern types
 
 **a) Defended constructions.** The same construction type kept under analysis fire in 3+ chapters → candidate for "Personal signatures". *(Example: antithesis kept specifically at turning points, cut elsewhere — the pattern includes the context.)*
 
@@ -51,6 +51,8 @@ Every proposed change carries its receipts: the decisions, chapters, and quotes 
 **c) Rejection patterns.** Suggestions consistently refused (3+): the analysis is misfiring somewhere → propose raising that category's `/1k` ceiling, or adding an exception note. Check the revision-log densities first: if the chapters landed under the total ceiling anyway, the refusals are evidence the default was wrong for this book, not that the author is over-attached.
 
 **d) Drift and evolution.** The author's revisions trending somewhere the persona doesn't describe — leaner over time, new devices appearing in their unassisted rewrites. Voice evolves; the persona must follow, dated.
+
+**e) Declared craft choices.** The same craft finding refused 3+ times in `_critique.md` files — same `craft.md` category, same mechanism — is evidence the author is choosing it, not slipping into it: a narrator who always reports perception, pacing that lingers before every reveal. Propose it for `persona.md` §6 as a declared choice, stated with its context, so `critique-chapter` stops flagging it. Habits found by a `critique-chapter` synthesis are pre-assembled evidence for exactly this — read them, but verify the receipts.
 
 ### Step 3 — Check for internal conflicts
 
@@ -72,6 +74,11 @@ _Scope: chapters {X–Y}, {N} decisions reviewed_
 1. cat. {N} ({name}): {old}/1k → {new}/1k — you kept {N} occurrences across chs. {X–Y} and the chapters still landed under the total ceiling
    Destination: `style-guide.md → Density ceilings` (project-wide) or `persona.md` §4 (voice-specific)
 
+### Declared craft choices ({N})
+1. **{craft choice, with its context}** — refused in {chs}, {N} decisions
+   Evidence: "{quote}" ({ch}); "{quote}" ({ch})
+   Destination: `persona.md` §6
+
 ### Substitution habits to record ({N})
 1. {pattern} — seen in {N} rewrites
    Example: "{before}" → "{after}" ({ch})
@@ -85,7 +92,7 @@ _Scope: chapters {X–Y}, {N} decisions reviewed_
 
 ### Step 5 — Apply after ruling
 
-The author approves, strikes, or amends. Apply the approved diff to `persona.md`, bump the version, write the changelog entry with the evidence scope. Report which skills benefit immediately (`analyze-chapter` stops flagging X; `draft-scene` gains Y).
+The author approves, strikes, or amends. Apply the approved diff to `persona.md`, bump the version, write the changelog entry with the evidence scope. Report which skills benefit immediately (`analyze-chapter` stops flagging X; `critique-chapter` stops flagging Z; `draft-scene` gains Y).
 
 ---
 
@@ -115,5 +122,6 @@ Every 3–5 revised chapters, or at each Act boundary. Late consolidation loses 
 |---|---|
 | `define-persona` | This builds the update diff; that applies it in conversation |
 | `review-revision` | Primary producer of the decision data |
+| `critique-chapter` | Its rejected findings are the evidence for declared craft choices |
 | `update-preserve-list` | Sibling harvester — phrases there, constructions here |
 | `draft-scene` / `revise-passage` | Chief beneficiaries: sharper persona, higher survival rate |

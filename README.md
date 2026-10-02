@@ -1,6 +1,6 @@
 # p10t
 
-**A local hub for AI-assisted writing, with human curation at its core.**
+**A local hub for writing and revising long-form fiction with an AI agent - voice, craft and consistency, with human curation at its core.**
 
 `p10t` is short for **palimpsest** - the scraped and rewritten manuscript, where the older text still shows through beneath the new. That is exactly what this system does: you write over the machine layer until only your voice remains.
 
@@ -12,9 +12,11 @@ You are writing a book. You want a machine's help without the book ending up sou
 
 The obvious approach - ask a chatbot to write a chapter, then edit it - fails in a specific way. The machine's fingerprints are not in its word choice, which you would catch. They are in the *shape* of its sentences, repeated across a hundred thousand words until the prose reads smooth and anonymous. You cannot edit that out by hand, because by chapter forty you no longer see it.
 
-p10t attacks that from the other side. It is a set of twenty-two instructions an AI coding agent follows, plus a folder of files describing **your** book: how you write, who your characters are, what your world does not explain. Point it at a chapter and it does not rewrite anything. It hands the chapter back to you **measured** - every suspect construction quoted, counted, and compared against what you have already declared to be your own voice. You rule on each one. Your rulings become permanent, and the next chapter is judged against them.
+p10t attacks that from the other side. It is a set of twenty-three instructions an AI coding agent follows, plus a folder of files describing **your** book: how you write, who your characters are, what your world does not explain. Point it at a chapter and it does not rewrite anything. It hands the chapter back to you **measured** - every suspect construction quoted, counted, and compared against what you have already declared to be your own voice. You rule on each one. Your rulings become permanent, and the next chapter is judged against them.
 
 The unit is `occurrences per 1,000 words`. That matters more than it sounds: an editor tells you a chapter feels overwritten, and you have an opinion to argue with. p10t tells you the figure is 4.5 against a ceiling of 2.0, and it will be the same figure next week.
+
+It also reads the chapter the way an editor does, and asks the question the markers cannot: **does it work?** Does each scene earn its place, does the reader follow, believe, keep turning pages - and where it fails, is the problem in the sentences, the scene, or three chapters upstream? No grades: every finding names what happens to the reader (*lost*, *impatient*, *has seen it*), and the verdict is decided by rule from the findings, so you contest it by contesting a finding.
 
 **Three things it does that a careful human reader cannot:**
 
@@ -22,7 +24,7 @@ The unit is `occurrences per 1,000 words`. That matters more than it sounds: an 
 - **Holds the continuity contract** - timeline arithmetic, and who knows what *when*, across the whole manuscript.
 - **Remembers your decisions.** Protect a phrase once and nothing suggests cutting it again. Human editors forget; a new editor never knew.
 
-**Who it is for:** anyone drafting long-form fiction with an AI agent who would rather the result be theirs. It is a working system, not a demo, and it runs entirely on your machine - plain markdown files in a git repository, no service, no account, nothing uploaded.
+**Who it is for:** anyone writing long-form fiction who wants a rigorous second reader that remembers every decision - and, when drafting with an AI agent, would rather the result be theirs. It is a working system, not a demo, and it runs entirely on your machine - plain markdown files in a git repository, no service, no account, nothing uploaded.
 
 > **A note on language.** All instructions, skills, and templates are written in English - the language LLMs handle most reliably, and it keeps the project portable. **Your manuscript and all generated output stay in your language.** Set it in `.project/config/project.yaml`.
 
@@ -37,6 +39,8 @@ It is not a signature of poor quality. It is a signature of *uniformity*: binary
 The result is prose that reads as competent and impersonal at the same time. Good enough not to be rejected, generic enough not to be remembered.
 
 **p10t exists to solve this.**
+
+And it is only half the problem. Prose with every marker removed is clean, not good. A chapter can be free of tics and still fail: the scene that changes nothing, the turn summarized in a sentence while the drive to the house takes three pages, the motive the reader stops believing, the exposition that halts the scene at its peak. None of that is a machine signature - hand-written chapters fail the same way - and none of it shows up in a density count. So p10t carries a second instrument, judged rather than counted: eleven craft categories, each finding anchored to a literal quote and a reader effect.
 
 ---
 
@@ -63,7 +67,9 @@ Stated up front, because each of these is a fair question to ask of a system lik
 
 **It is not a way to make generated text pass as human.** This is the serious objection and it deserves a real answer rather than a slogan. The markers p10t removes are markers of *uniformity* - triads, binary antithesis, an aphorism closing every paragraph. Removing them by rewriting in the author's own documented voice makes the prose more theirs, not less. But the honest part: if someone fed it wholly generated text and curated nothing, it would help them polish that text, and no tool can prevent it. What this system does instead is **keep the record**. Every suggestion requires an explicit ruling, every ruling is committed, and the analysis refuses to output a "% human" figure precisely because that number cannot be measured from prose. A system that made the dishonest version easy would not bother with any of that.
 
-**It is not an editor.** It finds *markers*; it does not find *deadness*. A chapter can pass all fourteen categories and still be boring, and nothing here will tell you so. The structural reason is in the first principle: the AI proposes, the author decides. That makes the system trustworthy and it also makes it an instrument you operate - and you cannot be gatekept by a tool you control. A good editor sometimes has to say "you are wrong, cut it" and be believed. p10t never will, and changing that would break the thing that makes it worth using.
+**It is not an editor - it has no editorial authority.** It judges: `critique-chapter` will tell you a chapter does not work yet, which scene breaks it, and why. What it will not do is make the call stick. The structural reason is in the first principle: the AI proposes, the author decides. That makes the system trustworthy and it also makes it an instrument you operate - and you cannot be gatekept by a tool you control. A good editor sometimes has to say "you are wrong, cut it" and be believed. p10t never will, and changing that would break the thing that makes it worth using. The honest limit that follows: a finding is only as good as the reading behind it, and the craft categories have not yet been field-tested at book length.
+
+**It does not grade.** No score per chapter, no score per category, no average - for the same reason it refuses a "% human" figure. A grade cannot be measured from prose, a model's grade drifts between runs, and the one problem that sinks a chapter averages away against ten that are fine.
 
 **It is not a publisher.** Publishing houses sell capital, distribution, rights and imprint. Editing is a service they bundle, not the product. p10t touches none of it.
 
@@ -117,12 +123,12 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
 │   └── export                   Manuscript to .docx, .epub and .pdf
 ├── .claude/
 │   └── skills/                  ── WHAT THE SYSTEM DOES ──
-│       ├── init-project/        analyze-chapter/     scan-recurrences/
-│       ├── review-revision/     define-persona/      define-references/
-│       ├── build-worldbuilding/ create-character/    outline-chapter/
-│       ├── draft-scene/         revise-passage/      expand-beat/
-│       ├── restructure-chapter/ review-book/         check-consistency/
-│       ├── check-arc/           update-preserve-list/
+│       ├── init-project/        critique-chapter/    analyze-chapter/
+│       ├── scan-recurrences/    review-revision/     define-persona/
+│       ├── define-references/   build-worldbuilding/ create-character/
+│       ├── outline-chapter/     draft-scene/         revise-passage/
+│       ├── expand-beat/         restructure-chapter/ review-book/
+│       ├── check-consistency/   check-arc/           update-preserve-list/
 │       ├── consolidate-style/
 │       ├── define-localization/ translate-chapter/
 │       └── review-translation/
@@ -151,10 +157,12 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     │
     └── templates/               ── REUSABLE SKELETONS ──
         ├── framework.md         The 14 tic categories
+        ├── craft.md             The 11 craft categories and the verdict rule
         ├── layout.md            How skills resolve and order chapter files
         ├── localization.md      How a target-language edition is laid out and decided
         ├── export/              Optional hand-written export templates
         ├── chapter-analysis.md
+        ├── chapter-critique.md
         ├── chapter-outline.md
         ├── persona-template.md
         ├── book-review.md
@@ -226,19 +234,47 @@ Plus an open category (**15 - other tics**) capturing whatever is specific to ea
 
 ---
 
+## The 11 craft categories
+
+The second instrument. Where the 14 categories count what generation leaves in prose, these judge whether the narrative works - whoever wrote it. Definitions, signals, protections and treatments in `.project/templates/craft.md`.
+
+| Group | # | Category | The reader... |
+| --- | --- | --- | --- |
+| **Structure** | 1 | **Scene function** | ...cannot say what would be missing if the scene were cut |
+| | 2 | **Pacing** | ...gets pages of transit and one sentence of the turn |
+| | 3 | **Tension and the dramatic question** | ...carries no question into the next page |
+| **Sense** | 4 | **Clarity and orientation** | ...loses who is speaking, where, when |
+| | 5 | **Logic, motivation and agency** | ...asks "why don't they just...?" |
+| **Execution** | 6 | **Exposition** | ...is told what the scene already showed |
+| | 7 | **Point of view and distance** | ...is handed knowledge the POV could not have |
+| | 8 | **Dialogue** | ...could swap the speakers and not notice |
+| | 9 | **Concreteness** | ...meets *a tree* where the world has a species |
+| | 10 | **Wear** | ...recognizes the phrase or the move before it completes |
+| | 11 | **Sentence** | ...reads it twice for the wrong reason |
+
+**Every finding carries a reader effect** from a closed list - *lost*, *disbelieves*, *impatient*, *indifferent*, *has seen it*, *distanced*, *ahead*, *told twice*. A finding with none is a preference and is dropped. It also carries a **severity** (*break*, *friction*, *note*) and a **level** - sentence, scene, chapter or book - which says where the fix lives and which skill takes it.
+
+**The verdict is decided by rule.** *Works*: no break. *Works with reservations*: breaks, but none in the scene where the chapter turns. *Does not work yet*: a break in that scene, or no turn at all. Frictions never decide it alone.
+
+**Your decisions win.** What `worldbuilding.md` keeps deliberately unexplained is never a clarity finding; a pace or a narrator your persona declares is never flagged for being that choice; what the genre requires is never wear.
+
+---
+
 ## The skills
 
-Twenty-two skills: `init-project` for bootstrap, `commit` for the history, and twenty across seven working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
+Twenty-three skills: `init-project` for bootstrap, `commit` for the history, and twenty-one across seven working layers. Each is a `SKILL.md` the agent reads and follows - no runtime, no dependencies.
 
 **`commit`** - Writes a commit using the convention below: infers the type and scope from what changed, proposes one line, and commits only after you approve it. Warns before moving the boundary `review-revision` depends on. It is the only skill that touches git, it runs only when you ask, and no other skill may invoke it.
 
 ### Analysis layer
 
+**`critique-chapter`** - Reads a chapter as an editor would and answers *does it work?* across the 11 craft categories. A reader's log first, written before any diagnosis; then a scene map with real word counts, the scene where the chapter turns, and every finding with its quote, reader effect, severity and level. Strengths get the same rigor - what revision must not break. Scopes: one scene (judged inside its chapter), a chapter, a `_draft.md`, a range, an Act, or the book - multi-chapter runs critique each chapter, reuse critiques the chapter has not outgrown, and add a synthesis of what only shows across chapters: pacing between chapters, repeated openings and exits, and habits (the same problem in three or more chapters). Never rewrites; routes each finding to the skill that fixes it.
+
 **`analyze-chapter`** - Reads one chapter and produces `{chapter}_analysis.md`: all 14 categories, occurrence by occurrence, with literal quotes and suggested treatment. Cross-references the preserve list (never suggests cutting thesis phrases) and the recurrence map (flags duplications as high priority). Closes with a verdict: top priorities, untouchables, time estimate.
 
 **`scan-recurrences`** - Sweeps the whole book for what repeats across chapters. Distinguishes **intentional recurrence** (a motif stitching the work) from **accidental duplication** (the same aphorism recycled). The test: *if the reader notices, will they think "how lovely, it came back" or "I've read this already"?*
 
-**`review-revision`** - Closes the loop. After you revise a chapter, evaluates the result across five axes: introduced errors, rewrite quality, inverted problems (over-correcting into the opposite flaw), residual density, continuity gaps. Answers, explicitly, any questions you left in your annotations.
+**`review-revision`** - Closes the loop. After you revise a chapter, evaluates the result across six axes: introduced errors, rewrite quality, inverted problems (over-correcting into the opposite flaw), residual density, continuity gaps, and - when the chapter had a critique - which craft findings were resolved and how the verdict moved. Answers, explicitly, any questions you left in your annotations.
 
 ### Foundation layer
 
@@ -298,28 +334,35 @@ Optional, and **additive**: it modifies no other skill and no existing `.project
    ┌──────────────────────────────────────────────┐
    │                                              │
    ▼                                              │
-[1] analyze-chapter                               │
-   │  produces {chapter}_analysis.md              │
+[1] critique-chapter                              │
+   │  {chapter}_critique.md - does it work?       │
+   │  (scene-level problems: restructure first)   │
    ▼                                              │
-[2] you read and annotate R: on each item         │
+[2] analyze-chapter                               │
+   │  {chapter}_analysis.md - what marks remain?  │
+   ▼                                              │
+[3] you read and annotate R: on each item         │
    │  accepted / changed / kept / removed         │
    ▼                                              │
-[3] git commit the chapter, then rewrite it       │
+[4] git commit the chapter, then rewrite it       │
    │  the commit is what review-revision diffs    │
    ▼                                              │
-[4] review-revision                               │
+[5] review-revision                               │
    │  evaluates, flags errors, answers questions  │
    │  writes the entry in revision-log.md         │
    ▼                                              │
-[5] learnings feed back into                      │
+[6] learnings feed back into                      │
    │  persona.md  +  preserve-list.md             │
    └──────────────────────────────────────────────┘
 
    End of each Act: scan-recurrences, check-consistency,
-                    check-arc, review-book
+                    check-arc, critique-chapter over the Act,
+                    review-book
 ```
 
-**Commit before you rewrite.** One `git commit` between step 2 and step 3 gives `review-revision` an exact diff of what changed instead of a reconstruction from quotes. It is the cheapest habit in the system.
+**Craft before markers.** When the critique says the problem is a scene and not its sentences, restructure before you analyze - counting the tics of prose you are about to cut is wasted work. Either step can be skipped; `review-revision` works with whichever file exists.
+
+**Commit before you rewrite.** One `git commit` between step 3 and step 4 gives `review-revision` an exact diff of what changed instead of a reconstruction from quotes. It is the cheapest habit in the system.
 
 **The revision log is not optional.** Step 4 always writes an entry to `reports/revision-log.md` - `consolidate-style`, `update-preserve-list`, and `define-persona`'s update mode all read it as their source. A skipped entry is a set of decisions that never reaches your persona, and the loop stops compounding without telling you.
 
@@ -343,7 +386,7 @@ Item 8 produces two things: a direct answer in the next review, and - if confirm
 
 ## Commits
 
-The commit is a working part of this system, not a record of it - step 3 above is what step 4 compares against. So the log deserves a vocabulary, and the one for code does not fit a novel.
+The commit is a working part of this system, not a record of it - step 4 above is what step 5 compares against. So the log deserves a vocabulary, and the one for code does not fit a novel.
 
 ```
 type(scope)!: subject
@@ -356,10 +399,10 @@ Scope is optional - a chapter number, or a knowledge area. The `!` is optional a
 | **Manuscript** | `draft` | material that did not exist before - new prose, and generated proposals awaiting curation |
 | | `revise` | changing prose that already exists, from a sentence to the order of the scenes |
 | | `cut` | material removed and parked in `_drafts.md` |
-| **Curation** | `annotate` | your `R:` rulings on an analysis file |
+| **Curation** | `annotate` | your `R:` rulings on an analysis or critique file |
 | | `rule` | a world, character or timeline decision |
 | | `voice` | persona, style guide, references, preserve list |
-| **Machine** | `analyze` | `analyze-chapter`, `scan-recurrences` |
+| **Machine** | `analyze` | `analyze-chapter`, `critique-chapter`, `scan-recurrences` |
 | | `review` | `review-book`, `review-revision`, `check-consistency`, `check-arc`, and the revision log entry |
 | **Apparatus** | `chore` | renames, lint, file moves, plumbing |
 | | `docs` | README, CLAUDE.md - the project describing itself |
@@ -435,7 +478,7 @@ scripts/validate      # five structural checks, no dependencies, one second
 | Check | Catches |
 |---|---|
 | frontmatter | a skill whose `name:` no longer matches its directory, or has no description |
-| counts | prose saying "nineteen skills" when there are twenty-two |
+| counts | prose saying "nineteen skills" when there are twenty-three |
 | paths | a machinery path named in the docs that does not exist |
 | skill-refs | a slash-command trigger, or a relationship table, naming an unimplemented skill |
 | placeholders | `{blanks}` left in config after `init-project` |
@@ -455,7 +498,7 @@ There is nothing to deploy - p10t is a repository you copy - so `release.yml` is
 3. **Place your manuscript** in `manuscript/`, markdown, one file per chapter (or point `init-project` at an existing folder).
 4. **Run `define-persona`.** If you have earlier writing produced without AI assistance, point to it - it is the most valuable corpus available.
 5. **Fill `references.md`** with the authors informing this book's voice.
-6. **Run `analyze-chapter`** on the first chapter and start the cycle.
+6. **Run `critique-chapter`, then `analyze-chapter`,** on the first chapter and start the cycle.
 
 > **Tip:** begin with the chapter you consider most *yours*. It establishes the baseline for what is voice and what is noise - and becomes the tonal model for the rest.
 
@@ -463,13 +506,17 @@ There is nothing to deploy - p10t is a repository you copy - so `release.yml` is
 
 ## Roadmap
 
-All twenty-two skills described above are implemented. What is not yet built:
+All twenty-three skills described above are implemented. What is not yet built:
 
 **Language coverage.** Detection signals are calibrated for `[pt-BR]` and `[en]`. Other languages inherit the definitions, ceilings, and treatments, but their signals need adapting - `[es]` and `[fr]` sections are the next addition. This is `framework.md`, which reads the *source* language; a target edition uses its own watchlist, written per language by `define-localization`.
 
 **A field-tested localization contract.** The three verdicts, the hard stop on open terms, and the back-translation check are designed but have not yet produced a full edition. The first real translation is expected to move them - most likely by showing which typographic conversions are mechanical enough to compile into `scripts/` instead of asking a model to apply them.
 
 **Field testing.** The revision cycle - `analyze-chapter` → `R:` → rewrite → `review-revision` - has run on a real manuscript. The generation and knowledge layers have not been exercised at book length. Expect the ceilings in `framework.md` to move once they are.
+
+**A field-tested craft critique.** `critique-chapter` and the 11 categories in `craft.md` are designed but have not yet run on a real manuscript. The first critiques are expected to move the signals, the reader-effect list, and where the line between *break* and *friction* falls. There is no worked example in `examples/` yet, deliberately: the samples there come from real sessions, and a constructed critique presented beside them would not be.
+
+**Craft in the generation layer.** `draft-scene`, `expand-beat`, `revise-passage` and `outline-chapter` do not yet load `craft.md`. Preventing beats fixing, so they should - after the critique has been calibrated on real chapters, not before.
 
 **An `export-manuscript` skill.** `scripts/export` already does the work (see below); a skill would read its refusals aloud and offer to fix them. Deferred until the script has been used on a real submission.
 

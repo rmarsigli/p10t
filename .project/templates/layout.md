@@ -80,7 +80,7 @@ Files that match neither rule (`README.md`, notes, scratch) are **not chapters**
 
 ## Satellites
 
-A **satellite** is a file belonging to one chapter: `{id}_analysis.md`, `{id}_outline.md`, `{id}_draft.md`, `{id}_restructure.md`, and any book-specific companion.
+A **satellite** is a file belonging to one chapter: `{id}_analysis.md`, `{id}_critique.md`, `{id}_outline.md`, `{id}_draft.md`, `{id}_restructure.md`, and any book-specific companion.
 
 > **Rule: a file whose stem is `{id}_{anything}` is a satellite of `{id}`.**
 
@@ -90,7 +90,7 @@ Satellites live **beside their chapter file**: same directory in `flat`, inside 
 
 ### The one exception, and it is orthogonal
 
-`paths.analyses` independently decides whether `_analysis.md` files sit beside the chapter or centralize in `.project/reports/technical/`. **`paths.layout` and `paths.analyses` are separate axes and every combination is legal.** A resolver that assumes analyses live next to the chapter is wrong in two of the four combinations.
+`paths.analyses` independently decides whether `_analysis.md` and `_critique.md` files sit beside the chapter or centralize in `.project/reports/technical/`. **`paths.layout` and `paths.analyses` are separate axes and every combination is legal.** A resolver that assumes analyses live next to the chapter is wrong in two of the four combinations.
 
 ---
 

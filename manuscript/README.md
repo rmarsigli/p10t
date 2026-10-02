@@ -66,6 +66,8 @@ By default, `analyze-chapter` writes `{chapter}_analysis.md` **next to the chapt
 └── 02.03_analysis.md
 ```
 
+`critique-chapter` writes `{chapter}_critique.md` by the same rule, so a chapter's analysis and critique are always found together — and a critique of a draft goes to `{chapter}_draft_critique.md`, kept apart because the draft is not yet the book.
+
 If you prefer the manuscript folders to hold only prose, switch `paths.analyses` in `project.yaml` to `.project/reports/technical/`. That field is independent of `paths.layout`; every combination works.
 
 ---

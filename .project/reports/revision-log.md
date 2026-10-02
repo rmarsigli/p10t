@@ -10,7 +10,7 @@ This log is the primary source for `consolidate-style` (which mines it for perso
 
 A session that skips its entry is a set of decisions that never reaches the persona. The learning loop stops compounding silently.
 
-**Density unit:** occurrences per 1,000 words (see `templates/framework.md`).
+**Density unit:** occurrences per 1,000 words (see `templates/framework.md`). **Craft verdicts** follow the rule in `templates/craft.md` — a verdict, never a score.
 
 ---
 
@@ -20,10 +20,12 @@ A session that skips its entry is a set of decisions that never reaches the pers
 ## {Chapter} — revised on {date}
 
 **Length:** {before} → {after} words
-**Density:** {before}/1k → {after}/1k (ceiling {N,N}/1k)
+**Density:** {before}/1k → {after}/1k (ceiling {N,N}/1k) — or "no analysis"
 **Still over ceiling:** {cat. N ({N,N}/1k)} — or "none"
+**Craft:** {verdict before} → {verdict after}; breaks {N} → {M} — or "no critique"
 **Decisions:** {N} accepted, {M} rejected, {K} done differently
 **Confirmed signatures:** {what the author kept as style}
+**Declared craft choices:** {craft findings the author rejected as deliberate} — or "none"
 **Errors corrected in review:** {N}
 **Status:** {✓ approved | needs another pass}
 
@@ -40,8 +42,10 @@ A session that skips its entry is a set of decisions that never reaches the pers
 **Length:** 3.240 → 3.010 palavras
 **Density:** 14,2/1k → 5,8/1k (teto 8,0/1k)
 **Still over ceiling:** cat. 11 (travessão), 2,4/1k — teto 2,0/1k
+**Craft:** no critique
 **Decisions:** 24 aceitas, 6 rejeitadas, 11 feitas de outro jeito
 **Confirmed signatures:** vocabulário elevado; "ou não" como autocorreção; "aliás" como auto-interrupção; travessão só para diálogo
+**Declared craft choices:** none
 **Errors corrected in review:** 4 (concordância, regência, palavra trocada, typo)
 **Status:** ✓ aprovado
 
@@ -64,6 +68,8 @@ Updated by `review-revision` at each entry. Useful for the AI-use declaration in
 |---|---|
 | Chapters revised | 0 |
 | Average density reduction | — |
+| Chapters critiqued before revision | 0 |
+| Chapters whose craft verdict improved | 0 |
 | Chapters under total ceiling | 0 |
 | Confirmed author signatures | 0 |
 | Total decisions logged | 0 |

@@ -60,7 +60,7 @@ type(scope)!: subject
 
 | Type | Use |
 |---|---|
-| `annotate` | the author's `R:` rulings on an analysis file |
+| `annotate` | the author's `R:` rulings on an analysis or critique file |
 | `rule` | a world, character or timeline decision |
 | `voice` | `persona.md`, `style-guide.md`, `references.md`, `preserve-list.md` |
 
@@ -68,7 +68,7 @@ type(scope)!: subject
 
 | Type | Use |
 |---|---|
-| `analyze` | `analyze-chapter`, `scan-recurrences` |
+| `analyze` | `analyze-chapter`, `critique-chapter`, `scan-recurrences` |
 | `review` | `review-book`, `review-revision`, `check-consistency`, `check-arc` — including the `revision-log.md` entry |
 
 **Apparatus.**
@@ -112,10 +112,10 @@ From what changed, and from what the session was doing:
 | a manuscript file that already had prose | `revise` |
 | a `_draft`, `_outline` or `_restructure` file | `draft` |
 | `_drafts.md` grew and a chapter shrank | `cut` |
-| `R:` annotations added to an `_analysis.md` | `annotate` |
+| `R:` annotations added to an `_analysis.md` or `_critique.md` | `annotate` |
 | `worldbuilding.md`, `timeline.md`, `glossary.md`, `characters/` | `rule` |
 | `persona.md`, `style-guide.md`, `references.md`, `preserve-list.md` | `voice` |
-| a new `_analysis.md`, or `recurrences.md` | `analyze` |
+| a new `_analysis.md` or `_critique.md`, or `recurrences.md` | `analyze` |
 | `reports/literary/`, `revision-log.md`, consistency or arc reports | `review` |
 | renames, lint, file moves | `chore` |
 | README, CLAUDE.md | `docs` |
@@ -155,7 +155,7 @@ The related fragility: `git diff HEAD~1` assumes the previous commit is the base
 **Before committing, check for this state:**
 
 - a manuscript file has changed since its last commit, **and**
-- a matching `_analysis.md` exists carrying `R:` annotations
+- a matching `_analysis.md` or `_critique.md` exists carrying `R:` annotations
 
 That means the author is mid-revision. Committing now changes what `review-revision` will diff against — and the failure is silent, because the comparison still runs and still produces a confident-looking evaluation of the wrong thing.
 

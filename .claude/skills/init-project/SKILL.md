@@ -70,7 +70,7 @@ The fork that matters:
 **Existing manuscript** → suggest the extraction sequence:
 1. `define-persona` (bootstrap mode — point it at the chapters you consider most yours)
 2. `build-worldbuilding` + `create-character` (extract mode)
-3. `analyze-chapter` on the first chapter → the revision cycle begins
+3. `critique-chapter`, then `analyze-chapter`, on the first chapter → the revision cycle begins
 
 **Blank page** → suggest the creation sequence:
 1. `define-persona` (bootstrap mode — bring earlier writing produced without AI, the most valuable corpus)
