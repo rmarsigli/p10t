@@ -24,6 +24,18 @@ length:
   target_words: 0
   current_words: 0
 
+# ── MANUSCRIPT SOURCE ──
+# Where the prose lives. Declared, never detected. See templates/source.md.
+#   local  markdown files in paths.manuscript, versioned in git (default)
+#   mcp    a writing app read through an MCP connector — read-only, experimental
+source:
+  kind: "local"          # local | mcp
+  # mcp only:
+  adapter: ""            # the adapter section of templates/source.md, e.g. "proseyard"
+  server: ""             # the connection's name in your agent's MCP client
+  project_id: ""         # the book's id in the app
+  preset_id: ""          # compile preset deciding what prints and in what order; empty = app default
+
 paths:
   manuscript: "manuscript/"
   analyses: "manuscript/"          # or ".project/reports/technical/"

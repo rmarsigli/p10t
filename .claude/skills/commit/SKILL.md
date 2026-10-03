@@ -152,6 +152,8 @@ Run `git remote get-url origin` and read it. If it points at p10t while the work
 
 The related fragility: `git diff HEAD~1` assumes the previous commit is the baseline. That assumption holds today because nothing else commits. It stops holding the moment anything commits twice between the baseline and the review — which is the second reason no other skill may reach this one.
 
+**Under an `mcp` source** (`project.yaml → source.kind`) the manuscript is not in git, so this check does not apply and the manuscript types (`draft`, `revise`, `cut`) never describe it — the boundary is the snapshot the author takes in the app (`.project/templates/source.md` rule 8). When the author commits `R:` annotations under an `mcp` source, remind them once to snapshot the chapter in the app before rewriting — that snapshot, not this commit, is what `review-revision` will compare against. Everything else in this skill is unchanged.
+
 **Before committing, check for this state:**
 
 - a manuscript file has changed since its last commit, **and**

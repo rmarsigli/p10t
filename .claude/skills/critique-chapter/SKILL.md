@@ -63,8 +63,12 @@ Two disciplines follow, and they are the whole difference between this and an op
 
 ### Step 0 — Resolve the scope
 
+> **Manuscript source.** Under `project.yaml → source.kind: mcp` the book lives in a connected app, and `.project/templates/source.md` replaces `layout.md` for everything below that touches chapters: enumeration, reading, identity, fingerprint, staleness. Its rules bind this skill — above all, an app-held body has no scaffolding, and the app's scene nodes are the author's divisions, not necessarily dramatic scenes.
+
+
 - **Chapters, ranges, Acts, the book:** resolve through `.project/templates/layout.md` — never by globbing. An Act resolves from the id prefix. **A mixed manuscript stops the run**, with the offending paths named.
 - **Scene:** scenes are derived from the prose — the breaks in place, time, or continuous action — **never from `##` headers**, which are optional drafting scaffolding and may be absent, stale, or deliberately missing. If the author's numbering is ambiguous, show the scene map and confirm which scene they mean before critiquing it.
+- **Scene, under an `mcp` source:** the author names the app's node (its label, e.g. `c02.s03`). The node is the unit of identity; dramatic scenes inside it are numbered from the prose (`c01.s04 · 1`, `c01.s04 · 2`).
 - **Draft:** the `_draft.md` satellite of the named chapter. If it does not exist, say so and stop.
 
 > **Drafting scaffolding is not prose.** `##` scene headers, HTML comment notes, and budget lines are excluded from word counts. Their **absence is never a finding** — see `manuscript/README.md → Scene headers while drafting`.
@@ -86,7 +90,7 @@ Read, in this order:
 
 Read **after** the first pass (Step 2), never before:
 
-11. `{chapter}_outline.md`, if it exists — intent, compared against the page, never used to read it
+11. `{chapter}_outline.md`, if it exists — intent, compared against the page, never used to read it. Under an `mcp` source, the app's chapter and scene **synopses** and declared fields (POV, characters present) are intent with the same standing (`source.md` rule 9)
 12. `{chapter}_analysis.md`, if it exists — to route marker problems there instead of duplicating them
 13. An existing `{chapter}_critique.md` — see *Special cases*
 
@@ -100,7 +104,7 @@ For a scene scope, read the **whole chapter**, and log the target scene in detai
 
 ### Step 3 — Map the scenes
 
-For each scene, from the prose: one-line description, **word count**, share of the chapter, conflict, turn. Then **name the load-bearing scene** — the one where the chapter turns. If none turns, record it: that is the deciding finding.
+For each scene, from the prose: one-line description, **word count**, share of the chapter, conflict, turn. Under an `mcp` source, label each row with the app's node (`source.md` rule 4). Then **name the load-bearing scene** — the one where the chapter turns. If none turns, record it: that is the deciding finding.
 
 **Count, never estimate.** The scene map is the only numeric evidence the critique has, and pacing findings cite it. Count words the same way `analyze-chapter` does: prose including dialogue, excluding title, epigraphs, and scaffolding.
 
@@ -145,7 +149,7 @@ Follow `.project/templates/chapter-critique.md`. Report back in chat: verdict an
 For a list, a range, an Act, or the book:
 
 1. **Chapter by chapter, in reading order.** Each chapter gets the full protocol above, with its neighbours as context. Critiquing an Act in one undifferentiated pass degrades the reading of every chapter in it.
-2. **Reuse what is still current.** A `{chapter}_critique.md` is current when the chapter has not changed since it was written: the chapter has **no uncommitted changes**, and **no commit touching the chapter is newer** than the latest commit touching the critique (`git log -1 --format=%ct -- <file>` on both). A critique not yet committed counts as current against a clean chapter. Reuse current critiques and say which were reused. When git cannot answer, re-critique — a stale critique reused is a confident report on text that no longer exists.
+2. **Reuse what is still current.** Under an `mcp` source, current means the recorded fingerprint still matches (`source.md` rule 7). Under `local`, a `{chapter}_critique.md` is current when the chapter has not changed since it was written: the chapter has **no uncommitted changes**, and **no commit touching the chapter is newer** than the latest commit touching the critique (`git log -1 --format=%ct -- <file>` on both). A critique not yet committed counts as current against a clean chapter. Reuse current critiques and say which were reused. When git cannot answer, re-critique — a stale critique reused is a confident report on text that no longer exists.
 3. **Never overwrite a critique carrying `R:`** — see *Special cases*. In a multi-chapter run, a stale annotated critique is listed as stale and left alone, and the synthesis uses it with that caveat.
 4. **Then the synthesis.** Read the per-chapter critiques and the chapters' scene maps, and look for what only exists across chapters (`craft.md → Patterns across chapters`): pacing across chapters, repeated openings and exits, habits (same category and mechanism in three or more chapters), and the verdict map.
 5. **Cite `check-arc`, never rebuild it.** The book's tension curve and arcs belong to `check-arc`. If its latest report covers the scope, cite it; if not, say so and recommend running it before structural revision.

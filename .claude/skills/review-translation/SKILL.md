@@ -110,6 +110,8 @@ Pre-registered signature collisions are not findings. Everything else is, with a
 git log <source_commit>..HEAD -- <source chapter path>
 ```
 
+Under an `mcp` source, `source_commit` holds the chapter's short fingerprint instead: compare it with the current scene hashes (`.project/templates/source.md` rule 7) and name the scenes whose hash changed.
+
 `source_commit` comes from `status.md`. Empty output: current. Otherwise, name the commits and say what changed — and whether it is a copy-edit or a rebuild, because under transcreation there is no partial update and a rebuild means retranslating the chapter.
 
 ⚠️ **Do not diff the two editions line by line.** Transcreation legitimately reorders and rebuilds; an alignment that works on a descriptive chapter fails on the chapter that was restructured most, and reports clean for the worst case.

@@ -13,13 +13,15 @@ description: Analyzes one manuscript chapter for AI-generation markers across 14
 - "check chapter X.Y for AI tics"
 - Equivalent phrasing in the project's output language
 
-**Input.** Path to the chapter.
+**Input.** The chapter — a file path under a `local` source, or a chapter id or the app's label under an `mcp` source (`.project/templates/source.md`).
 
 **Output.** `{chapter}_analysis.md`, at the location set in `.project/config/project.yaml → paths.analyses` — next to the chapter, or centralized in `.project/reports/technical/`. That field is the single source of truth for this choice.
 
 > "Next to the chapter" resolves through `paths.layout`: the manuscript root under `flat`, the chapter's own directory under `chapter`. The two fields are **independent axes** and every combination is legal — see `.project/templates/layout.md`.
 
 > **Drafting scaffolding is not prose.** `##` scene headers, HTML comment notes, and budget lines are excluded from word counts and from every density figure. Their **absence is never a finding** — a chapter written straight through is a choice, not a defect. See `manuscript/README.md → Scene headers while drafting`.
+
+> **Manuscript source.** Under `project.yaml → source.kind: mcp` the chapter is read from a connected app, not a file: resolve it, read it, and record its fingerprint through `.project/templates/source.md`. There is no scaffolding in an app-held body — every line prints and every line counts.
 
 > **Write the analysis in the project's output language** (`config/project.yaml → language`), not in English.
 
@@ -31,7 +33,8 @@ description: Analyzes one manuscript chapter for AI-generation markers across 14
 
 Read, in this order:
 
-1. **`.project/config/project.yaml`** — output language, `paths.analyses`, total density ceiling
+1. **`.project/config/project.yaml`** — output language, `paths.analyses`, total density ceiling, `source.kind`
+   - Under an `mcp` source, also **`.project/templates/source.md`** — how to read the chapter and what to record
 2. **`.project/templates/framework.md`** — the 14 categories, signals, counting rules, default ceilings
 3. **`.project/config/style-guide.md`** — project overrides to the ceilings, and any language adaptation
 4. **`.project/config/persona.md`** — author signatures that are **not** tics

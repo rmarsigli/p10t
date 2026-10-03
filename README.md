@@ -158,6 +158,7 @@ Declaring "I used AI for 40% of this project" is honest. What changes with this 
     └── templates/               ── REUSABLE SKELETONS ──
         ├── framework.md         The 14 tic categories
         ├── craft.md             The 11 craft categories and the verdict rule
+        ├── source.md            Where the prose lives: local files or a connected app
         ├── layout.md            How skills resolve and order chapter files
         ├── localization.md      How a target-language edition is laid out and decided
         ├── export/              Optional hand-written export templates
@@ -200,6 +201,21 @@ Three properties make this cheap:
 It is **declared, never detected**: `manuscript/01/` is unresolvable without opening it, and a half-migrated tree reads as valid. A wrong guess does not fail — it silently returns a partial chapter list, and the sweep that follows reports "no duplication found" for chapters it never read.
 
 Full rules — resolution, ordering, satellites, mixed-state handling, migration: **`.project/templates/layout.md`**.
+
+### Manuscript source
+
+By default the manuscript is the markdown files above. A book can instead live in a writing app and be **read through an MCP connector** - set `project.yaml → source.kind: mcp`. This is **experimental**: the first adapter is for proseyard, and it has not yet carried a chapter through the full cycle.
+
+What changes, and what does not:
+
+- **p10t never writes to the app.** It connects with read scope; analyses, critiques, plans, drafts and every `.project/` file stay local and in git.
+- **The app's node id is the key**, and `02.03` is a display label derived from the outline. Reordering chapters in the app is detected and reported, never followed silently.
+- **Content hashes replace `git log`** for "has this chapter changed since its critique?".
+- **A snapshot replaces the pre-rewrite commit.** You snapshot the chapter in the app before rewriting; `review-revision` finds it by hash. When it cannot - you fixed a typo first, or deleted the snapshot - it uses an approximate baseline or the literal quotes, and says which.
+- **No scaffolding.** An app-held body is exactly what prints, so every line counts; scene nodes are your divisions, and dramatic scenes inside them are numbered from the prose.
+- **`scripts/export` refuses** - the app compiles its own manuscript.
+
+Rules, the contract a source must satisfy, and the adapter's tool mapping: **`.project/templates/source.md`**.
 
 **Tool independence.** Skills are plain markdown with YAML frontmatter. Claude Code discovers them natively; any other AI agent with filesystem access can read and execute them - the root `CLAUDE.md` says where they live.
 
@@ -362,7 +378,7 @@ Optional, and **additive**: it modifies no other skill and no existing `.project
 
 **Craft before markers.** When the critique says the problem is a scene and not its sentences, restructure before you analyze - counting the tics of prose you are about to cut is wasted work. Either step can be skipped; `review-revision` works with whichever file exists.
 
-**Commit before you rewrite.** One `git commit` between step 3 and step 4 gives `review-revision` an exact diff of what changed instead of a reconstruction from quotes. It is the cheapest habit in the system.
+**Commit before you rewrite.** One `git commit` between step 3 and step 4 gives `review-revision` an exact diff of what changed instead of a reconstruction from quotes. It is the cheapest habit in the system. When the book lives in an app (`source.kind: mcp`), the same habit is a snapshot of the chapter taken in the app.
 
 **The revision log is not optional.** Step 4 always writes an entry to `reports/revision-log.md` - `consolidate-style`, `update-preserve-list`, and `define-persona`'s update mode all read it as their source. A skipped entry is a set of decisions that never reaches your persona, and the loop stops compounding without telling you.
 
@@ -457,7 +473,7 @@ scripts/export --profile reading      # .epub + .pdf
 | `.epub` | beta readers — it reflows, so it fits a phone | pandoc |
 | `.pdf` | print, or a fixed artifact | pandoc + [typst](https://typst.app) |
 
-pandoc is one installer on all three platforms; typst is one self-contained binary and **no LaTeX is involved**, whatever pandoc's own install page says. Without typst the other formats are still written and the PDF is skipped with a note. **Nothing else in p10t depends on this** — delete the script and every skill still works.
+pandoc is one installer on all three platforms; typst is one self-contained binary and **no LaTeX is involved**, whatever pandoc's own install page says. Without typst the other formats are still written and the PDF is skipped with a note. **Nothing else in p10t depends on this** — delete the script and every skill still works. Under an `mcp` source it refuses and points you to the app's own compile.
 
 The `submission` profile is standard manuscript format: 12 pt, double spaced, one-inch margins, ragged right and unhyphenated, chapters on new pages, a `Surname / Title / page` running head, and a title page with the rounded word count.
 
@@ -517,6 +533,8 @@ All twenty-three skills described above are implemented. What is not yet built:
 **A field-tested craft critique.** `critique-chapter` and the 11 categories in `craft.md` are designed but have not yet run on a real manuscript. The first critiques are expected to move the signals, the reader-effect list, and where the line between *break* and *friction* falls. There is no worked example in `examples/` yet, deliberately: the samples there come from real sessions, and a constructed critique presented beside them would not be.
 
 **Craft in the generation layer.** `draft-scene`, `expand-beat`, `revise-passage` and `outline-chapter` do not yet load `craft.md`. Preventing beats fixing, so they should - after the critique has been calibrated on real chapters, not before.
+
+**A field-tested app source.** `source.kind: mcp` and its proseyard adapter are designed against a contract both sides agreed - content hashes per scene, snapshots readable by node id - but the hash and snapshot tools are still being built on the app side, and no chapter has yet gone analysis → snapshot → rewrite → review through it. Until then, fingerprints and baselines degrade to node ids and literal quotes, and the skill reports say so.
 
 **An `export-manuscript` skill.** `scripts/export` already does the work (see below); a skill would read its refusals aloud and offer to fix them. Deferred until the script has been used on a real submission.
 

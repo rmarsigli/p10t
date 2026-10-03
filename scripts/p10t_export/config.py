@@ -141,6 +141,21 @@ def load_config(project_root):
     project = _read(config_dir / "project.yaml")
     export = _read(config_dir / "export.yaml")
 
+    # An app-held manuscript has no files to export, and the app's own compile
+    # presets are its export. Say so, rather than reporting an empty book.
+    source = project.get("source") or {}
+    kind = source.get("kind") or "local"
+    if kind == "mcp":
+        app = source.get("adapter") or "the connected app"
+        raise ConfigError(
+            "source.kind is mcp: the manuscript lives in %s, not in files. "
+            "Compile it there; scripts/export only reads a local manuscript. "
+            "See .project/templates/source.md." % app)
+    if kind != "local":
+        raise ConfigError(
+            "source.kind is %r; it must be local or mcp. "
+            "See .project/templates/source.md." % kind)
+
     title = project.get("title") or ""
     author = project.get("author") or ""
     if _unfilled(title):

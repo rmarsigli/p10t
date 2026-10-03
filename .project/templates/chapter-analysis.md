@@ -16,6 +16,8 @@ Skeleton followed by the `analyze-chapter` skill when producing `{chapter}_analy
 **Priority:** {Low | Medium | High | Critical}. {1 sentence.}
 **Over ceiling:** {cat. N ({N,N}/1k), cat. M ({N,N}/1k)} — or "none"
 
+{Under an `mcp` source only — the source fingerprint, exactly as `source.md` rule 6 specifies: server, project, read date, and one row per scene with label, node id and content hash.}
+
 ---
 
 ## 1. Binary antithesis

@@ -151,7 +151,7 @@ The native-reader gate state for this chapter.
 
 ### Step 7 — Update state and hand off
 
-Append or update this chapter's row in `status.md`: source id, **the current commit of the source chapter** (`git log -1 --format=%H -- <source path>`), stage `translated`, native gate `pending`.
+Append or update this chapter's row in `status.md`: source id, **the current commit of the source chapter** (`git log -1 --format=%H -- <source path>`) — or, under an `mcp` source, the chapter's **short fingerprint** (`.project/templates/source.md` rule 6) — stage `translated`, native gate `pending`.
 
 Then: report the length delta, name the findings count, and say what is next — `review-translation` for this chapter, or a ruling on the findings first. Suggest a commit line; **do not commit**.
 
@@ -188,5 +188,5 @@ Then: report the length delta, name the findings count, and say what is next —
 ## Maintenance
 
 - **When a contract verdict changes**, chapters translated under the old one are stale. `status.md` names them.
-- **When the source chapter changes**, `git log <source_commit>..HEAD -- <path>` says exactly what.
+- **When the source chapter changes**, `git log <source_commit>..HEAD -- <path>` says exactly what — or, under an `mcp` source, the fingerprint comparison of `source.md` rule 7 says which scenes.
 - **When findings accumulate unruled**, stop translating. Each unresolved referent multiplies across every remaining chapter.

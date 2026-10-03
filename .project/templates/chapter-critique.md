@@ -20,6 +20,8 @@ Skeletons followed by the `critique-chapter` skill: the per-chapter `{chapter}_c
 **Main level:** {sentence | scene | chapter | book} — {where most of the weight sits, one sentence}
 **Findings:** {B} breaks · {F} frictions · {N} notes
 
+{Under an `mcp` source only — the source fingerprint, exactly as `source.md` rule 6 specifies.}
+
 ---
 
 ## Reader's log

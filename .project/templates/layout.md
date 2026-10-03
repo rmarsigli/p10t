@@ -4,6 +4,8 @@ How skills **locate, enumerate, and order** chapter files. This is the single re
 
 Declared in `.project/config/project.yaml → paths.layout`. **Never detected** — see *Why declared* below.
 
+> **Manuscript source.** This file resolves chapters when `project.yaml → source.kind` is `local`, the default. When it is `mcp`, the chapters live in a connected app: enumeration, ordering, Act scoping and chapter identity come from `.project/templates/source.md`, and this file governs only where **satellites** live. A chapter file found in `paths.manuscript` under an `mcp` source is a mixed state — stop and report it.
+
 ---
 
 ## The chapter id

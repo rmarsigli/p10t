@@ -96,6 +96,27 @@ class TestConfig(unittest.TestCase):
             with self.assertRaises(ConfigError):
                 load_config(root)
 
+    def test_mcp_source_refuses_with_a_pointer_to_the_app(self):
+        yaml = PROJECT_YAML + 'source:\n  kind: "mcp"\n  adapter: "proseyard"\n'
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ConfigError) as ctx:
+                load_config(_project(tmp, project_yaml=yaml))
+        self.assertIn("proseyard", str(ctx.exception))
+        self.assertIn("Compile it there", str(ctx.exception))
+
+    def test_unknown_source_kind_is_an_error(self):
+        yaml = PROJECT_YAML + 'source:\n  kind: "dropbox"\n'
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ConfigError) as ctx:
+                load_config(_project(tmp, project_yaml=yaml))
+        self.assertIn("local or mcp", str(ctx.exception))
+
+    def test_local_source_is_the_default_and_loads(self):
+        yaml = PROJECT_YAML + 'source:\n  kind: "local"\n  adapter: ""\n'
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg = load_config(_project(tmp, project_yaml=yaml))
+        self.assertEqual(cfg.metadata.title, "The Open Shed")
+
     def test_default_labels_per_language(self):
         self.assertEqual(default_labels("en")["byline"], "by")
         self.assertEqual(default_labels("pt-BR")["byline"], "por")

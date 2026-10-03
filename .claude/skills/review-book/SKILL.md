@@ -66,6 +66,7 @@ Work through architecture, premise, characters, prose, themes. Discipline points
 
 - **Aggregate, never re-estimate.** All figures come from the per-chapter `_analysis.md` files and `revision-log.md`. Chapters never analyzed have no data — exclude them and say so. Densities are in occurrences per 1,000 words.
 - **Classify each layer by the nature of the collaboration** — authorial / assisted / generated-and-curated — with citable evidence per row. **Do not produce percentages of "how much is AI".** They are not measurable from prose, and this section may end up backing a public declaration, where an invented figure is a reputational liability for the author rather than a reporting flaw. A layer with no record gets `no record`.
+- **Under an `mcp` source** the manuscript's history lives in the app, not in git: cite snapshots and `revision-log.md` as the record, and — if the app takes snapshots automatically before machine edits — count those as direct evidence of machine-written text (`.project/templates/source.md` rule 10).
 - Chart the trajectory: density before → after, per Act, plus decisions logged. Counted rather than asserted, this is the strongest evidence the project has.
 - Position the project on the declared-use spectrum and draft the declaration wording the author could paste into a submission letter.
 

@@ -63,7 +63,7 @@ The chapter revision cycle:
 1. `critique-chapter` produces `{chapter}_critique.md` — does the narrative work?
 2. `analyze-chapter` produces `{chapter}_analysis.md` — what marks did generation leave?
 3. The author reads, decides item by item, annotates `**R:**` under each point, in both files
-4. The author **commits the chapter**, then rewrites it — the commit is what `review-revision` diffs against
+4. The author **commits the chapter**, then rewrites it — the commit is what `review-revision` diffs against. Under an `mcp` source the author **snapshots the chapter in the app** instead, and still commits the `.project/` files
 5. `review-revision` evaluates the result, answers the author's questions, and writes its entry in `reports/revision-log.md`
 6. Learnings feed `persona.md` and `preserve-list.md`
 
@@ -99,6 +99,7 @@ Narrative quality is **judged, never scored**. Eleven categories, a closed list 
 - Naming: `{act}.{chapter}.md` (e.g. `02.03.md`), numbers zero-padded so ordering stays lexicographic
 - **Layout** — `.project/config/project.yaml → paths.layout`, either `flat` (`manuscript/02.03.md`) or `chapter` (`manuscript/02.03/02.03.md`). Declared, never detected. How skills resolve, order, and scope chapter files: `.project/templates/layout.md`
 - Analyses land where `.project/config/project.yaml → paths.analyses` says — that field is the single source of truth, not this file. It is **independent of `paths.layout`**; all four combinations are legal
+- **Source** — `.project/config/project.yaml → source.kind`, either `local` (the files above, the default) or `mcp` (a writing app read through an MCP connector — **read-only, experimental**). Under `mcp`, chapters, their identity, fingerprints and revision baselines resolve through `.project/templates/source.md`; `manuscript/` keeps only satellites, and no skill ever writes to the app
 
 ## Translations
 

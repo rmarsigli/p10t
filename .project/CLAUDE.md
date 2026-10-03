@@ -17,7 +17,7 @@ Four directories, each with one job:
 | `config/` | ── **WHO YOU ARE** ── voice, references, hard rules, metadata | `define-persona`, `define-references`, by hand |
 | `knowledge/` | ── **WHAT EXISTS IN THE BOOK** ── world, timeline, glossary, characters | `build-worldbuilding`, `create-character`, by hand |
 | `reports/` | ── **WHAT HAS BEEN FOUND** ── analyses, critiques, preserve list, recurrence map, decision history | `analyze-chapter`, `critique-chapter`, `scan-recurrences`, `review-revision`, `review-book` |
-| `templates/` | ── **REUSABLE SKELETONS** ── the 14 marker categories, the 11 craft categories, the layout and localization resolvers, output shapes | never — these are the machinery |
+| `templates/` | ── **REUSABLE SKELETONS** ── the 14 marker categories, the 11 craft categories, the source, layout and localization resolvers, output shapes | never — these are the machinery |
 
 The canonical file-by-file tree lives in the p10t [README](https://github.com/rmarsigli/p10t#structure), kept in one place so it cannot drift out of sync with this file.
 
@@ -28,6 +28,10 @@ Occurrences per 1,000 words, one decimal. Counting rules and default ceilings: `
 ## Craft
 
 Judged, never scored. Categories, reader effects, severities, and the verdict rule: `templates/craft.md`. Output shape: `templates/chapter-critique.md`.
+
+## Manuscript source
+
+`config/project.yaml → source.kind` declares where the prose lives: `local` markdown files (the default) or a writing app read through an MCP connector (`mcp`, read-only, experimental). **`templates/source.md` is the single resolver** for the origin of the text — enumeration, identity, fingerprints, staleness and the revision baseline — the way `layout.md` is for files on disk. Everything in `.project/` stays local under both kinds.
 
 ## Manuscript layout
 

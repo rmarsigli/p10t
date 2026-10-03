@@ -59,6 +59,8 @@ It is also where the system **learns**: author decisions feed `persona.md` and `
 
 **Getting the diff.** The workflow expects the author to commit the chapter *before* revising it, so `git diff` (or `git diff HEAD~1`) shows exactly what the revision touched. If no such commit exists, say so once — recommending the commit habit is worth more than a workaround — then fall back to comparing against the literal quotes in the `_analysis.md` and `_critique.md`.
 
+**Under an `mcp` source** there is no commit to diff against: the manuscript lives in a connected app. The baseline comes from the author's snapshot, resolved **per scene** at one of three levels — exact, approximate, quotes only — by `.project/templates/source.md` rule 8, from the fingerprint the analysis or critique recorded. Read the revised chapter through the connector. State, in the response and in the log entry's notes, which level each scene got: a revision judged against an approximate baseline is still worth reviewing, but the author must know which comparisons are exact.
+
 ### Step 2 — Map the author's decisions
 
 Categorize each `R:` — in both files:

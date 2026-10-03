@@ -153,7 +153,7 @@ One row per translated chapter.
 | Column | Meaning |
 | --- | --- |
 | `chapter` | the source id |
-| `source_commit` | the commit of the source chapter this translation was made from |
+| `source_commit` | the commit of the source chapter this translation was made from — under an `mcp` source, the chapter's short fingerprint (`source.md` rule 6) |
 | `stage` | `translated` · `reviewed` · `native-cleared` |
 | `native_gate` | who cleared it, when — or `pending` |
 
@@ -165,7 +165,7 @@ One row per translated chapter.
 git log <source_commit>..HEAD -- <source chapter path>
 ```
 
-Empty output means the translation is current. Any output names precisely what changed since. No heuristics, no timestamps, no diffing two languages against each other.
+Empty output means the translation is current. Any output names precisely what changed since. Under an `mcp` source the same question is answered by comparing the short fingerprint with the current scene hashes — `source.md` rule 7. No heuristics, no timestamps, no diffing two languages against each other.
 
 ⚠️ **Do not attempt a line-level diff between editions.** Under transcreation the target edition legitimately reorders, merges and rebuilds sentences. An alignment that "works" on a descriptive chapter fails on the chapter that most needed restructuring, and reports a clean state for the worst case.
 
